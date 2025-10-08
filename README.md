@@ -22,41 +22,30 @@ The Data Quality Bot is a powerful web application designed for data engineers, 
 </div>
 <div style="background-color: #F8F9FA; padding: 16px; border-left: 1px solid #E0E0E0; border-right: 1px solid #E0E0E0; border-bottom: 1px solid #E0E0E0; border-radius: 0 0 4px 4px;">
 ```mermaid
-%%{
-  init: {
-    "theme": "base",
-    "themeVariables": {
-      "fontFamily": "\"Roboto\", sans-serif",
-      "lineColor": "#70757A",
-      "textColor": "#3C4043",
-      "mainBkg": "#F8F9FA"
-    }
-  }
-}%%
 graph LR
-    subgraph user_env [User Environment]
+    subgraph userenv [User Environment]
         direction TB
-        A[User via Browser - HTTPS]:::userNode
+        A[User via Browser HTTPS]:::userNode
     end
 
-    subgraph gateway_sub [ ]
+    subgraph gatewaysub [Gateway]
       B((Gateway)):::gatewayNode
     end
     
-    A -- "Provides Data Context" --> B
+    A -- Provides Data Context --> B
 
-    subgraph bot_logic [Data Quality Bot - Client-Side Logic]
+    subgraph botlogic [Data Quality Bot Client-Side Logic]
         direction LR
-        subgraph ingest_sub [Ingest]
-            C[Data Input & Parsing]:::processNode
+        subgraph ingest [Ingest]
+            C[Data Input and Parsing]:::processNode
         end
-        subgraph pipelines_sub [Pipelines]
+        subgraph pipelines [Pipelines]
             D[Prompt Engineering]:::processNode
         end
-        subgraph analytics_sub [Analytics]
+        subgraph analytics [Analytics]
             E[Google Gemini API]:::apiNode
         end
-        subgraph app_sub [Application & Presentation]
+        subgraph app [Application and Presentation]
             F[Results Dashboard]:::outputNode
             G[AI Assistant]:::outputNode
             H[Export Engine]:::outputNode
@@ -65,21 +54,19 @@ graph LR
 
     B --> C
     C --> D
-    D -- "Secure API Call" --> E
-    E -- "JSON Response" --> F
+    D -- Secure API Call --> E
+    E -- JSON Response --> F
     F --> G
     F --> H
     
-    %% Style Subgraphs to create the split background effect
-    style user_env fill:#202124,stroke:#5F6368,color:#E8EAED
-    style gateway_sub fill:transparent,stroke:transparent
-    style bot_logic fill:#FFFFFF,stroke:#E0E0E0,color:#3C4043
-    style ingest_sub fill:transparent,stroke:transparent
-    style pipelines_sub fill:transparent,stroke:transparent
-    style analytics_sub fill:transparent,stroke:transparent
-    style app_sub fill:transparent,stroke:transparent
+    style userenv fill:#202124,stroke:#5F6368,color:#E8EAED
+    style gatewaysub fill:transparent,stroke:transparent
+    style botlogic fill:#FFFFFF,stroke:#E0E0E0,color:#3C4043
+    style ingest fill:transparent,stroke:transparent
+    style pipelines fill:transparent,stroke:transparent
+    style analytics fill:transparent,stroke:transparent
+    style app fill:transparent,stroke:transparent
 
-    %% Style Nodes for a professional, GCP-like feel
     classDef userNode fill:#FEF7E0,stroke:#FBBC05,stroke-width:2px,color:#3C4043
     classDef gatewayNode fill:#F1F3F4,stroke:#70757A,stroke-width:2px,color:#3C4043
     classDef processNode fill:#E8F0FE,stroke:#4285F4,stroke-width:2px,color:#3C4043
@@ -97,40 +84,24 @@ The following diagram illustrates the typical workflow a user follows when inter
 </div>
 <div style="background-color: #F8F9FA; padding: 16px; border-left: 1px solid #E0E0E0; border-right: 1px solid #E0E0E0; border-bottom: 1px solid #E0E0E0; border-radius: 0 0 4px 4px;">
 ```mermaid
-%%{
-  init: {
-    "theme": "base",
-    "themeVariables": {
-      "fontFamily": "\"Roboto\", sans-serif",
-      "primaryColor": "#FFFFFF",
-      "primaryTextColor": "#3C4043",
-      "primaryBorderColor": "#4285F4",
-      "lineColor": "#70757A",
-      "textColor": "#3C4043",
-      "mainBkg": "#F8F9FA",
-      "clusterBkg": "#FFFFFF",
-      "clusterBorder": "#E0E0E0"
-    }
-  }
-}%%
 graph TD
-    subgraph sg1 [1. Start]
+    subgraph sg1 [1 Start]
         A[User Opens App]:::startNode
     end
 
-    subgraph sg2 [2. Input Phase]
+    subgraph sg2 [2 Input Phase]
         B{Provide Data Context}:::inputNode
         B1[Manually enter data]:::inputNode
         B2[Upload SQL and CSV files]:::inputNode
     end
     
-    subgraph sg3 [3. Analysis Phase]
+    subgraph sg3 [3 Analysis Phase]
         C[Click Analyze Data]:::analysisNode
         D[Bot calls Gemini API]:::analysisNode
         E[Receive structured issues]:::analysisNode
     end
 
-    subgraph sg4 [4. Insight and Action Phase]
+    subgraph sg4 [4 Insight and Action Phase]
         F[View Interactive Dashboard]:::insightNode
         F1[Filter issues]:::insightNode
         F2[Review Table Health]:::insightNode
@@ -141,7 +112,7 @@ graph TD
         I2[PowerPoint Slides]:::insightNode
     end
     
-    subgraph sg5 [5. Goal]
+    subgraph sg5 [5 Goal]
        J[Actionable Insights Gained]:::goalNode
     end
 
@@ -160,7 +131,6 @@ graph TD
     I2 --> J
     G --> J
 
-    %% Class Definitions
     classDef startNode fill:#E8F0FE,stroke:#4285F4,stroke-width:2px
     classDef inputNode fill:#FEF7E0,stroke:#FBBC05,stroke-width:2px
     classDef analysisNode fill:#FCE8E6,stroke:#EA4335,stroke-width:2px
