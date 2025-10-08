@@ -25,26 +25,85 @@ This application utilizes a simple, robust client-side architecture. The React f
 
 ```mermaid
 graph TD
-    subgraph "User's Device"
-        A["👨‍💻<br/>User"] --> B["🌐<br/>Browser"];
+    subgraph "User's Browser"
+        A["👨‍💻<br/>User"] --> B{Data Quality Bot<br/>(React App)};
     end
 
-    subgraph "Client-Side Application"
-        B --> C["React App<br/>(UI, State, Logic)"];
-        C --> D["Google GenAI SDK"];
+    subgraph "1. Data Input Methods"
+        B --> C1["📝<br/>Manual Input<br/>(Schema, Stats, Samples)"];
+        B --> C2["📄<br/>File Upload<br/>(SQL & CSV)"];
+    end
+
+    subgraph "2. AI Analysis Core"
+        C1 & C2 --> D["⚙️<br/>Prompt Engineering<br/>(Contextual prompts per table)"];
+        D --> E["🤖<br/>Google GenAI SDK"];
+        E -- "Secure API Call (HTTPS)" --> F["✨<br/>Gemini 2.5 Flash API"];
+        F -- "Structured JSON<br/>(Data Quality Issues)" --> E;
     end
     
-    subgraph "Google Cloud"
-        D -- "Secure API Call<br/>(HTTPS + API Key)" --> E["🚀<br/>Gemini API<br/>('gemini-2.5-flash')"];
-        E -- "Structured JSON Response<br/>(Analysis Results)" --> D;
+    subgraph "3. Interactive Results & Insights"
+        E --> G["📊<br/>Results Dashboard<br/>(Health, Hotspots, Filtering)"];
+        G --> H["💬<br/>Conversational Assistant<br/>(Ask follow-up questions)"];
+        G --> I["📜<br/>AI Summary Generation"];
+        G --> J["📤<br/>Export Engine<br/>(PDF & PowerPoint)"];
     end
 
-    style A fill:#e3f2fd,stroke:#333,stroke-width:2px
-    style B fill:#fffde7,stroke:#333,stroke-width:2px
-    style C fill:#e0f7fa,stroke:#00796b,stroke-width:2px
-    style D fill:#e0f7fa,stroke:#00796b,stroke-width:2px
-    style E fill:#f3e5f5,stroke:#8e24aa,stroke-width:2px
+    subgraph "4. User Actions"
+        G & H & I & J --> A;
+    end
+
+    style A fill:#e3f2fd,stroke:#333
+    style B fill:#e0f7fa,stroke:#00796b
+    style C1 fill:#fffde7,stroke:#333
+    style C2 fill:#fffde7,stroke:#333
+    style D fill:#fce4ec,stroke:#ad1457
+    style E fill:#fce4ec,stroke:#ad1457
+    style F fill:#ede7f6,stroke:#5e35b1
+    style G fill:#e8f5e9,stroke:#2e7d32
+    style H fill:#e8f5e9,stroke:#2e7d32
+    style I fill:#e8f5e9,stroke:#2e7d32
+    style J fill:#e8f5e9,stroke:#2e7d32
 ```
+
+## User Journey
+
+The following diagram illustrates the typical workflow a user follows when interacting with the Data Quality Bot, from providing initial data to exporting final, actionable insights.
+
+```mermaid
+graph LR
+    subgraph "Start"
+        A[👨‍💻 User Opens App] --> B{Provide Data Context};
+    end
+
+    subgraph "Input Phase"
+        B -- "Option 1" --> B1[📝 Manually enters<br/>schema, stats, etc.];
+        B -- "Option 2" --> B2[📤 Uploads SQL file<br/>for schema & rules];
+        B2 --> B3[📤 Uploads CSV file<br/>for column statistics];
+    end
+
+    subgraph "Analysis Phase"
+        B1 & B3 --> C[Clicks 'Analyze Data Quality'];
+        C --> D["🤖 Bot sends context to<br/>Gemini API for analysis"];
+        D --> E["✨ Gemini returns a<br/>structured list of issues"];
+    end
+
+    subgraph "Insight & Action Phase"
+        E --> F[📊 Views Interactive Dashboard];
+        F --> F1[🔍 Filters issues by<br/>severity or table];
+        F --> F2[🩺 Reviews Table Health<br/>and Issue Hotspots];
+        F --> G[💬 Opens Chat Assistant];
+        G --> G1[🗣️ Asks follow-up questions<br/>about the results];
+        F --> H[📜 Generates AI Summary];
+        H --> I[📤 Exports Report];
+        I -- "Detailed" --> I1[📄 PDF Format];
+        I -- "Presentation" --> I2[💻 PowerPoint Format];
+    end
+
+    subgraph "End"
+       I1 & I2 --> J[✅ User has actionable insights];
+    end
+```
+
 
 # Run and deploy your AI Studio app
 
