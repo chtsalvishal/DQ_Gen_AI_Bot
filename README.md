@@ -24,37 +24,37 @@ The Data Quality Bot is a powerful web application designed for data engineers, 
 ```mermaid
 graph LR
     %% Main containers for visual grouping
-    subgraph User Environment
+    subgraph user_env [User Environment]
         direction TB
         A["💻<br><b>Standard Devices</b><br>User via Browser (HTTPS)"]
     end
 
-    subgraph " "
+    subgraph gateway_sub [" "]
       direction LR
       B((Gateway))
     end
     
     A --> B
 
-    subgraph "Data Quality Bot (Client-Side Logic)"
+    subgraph bot_logic [Data Quality Bot (Client-Side Logic)]
         direction LR
 
-        subgraph Ingest
+        subgraph ingest_sub [Ingest]
             direction TB
             C["📝<br><b>Data Input & Parsing</b><br>Manual Entry, SQL/CSV Uploads"]
         end
 
-        subgraph Pipelines
+        subgraph pipelines_sub [Pipelines]
             direction TB
             D["⚙️<br><b>Prompt Engineering</b><br>Constructs contextual prompts"]
         end
 
-        subgraph Analytics
+        subgraph analytics_sub [Analytics]
             direction TB
             E["✨<br><b>Google Gemini API</b><br>Analyzes data and returns structured JSON"]
         end
 
-        subgraph "Application & Presentation"
+        subgraph app_sub ["Application & Presentation"]
             direction TB
             F["📊<br><b>Results Dashboard</b><br>Visualizes issues"]
             G["💬<br><b>AI Assistant</b><br>For conversational insights"]
@@ -69,20 +69,20 @@ graph LR
     F --> G & H & A
     
     %% Style Definitions to mimic GCP diagram
-    style User Environment fill:#f3e5f5,stroke:#6a1b9a,stroke-width:1px
+    style user_env fill:#f3e5f5,stroke:#6a1b9a,stroke-width:1px
     style A fill:#fff,stroke:#6a1b9a,stroke-width:2px
     style B fill:#f3e5f5,stroke:#6a1b9a,stroke-width:2px,color:#6a1b9a
     
-    style Ingest fill:#e3f2fd,stroke:#1565c0,stroke-width:1px
+    style ingest_sub fill:#e3f2fd,stroke:#1565c0,stroke-width:1px
     style C fill:#fff,stroke:#1565c0,stroke-width:2px
 
-    style Pipelines fill:#e3f2fd,stroke:#1565c0,stroke-width:1px
+    style pipelines_sub fill:#e3f2fd,stroke:#1565c0,stroke-width:1px
     style D fill:#fff,stroke:#1565c0,stroke-width:2px
 
-    style Analytics fill:#e3f2fd,stroke:#1565c0,stroke-width:1px
+    style analytics_sub fill:#e3f2fd,stroke:#1565c0,stroke-width:1px
     style E fill:#fff,stroke:#1565c0,stroke-width:2px
     
-    style "Application & Presentation" fill:#e3f2fd,stroke:#1565c0,stroke-width:1px
+    style app_sub fill:#e3f2fd,stroke:#1565c0,stroke-width:1px
     style F fill:#fff,stroke:#1565c0,stroke-width:2px
     style G fill:#fff,stroke:#1565c0,stroke-width:2px
     style H fill:#fff,stroke:#1565c0,stroke-width:2px
