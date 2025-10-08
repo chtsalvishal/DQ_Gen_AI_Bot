@@ -19,7 +19,7 @@ The Data Quality Bot is a powerful web application designed for data engineers, 
 
 ```mermaid
 graph LR
-    subgraph userenv [User Environment]:::darkBg
+    subgraph userenv [User Environment]
         A[User via Browser HTTPS]:::userNode
     end
 
@@ -27,18 +27,18 @@ graph LR
     
     A -- Provides Data Context --> B
 
-    subgraph botlogic [Data Quality Bot]:::lightBg
+    subgraph botlogic [Data Quality Bot]
         direction LR
-        subgraph ingest [Ingest]:::innerBox
+        subgraph ingest [Ingest]
             C[Data Input and Parsing]:::processNode
         end
-        subgraph pipelines [Pipelines]:::innerBox
+        subgraph pipelines [Pipelines]
             D[Prompt Engineering]:::processNode
         end
-        subgraph analytics [Analytics]:::innerBox
+        subgraph analytics [Analytics]
             E[Google Gemini API]:::apiNode
         end
-        subgraph presentation [Presentation]:::innerBox
+        subgraph presentation [Presentation]
             F[Results Dashboard]:::outputNode
             G[AI Assistant]:::outputNode
             H[Export Engine]:::outputNode
@@ -52,13 +52,16 @@ graph LR
     F --> G
     F --> H
     
-    classDef darkBg fill:#202124,stroke:#5F6368,color:#E8EAED
-    classDef lightBg fill:#FFFFFF,stroke:#DADCE0
-    classDef innerBox fill:#F8F9FA,stroke:#DADCE0
-    
+    style userenv fill:#202124,stroke:#5F6368,color:#E8EAED,fill-opacity:1
+    style botlogic fill:#FFFFFF,stroke:#DADCE0
+    style ingest fill:#F8F9FA,stroke:#DADCE0,fill-opacity:1
+    style pipelines fill:#F8F9FA,stroke:#DADCE0,fill-opacity:1
+    style analytics fill:#F8F9FA,stroke:#DADCE0,fill-opacity:1
+    style presentation fill:#F8F9FA,stroke:#DADCE0,fill-opacity:1
+
     classDef userNode fill:#FEFCE8,stroke:#FBBF24,stroke-width:2px,color:#3C4043
     classDef gatewayNode fill:#F1F3F4,stroke:#70757A,stroke-width:2px,color:#3C4043
-    classDef processNode fill:#E8F0FE,stroke:#4285F4,stroke-width:2px,color:#3C4043
+    classDef processNode fill:#E9F3FD,stroke:#4285F4,stroke-width:2px,color:#3C4043
     classDef apiNode fill:#E6F4EA,stroke:#34A853,stroke-width:2px,color:#3C4043
     classDef outputNode fill:#FCE8E6,stroke:#EA4335,stroke-width:2px,color:#3C4043
 ```
@@ -67,23 +70,23 @@ graph LR
 
 ```mermaid
 graph TD
-    subgraph sg1 [Start]:::lightBg
+    subgraph sg1 [Start]
         A[User Opens App]:::startNode
     end
 
-    subgraph sg2 [Input]:::lightBg
+    subgraph sg2 [Input]
         B{Provide Data Context}:::inputNode
         B1[Manual entry]:::inputNode
         B2[Upload SQL or CSV]:::inputNode
     end
     
-    subgraph sg3 [Analysis]:::lightBg
+    subgraph sg3 [Analysis]
         C[Click Analyze]:::analysisNode
         D[Bot calls Gemini API]:::analysisNode
         E[Receive Issues]:::analysisNode
     end
 
-    subgraph sg4 [Insight and Action]:::lightBg
+    subgraph sg4 [Insight and Action]
         F[View Dashboard]:::insightNode
         F1[Filter issues]:::insightNode
         F2[Review Health]:::insightNode
@@ -94,7 +97,7 @@ graph TD
         I2[PowerPoint]:::insightNode
     end
     
-    subgraph sg5 [Goal]:::lightBg
+    subgraph sg5 [Goal]
        J[Actionable Insights]:::goalNode
     end
 
@@ -108,8 +111,13 @@ graph TD
     I1 --> J
     I2 --> J
     G --> J
+    
+    style sg1 fill:#FFFFFF,stroke:#DADCE0
+    style sg2 fill:#FFFFFF,stroke:#DADCE0
+    style sg3 fill:#FFFFFF,stroke:#DADCE0
+    style sg4 fill:#FFFFFF,stroke:#DADCE0
+    style sg5 fill:#FFFFFF,stroke:#DADCE0
 
-    classDef lightBg fill:#FFFFFF,stroke:#DADCE0
     classDef startNode fill:#E8F0FE,stroke:#4285F4,stroke-width:2px,color:#3C4043
     classDef inputNode fill:#FEFCE8,stroke:#FBBC05,stroke-width:2px,color:#3C4043
     classDef analysisNode fill:#FCE8E6,stroke:#EA4335,stroke-width:2px,color:#3C4043
