@@ -36,7 +36,7 @@ The Data Quality Bot is a powerful web application designed for data engineers, 
 graph LR
     subgraph user_env ["User Environment"]
         direction TB
-        A["💻 User via Browser (HTTPS)"]:::userNode
+        A["User via Browser (HTTPS)"]:::userNode
     end
 
     subgraph gateway_sub [" "]
@@ -48,18 +48,18 @@ graph LR
     subgraph "bot_logic" ["Data Quality Bot (Client-Side Logic)"]
         direction LR
         subgraph ingest_sub [Ingest]
-            C["📝 Data Input & Parsing (Manual, SQL/CSV)"]:::processNode
+            C["Data Input & Parsing (Manual, SQL/CSV)"]:::processNode
         end
         subgraph pipelines_sub [Pipelines]
-            D["⚙️ Prompt Engineering (Constructs prompts)"]:::processNode
+            D["Prompt Engineering (Constructs prompts)"]:::processNode
         end
         subgraph analytics_sub [Analytics]
-            E["✨ Google Gemini API (Analyzes & returns JSON)"]:::apiNode
+            E["Google Gemini API (Analyzes & returns JSON)"]:::apiNode
         end
         subgraph app_sub ["Application & Presentation"]
-            F["📊 Results Dashboard (Visualizes issues)"]:::outputNode
-            G["💬 AI Assistant (Conversational insights)"]:::outputNode
-            H["📤 Export Engine (Generates PDF & PPTX)"]:::outputNode
+            F["Results Dashboard (Visualizes issues)"]:::outputNode
+            G["AI Assistant (Conversational insights)"]:::outputNode
+            H["Export Engine (Generates PDF & PPTX)"]:::outputNode
         end
     end
 
@@ -115,34 +115,34 @@ The following diagram illustrates the typical workflow a user follows when inter
 }%%
 graph TD
     subgraph "1. Start"
-        A[👨‍💻 User Opens App]:::startNode
+        A[User Opens App]:::startNode
     end
 
     subgraph "2. Input Phase"
         B{Provide Data Context}:::inputNode
-        B1[📝 Manually enters data]:::inputNode
-        B2[📤 Uploads SQL & CSV files]:::inputNode
+        B1[Manually enters data]:::inputNode
+        B2[Uploads SQL & CSV files]:::inputNode
     end
     
     subgraph "3. Analysis Phase"
-        C[🚀 Clicks 'Analyze Data']:::analysisNode
-        D["🤖 Bot calls Gemini API"]:::analysisNode
-        E["✨ Receives structured issues"]:::analysisNode
+        C[Clicks 'Analyze Data']:::analysisNode
+        D["Bot calls Gemini API"]:::analysisNode
+        E["Receives structured issues"]:::analysisNode
     end
 
     subgraph "4. Insight & Action Phase"
-        F[📊 Views Interactive Dashboard]:::insightNode
-        F1[🔍 Filters issues]:::insightNode
-        F2[🩺 Reviews Table Health]:::insightNode
-        G[💬 Opens AI Chat Assistant]:::insightNode
-        H[📜 Generates AI Summary]:::insightNode
-        I[📤 Exports Reports]:::insightNode
-        I1[📄 Detailed PDF]:::insightNode
-        I2[💻 PowerPoint Slides]:::insightNode
+        F[Views Interactive Dashboard]:::insightNode
+        F1[Filters issues]:::insightNode
+        F2[Reviews Table Health]:::insightNode
+        G[Opens AI Chat Assistant]:::insightNode
+        H[Generates AI Summary]:::insightNode
+        I[Exports Reports]:::insightNode
+        I1[Detailed PDF]:::insightNode
+        I2[PowerPoint Slides]:::insightNode
     end
     
     subgraph "5. Goal"
-       J[✅ Actionable Insights Gained]:::goalNode
+       J[Actionable Insights Gained]:::goalNode
     end
 
     A --> B
