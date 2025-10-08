@@ -15,17 +15,13 @@ The Data Quality Bot is a powerful web application designed for data engineers, 
 5.  **Conversational Insights**: A built-in chat assistant allows users to ask follow-up questions about the results in natural language, making it easy to understand complex relationships and prioritize fixes.
 6.  **Export & Share**: Findings can be exported into professional, stakeholder-ready formats, including a detailed PDF report or a PowerPoint presentation.
 
-## Architecture Diagram
+### Architecture Diagram
 
-<div style="background-color: #4285F4; color: white; padding: 12px 20px; font-family: 'Roboto', sans-serif; font-size: 16px; border-radius: 4px 4px 0 0;">
-  <b>Architecture: General > Data Quality Analysis > Client-Side AI Processing</b>
-</div>
-<div style="background-color: #F8F9FA; padding: 16px; border-left: 1px solid #E0E0E0; border-right: 1px solid #E0E0E0; border-bottom: 1px solid #E0E0E0; border-radius: 0 0 4px 4px;">
 ```mermaid
 graph LR
     subgraph userenv [User Environment]
         direction TB
-        A[User via Browser HTTPS]:::userNode
+        A[User via Browser]:::userNode
     end
 
     subgraph gatewaysub [Gateway]
@@ -34,7 +30,7 @@ graph LR
     
     A -- Provides Data Context --> B
 
-    subgraph botlogic [Data Quality Bot Client-Side Logic]
+    subgraph botlogic [Data Quality Bot]
         direction LR
         subgraph ingest [Ingest]
             C[Data Input and Parsing]:::processNode
@@ -45,7 +41,7 @@ graph LR
         subgraph analytics [Analytics]
             E[Google Gemini API]:::apiNode
         end
-        subgraph app [Application and Presentation]
+        subgraph presentation [Presentation]
             F[Results Dashboard]:::outputNode
             G[AI Assistant]:::outputNode
             H[Export Engine]:::outputNode
@@ -59,74 +55,55 @@ graph LR
     F --> G
     F --> H
     
-    style userenv fill:#202124,stroke:#5F6368,color:#E8EAED
-    style gatewaysub fill:transparent,stroke:transparent
-    style botlogic fill:#FFFFFF,stroke:#E0E0E0,color:#3C4043
-    style ingest fill:transparent,stroke:transparent
-    style pipelines fill:transparent,stroke:transparent
-    style analytics fill:transparent,stroke:transparent
-    style app fill:transparent,stroke:transparent
-
     classDef userNode fill:#FEF7E0,stroke:#FBBC05,stroke-width:2px,color:#3C4043
     classDef gatewayNode fill:#F1F3F4,stroke:#70757A,stroke-width:2px,color:#3C4043
     classDef processNode fill:#E8F0FE,stroke:#4285F4,stroke-width:2px,color:#3C4043
     classDef apiNode fill:#E6F4EA,stroke:#34A853,stroke-width:2px,color:#3C4043
     classDef outputNode fill:#FCE8E6,stroke:#EA4335,stroke-width:2px,color:#3C4043
 ```
-</div>
 
-## User Journey
+### User Journey
 
-The following diagram illustrates the typical workflow a user follows when interacting with the Data Quality Bot, from providing initial data to exporting final, actionable insights.
-
-<div style="background-color: #34A853; color: white; padding: 12px 20px; font-family: 'Roboto', sans-serif; font-size: 16px; border-radius: 4px 4px 0 0;">
-  <b>User Journey: From Data Input to Actionable Insights</b>
-</div>
-<div style="background-color: #F8F9FA; padding: 16px; border-left: 1px solid #E0E0E0; border-right: 1px solid #E0E0E0; border-bottom: 1px solid #E0E0E0; border-radius: 0 0 4px 4px;">
 ```mermaid
 graph TD
-    subgraph sg1 [1 Start]
+    subgraph sg1 [Start]
         A[User Opens App]:::startNode
     end
 
-    subgraph sg2 [2 Input Phase]
+    subgraph sg2 [Input]
         B{Provide Data Context}:::inputNode
-        B1[Manually enter data]:::inputNode
-        B2[Upload SQL and CSV files]:::inputNode
+        B1[Manual entry]:::inputNode
+        B2[Upload SQL or CSV]:::inputNode
     end
     
-    subgraph sg3 [3 Analysis Phase]
-        C[Click Analyze Data]:::analysisNode
+    subgraph sg3 [Analysis]
+        C[Click Analyze]:::analysisNode
         D[Bot calls Gemini API]:::analysisNode
-        E[Receive structured issues]:::analysisNode
+        E[Receive Issues]:::analysisNode
     end
 
-    subgraph sg4 [4 Insight and Action Phase]
-        F[View Interactive Dashboard]:::insightNode
+    subgraph sg4 [Insight and Action]
+        F[View Dashboard]:::insightNode
         F1[Filter issues]:::insightNode
-        F2[Review Table Health]:::insightNode
-        G[Open AI Chat Assistant]:::insightNode
-        H[Generate AI Summary]:::insightNode
+        F2[Review Health]:::insightNode
+        G[Open AI Chat]:::insightNode
+        H[Generate Summary]:::insightNode
         I[Export Reports]:::insightNode
-        I1[Detailed PDF]:::insightNode
-        I2[PowerPoint Slides]:::insightNode
+        I1[PDF]:::insightNode
+        I2[PowerPoint]:::insightNode
     end
     
-    subgraph sg5 [5 Goal]
-       J[Actionable Insights Gained]:::goalNode
+    subgraph sg5 [Goal]
+       J[Actionable Insights]:::goalNode
     end
 
     A --> B
-    B --> B1
-    B --> B2
+    B --> B1 & B2
     B1 --> C
     B2 --> C
-    C --> D
-    D --> E
-    E --> F
+    C --> D --> E --> F
     F --> F1 & F2 & G & H
-    H --> I
-    I --> I1 & I2
+    H --> I --> I1 & I2
     I1 --> J
     I2 --> J
     G --> J
@@ -137,7 +114,6 @@ graph TD
     classDef insightNode fill:#E6F4EA,stroke:#34A853,stroke-width:2px
     classDef goalNode fill:#E8EAF6,stroke:#3F51B5,stroke-width:2px
 ```
-</div>
 
 # Run and deploy your AI Studio app
 
