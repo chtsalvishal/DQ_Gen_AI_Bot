@@ -36,7 +36,7 @@ The Data Quality Bot is a powerful web application designed for data engineers, 
 graph LR
     subgraph user_env ["User Environment"]
         direction TB
-        A["💻<br><b>User via Browser</b><br>(HTTPS)"]:::userNode
+        A["💻 User via Browser (HTTPS)"]:::userNode
     end
 
     subgraph gateway_sub [" "]
@@ -48,18 +48,18 @@ graph LR
     subgraph "bot_logic" ["Data Quality Bot (Client-Side Logic)"]
         direction LR
         subgraph ingest_sub [Ingest]
-            C["📝<br><b>Data Input & Parsing</b><br>Manual, SQL/CSV Uploads"]:::processNode
+            C["📝 Data Input & Parsing (Manual, SQL/CSV)"]:::processNode
         end
         subgraph pipelines_sub [Pipelines]
-            D["⚙️<br><b>Prompt Engineering</b><br>Constructs contextual prompts"]:::processNode
+            D["⚙️ Prompt Engineering (Constructs prompts)"]:::processNode
         end
         subgraph analytics_sub [Analytics]
-            E["✨<br><b>Google Gemini API</b><br>Analyzes data and returns JSON"]:::apiNode
+            E["✨ Google Gemini API (Analyzes & returns JSON)"]:::apiNode
         end
         subgraph app_sub ["Application & Presentation"]
-            F["📊<br><b>Results Dashboard</b><br>Visualizes issues"]:::outputNode
-            G["💬<br><b>AI Assistant</b><br>Conversational insights"]:::outputNode
-            H["📤<br><b>Export Engine</b><br>Generates PDF & PPTX"]:::outputNode
+            F["📊 Results Dashboard (Visualizes issues)"]:::outputNode
+            G["💬 AI Assistant (Conversational insights)"]:::outputNode
+            H["📤 Export Engine (Generates PDF & PPTX)"]:::outputNode
         end
     end
 
