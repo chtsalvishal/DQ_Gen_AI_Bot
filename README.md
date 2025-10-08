@@ -25,7 +25,7 @@ graph LR
 
     B((Gateway)):::gatewayNode
     
-    A -- Provides Data Context ----> B
+    A -- Provides Data Context --> B
 
     subgraph botlogic [Data Quality Bot]
         direction LR
@@ -47,12 +47,12 @@ graph LR
 
     B --> C
     C --> D
-    D -- Secure API Call ----> E
-    E -- JSON Response ----> F
+    D -- Secure API Call --> E
+    E -- JSON Response --> F
     F --> G
     F --> H
     
-    style userenv fill:#F1F3F4,stroke:#5F6368,color:#3C4043
+    style userenv fill:#F8F9FA,stroke:#5F6368,color:#3C4043
     style botlogic fill:#FFFFFF,stroke:#DADCE0
     style ingest fill:#F8F9FA,stroke:#DADCE0
     style pipelines fill:#F8F9FA,stroke:#DADCE0
@@ -75,8 +75,6 @@ graph TD
     end
 
     subgraph sg2 [Input]
-        direction TB
-        sg2_spacer[" "]:::spacer
         B{Provide Data Context}:::inputNode
         B1[Manual entry]:::inputNode
         B2[Upload SQL or CSV]:::inputNode
@@ -103,7 +101,6 @@ graph TD
        J[Actionable Insights]:::goalNode
     end
 
-    sg2_spacer --> B
     A --> B
     B --> B1 & B2
     B1 --> C
@@ -115,20 +112,17 @@ graph TD
     I2 --> J
     G --> J
     
-    linkStyle 0 stroke:transparent,stroke-width:0px
-    
-    style sg1 fill:#F8F9FA,stroke:#DADCE0
-    style sg2 fill:#F8F9FA,stroke:#DADCE0
-    style sg3 fill:#F8F9FA,stroke:#DADCE0
-    style sg4 fill:#F8F9FA,stroke:#DADCE0
-    style sg5 fill:#F8F9FA,stroke:#DADCE0
+    style sg1 fill:#FFFFFF,stroke:#DADCE0
+    style sg2 fill:#FFFFFF,stroke:#DADCE0
+    style sg3 fill:#FFFFFF,stroke:#DADCE0
+    style sg4 fill:#FFFFFF,stroke:#DADCE0
+    style sg5 fill:#FFFFFF,stroke:#DADCE0
 
-    classDef spacer height:1px,fill:transparent,stroke:transparent,color:transparent
-    classDef startNode fill:#FFFFFF,stroke:#4285F4,stroke-width:2px,color:#3C4043
-    classDef inputNode fill:#FFFFFF,stroke:#FBBC05,stroke-width:2px,color:#3C4043
-    classDef analysisNode fill:#FFFFFF,stroke:#EA4335,stroke-width:2px,color:#3C4043
-    classDef insightNode fill:#FFFFFF,stroke:#34A853,stroke-width:2px,color:#3C4043
-    classDef goalNode fill:#FFFFFF,stroke:#3F51B5,stroke-width:2px,color:#3C4043
+    classDef startNode fill:#E8F0FE,stroke:#4285F4,stroke-width:2px,color:#3C4043
+    classDef inputNode fill:#FEFCE8,stroke:#FBBC05,stroke-width:2px,color:#3C4043
+    classDef analysisNode fill:#FCE8E6,stroke:#EA4335,stroke-width:2px,color:#3C4043
+    classDef insightNode fill:#E6F4EA,stroke:#34A853,stroke-width:2px,color:#3C4043
+    classDef goalNode fill:#E8EAF6,stroke:#3F51B5,stroke-width:2px,color:#3C4043
 ```
 
 # Run and deploy your AI Studio app
