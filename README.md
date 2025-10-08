@@ -36,7 +36,7 @@ graph LR
     
     A --> B
 
-    subgraph bot_logic [Data Quality Bot (Client-Side Logic)]
+    subgraph bot_logic ["Data Quality Bot (Client-Side Logic)"]
         direction LR
 
         subgraph ingest_sub [Ingest]
