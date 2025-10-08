@@ -20,7 +20,6 @@ The Data Quality Bot is a powerful web application designed for data engineers, 
 ```mermaid
 graph LR
     subgraph userenv [User Environment]:::darkBg
-        direction TB
         A[User via Browser HTTPS]:::userNode
     end
 
