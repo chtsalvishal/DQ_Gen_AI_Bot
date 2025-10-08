@@ -52,12 +52,12 @@ graph LR
     F --> G
     F --> H
     
-    style userenv fill:#202124,stroke:#5F6368,color:#E8EAED,fill-opacity:1
+    style userenv fill:#F8F9FA,stroke:#5F6368,color:#3C4043
     style botlogic fill:#FFFFFF,stroke:#DADCE0
-    style ingest fill:#F8F9FA,stroke:#DADCE0,fill-opacity:1
-    style pipelines fill:#F8F9FA,stroke:#DADCE0,fill-opacity:1
-    style analytics fill:#F8F9FA,stroke:#DADCE0,fill-opacity:1
-    style presentation fill:#F8F9FA,stroke:#DADCE0,fill-opacity:1
+    style ingest fill:#F8F9FA,stroke:#DADCE0
+    style pipelines fill:#F8F9FA,stroke:#DADCE0
+    style analytics fill:#F8F9FA,stroke:#DADCE0
+    style presentation fill:#F8F9FA,stroke:#DADCE0
 
     classDef userNode fill:#FEFCE8,stroke:#FBBF24,stroke-width:2px,color:#3C4043
     classDef gatewayNode fill:#F1F3F4,stroke:#70757A,stroke-width:2px,color:#3C4043
