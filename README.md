@@ -20,33 +20,26 @@ The Data Quality Bot is a powerful web application designed for data engineers, 
 <div style="background-color: #4285F4; color: white; padding: 12px 20px; font-family: 'Roboto', sans-serif; font-size: 16px; border-radius: 4px 4px 0 0;">
   <b>Architecture: General > Data Quality Analysis > Client-Side AI Processing</b>
 </div>
-
+<div style="background-color: #F8F9FA; padding: 16px; border-left: 1px solid #E0E0E0; border-right: 1px solid #E0E0E0; border-bottom: 1px solid #E0E0E0; border-radius: 0 0 4px 4px;">
 ```mermaid
 %%{
   init: {
     "theme": "base",
     "themeVariables": {
       "fontFamily": "\"Roboto\", sans-serif",
-      "primaryColor": "#FFFFFF",
-      "primaryTextColor": "#3C4043",
-      "primaryBorderColor": "#4285F4",
       "lineColor": "#70757A",
       "textColor": "#3C4043",
-      "mainBkg": "#F8F9FA",
-      "clusterBkg": "#F8F9FA",
-      "clusterBorder": "#E0E0E0"
+      "mainBkg": "#F8F9FA"
     }
   }
 }%%
 graph LR
-    %% Main containers for visual grouping
     subgraph user_env ["User Environment"]
         direction TB
         A["💻<br><b>User via Browser</b><br>(HTTPS)"]:::userNode
     end
 
     subgraph gateway_sub [" "]
-      direction LR
       B((Gateway)):::gatewayNode
     end
     
@@ -54,24 +47,16 @@ graph LR
 
     subgraph "bot_logic" ["Data Quality Bot (Client-Side Logic)"]
         direction LR
-
         subgraph ingest_sub [Ingest]
-            direction TB
             C["📝<br><b>Data Input & Parsing</b><br>Manual, SQL/CSV Uploads"]:::processNode
         end
-
         subgraph pipelines_sub [Pipelines]
-            direction TB
             D["⚙️<br><b>Prompt Engineering</b><br>Constructs contextual prompts"]:::processNode
         end
-
         subgraph analytics_sub [Analytics]
-            direction TB
             E["✨<br><b>Google Gemini API</b><br>Analyzes data and returns JSON"]:::apiNode
         end
-
         subgraph app_sub ["Application & Presentation"]
-            direction TB
             F["📊<br><b>Results Dashboard</b><br>Visualizes issues"]:::outputNode
             G["💬<br><b>AI Assistant</b><br>Conversational insights"]:::outputNode
             H["📤<br><b>Export Engine</b><br>Generates PDF & PPTX"]:::outputNode
@@ -85,18 +70,32 @@ graph LR
     F --> G
     F --> H
     
-    %% Style Definitions for a professional, GCP-like feel
+    %% Style Subgraphs to create the split background effect
+    style user_env fill:#202124,stroke:#5F6368,color:#E8EAED
+    style gateway_sub fill:transparent,stroke:transparent
+    style bot_logic fill:#FFFFFF,stroke:#E0E0E0,color:#3C4043
+    style ingest_sub fill:#FFFFFF,stroke:transparent
+    style pipelines_sub fill:#FFFFFF,stroke:transparent
+    style analytics_sub fill:#FFFFFF,stroke:transparent
+    style app_sub fill:#FFFFFF,stroke:transparent
+
+    %% Style Nodes for a professional, GCP-like feel
     classDef userNode fill:#FEF7E0,stroke:#FBBC05,stroke-width:2px,color:#3C4043
     classDef gatewayNode fill:#F1F3F4,stroke:#70757A,stroke-width:2px,color:#3C4043
     classDef processNode fill:#E8F0FE,stroke:#4285F4,stroke-width:2px,color:#3C4043
     classDef apiNode fill:#E6F4EA,stroke:#34A853,stroke-width:2px,color:#3C4043
     classDef outputNode fill:#FCE8E6,stroke:#EA4335,stroke-width:2px,color:#3C4043
 ```
+</div>
 
 ## User Journey
 
 The following diagram illustrates the typical workflow a user follows when interacting with the Data Quality Bot, from providing initial data to exporting final, actionable insights.
 
+<div style="background-color: #34A853; color: white; padding: 12px 20px; font-family: 'Roboto', sans-serif; font-size: 16px; border-radius: 4px 4px 0 0;">
+  <b>User Journey: From Data Input to Actionable Insights</b>
+</div>
+<div style="background-color: #F8F9FA; padding: 16px; border-left: 1px solid #E0E0E0; border-right: 1px solid #E0E0E0; border-bottom: 1px solid #E0E0E0; border-radius: 0 0 4px 4px;">
 ```mermaid
 %%{
   init: {
@@ -109,7 +108,7 @@ The following diagram illustrates the typical workflow a user follows when inter
       "lineColor": "#70757A",
       "textColor": "#3C4043",
       "mainBkg": "#F8F9FA",
-      "clusterBkg": "#F8F9FA",
+      "clusterBkg": "#FFFFFF",
       "clusterBorder": "#E0E0E0"
     }
   }
@@ -168,7 +167,7 @@ graph TD
     classDef insightNode fill:#E6F4EA,stroke:#34A853,stroke-width:2px
     classDef goalNode fill:#E8EAF6,stroke:#3F51B5,stroke-width:2px
 ```
-
+</div>
 
 # Run and deploy your AI Studio app
 
