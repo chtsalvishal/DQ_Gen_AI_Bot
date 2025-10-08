@@ -34,32 +34,32 @@ The Data Quality Bot is a powerful web application designed for data engineers, 
   }
 }%%
 graph LR
-    subgraph user_env ["User Environment"]
+    subgraph user_env [User Environment]
         direction TB
-        A["User via Browser (HTTPS)"]:::userNode
+        A[User via Browser - HTTPS]:::userNode
     end
 
-    subgraph gateway_sub [" "]
+    subgraph gateway_sub [ ]
       B((Gateway)):::gatewayNode
     end
     
     A -- "Provides Data Context" --> B
 
-    subgraph "bot_logic" ["Data Quality Bot (Client-Side Logic)"]
+    subgraph bot_logic [Data Quality Bot - Client-Side Logic]
         direction LR
         subgraph ingest_sub [Ingest]
-            C["Data Input & Parsing (Manual, SQL/CSV)"]:::processNode
+            C[Data Input & Parsing]:::processNode
         end
         subgraph pipelines_sub [Pipelines]
-            D["Prompt Engineering (Constructs prompts)"]:::processNode
+            D[Prompt Engineering]:::processNode
         end
         subgraph analytics_sub [Analytics]
-            E["Google Gemini API (Analyzes & returns JSON)"]:::apiNode
+            E[Google Gemini API]:::apiNode
         end
-        subgraph app_sub ["Application & Presentation"]
-            F["Results Dashboard (Visualizes issues)"]:::outputNode
-            G["AI Assistant (Conversational insights)"]:::outputNode
-            H["Export Engine (Generates PDF & PPTX)"]:::outputNode
+        subgraph app_sub [Application & Presentation]
+            F[Results Dashboard]:::outputNode
+            G[AI Assistant]:::outputNode
+            H[Export Engine]:::outputNode
         end
     end
 
@@ -74,10 +74,10 @@ graph LR
     style user_env fill:#202124,stroke:#5F6368,color:#E8EAED
     style gateway_sub fill:transparent,stroke:transparent
     style bot_logic fill:#FFFFFF,stroke:#E0E0E0,color:#3C4043
-    style ingest_sub fill:#FFFFFF,stroke:transparent
-    style pipelines_sub fill:#FFFFFF,stroke:transparent
-    style analytics_sub fill:#FFFFFF,stroke:transparent
-    style app_sub fill:#FFFFFF,stroke:transparent
+    style ingest_sub fill:transparent,stroke:transparent
+    style pipelines_sub fill:transparent,stroke:transparent
+    style analytics_sub fill:transparent,stroke:transparent
+    style app_sub fill:transparent,stroke:transparent
 
     %% Style Nodes for a professional, GCP-like feel
     classDef userNode fill:#FEF7E0,stroke:#FBBC05,stroke-width:2px,color:#3C4043
@@ -114,34 +114,34 @@ The following diagram illustrates the typical workflow a user follows when inter
   }
 }%%
 graph TD
-    subgraph "1. Start"
+    subgraph sg1 [1. Start]
         A[User Opens App]:::startNode
     end
 
-    subgraph "2. Input Phase"
+    subgraph sg2 [2. Input Phase]
         B{Provide Data Context}:::inputNode
-        B1[Manually enters data]:::inputNode
-        B2[Uploads SQL & CSV files]:::inputNode
+        B1[Manually enter data]:::inputNode
+        B2[Upload SQL and CSV files]:::inputNode
     end
     
-    subgraph "3. Analysis Phase"
-        C[Clicks 'Analyze Data']:::analysisNode
-        D["Bot calls Gemini API"]:::analysisNode
-        E["Receives structured issues"]:::analysisNode
+    subgraph sg3 [3. Analysis Phase]
+        C[Click Analyze Data]:::analysisNode
+        D[Bot calls Gemini API]:::analysisNode
+        E[Receive structured issues]:::analysisNode
     end
 
-    subgraph "4. Insight & Action Phase"
-        F[Views Interactive Dashboard]:::insightNode
-        F1[Filters issues]:::insightNode
-        F2[Reviews Table Health]:::insightNode
-        G[Opens AI Chat Assistant]:::insightNode
-        H[Generates AI Summary]:::insightNode
-        I[Exports Reports]:::insightNode
+    subgraph sg4 [4. Insight and Action Phase]
+        F[View Interactive Dashboard]:::insightNode
+        F1[Filter issues]:::insightNode
+        F2[Review Table Health]:::insightNode
+        G[Open AI Chat Assistant]:::insightNode
+        H[Generate AI Summary]:::insightNode
+        I[Export Reports]:::insightNode
         I1[Detailed PDF]:::insightNode
         I2[PowerPoint Slides]:::insightNode
     end
     
-    subgraph "5. Goal"
+    subgraph sg5 [5. Goal]
        J[Actionable Insights Gained]:::goalNode
     end
 
