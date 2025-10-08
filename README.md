@@ -23,9 +23,28 @@ The Data Quality Bot is a powerful web application designed for data engineers, 
 
 This application utilizes a simple, robust client-side architecture. The React frontend communicates directly and securely with the Google Gemini API to perform data quality analysis. There is no backend server, which simplifies deployment and reduces maintenance overhead.
 
-<div align="center">
-<img width="800" alt="A detailed architecture diagram showing a user interacting with the client-side React application in their browser. The application uses the Google GenAI SDK to make secure HTTPS API calls directly to the Google Gemini API and receives structured JSON data in response." src="https://github.com/user-attachments/assets/40a08e1e-f3f1-432d-905b-8664b971c2ba">
-</div>
+```mermaid
+graph TD
+    subgraph "User's Device"
+        A["👨‍💻<br/>User"] --> B["🌐<br/>Browser"];
+    end
+
+    subgraph "Client-Side Application"
+        B --> C["React App<br/>(UI, State, Logic)"];
+        C --> D["Google GenAI SDK"];
+    end
+    
+    subgraph "Google Cloud"
+        D -- "Secure API Call<br/>(HTTPS + API Key)" --> E["🚀<br/>Gemini API<br/>('gemini-2.5-flash')"];
+        E -- "Structured JSON Response<br/>(Analysis Results)" --> D;
+    end
+
+    style A fill:#e3f2fd,stroke:#333,stroke-width:2px
+    style B fill:#fffde7,stroke:#333,stroke-width:2px
+    style C fill:#e0f7fa,stroke:#00796b,stroke-width:2px
+    style D fill:#e0f7fa,stroke:#00796b,stroke-width:2px
+    style E fill:#f3e5f5,stroke:#8e24aa,stroke-width:2px
+```
 
 # Run and deploy your AI Studio app
 
