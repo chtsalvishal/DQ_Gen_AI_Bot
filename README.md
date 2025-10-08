@@ -32,6 +32,7 @@ The Data Quality Bot is a powerful web application designed for data engineers, 
       "primaryBorderColor": "#4285F4",
       "lineColor": "#70757A",
       "textColor": "#3C4043",
+      "mainBkg": "#F8F9FA",
       "clusterBkg": "#F8F9FA",
       "clusterBorder": "#E0E0E0"
     }
@@ -107,6 +108,7 @@ The following diagram illustrates the typical workflow a user follows when inter
       "primaryBorderColor": "#4285F4",
       "lineColor": "#70757A",
       "textColor": "#3C4043",
+      "mainBkg": "#F8F9FA",
       "clusterBkg": "#F8F9FA",
       "clusterBorder": "#E0E0E0"
     }
