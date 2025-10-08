@@ -19,29 +19,27 @@ The Data Quality Bot is a powerful web application designed for data engineers, 
 
 ```mermaid
 graph LR
-    subgraph userenv [User Environment]
+    subgraph userenv [User Environment]:::darkBg
         direction TB
         A[User via Browser HTTPS]:::userNode
     end
 
-    subgraph gatewaysub [Gateway]
-      B((Gateway)):::gatewayNode
-    end
+    B((Gateway)):::gatewayNode
     
     A -- Provides Data Context --> B
 
-    subgraph botlogic [Data Quality Bot]
+    subgraph botlogic [Data Quality Bot]:::lightBg
         direction LR
-        subgraph ingest [Ingest]
+        subgraph ingest [Ingest]:::innerBox
             C[Data Input and Parsing]:::processNode
         end
-        subgraph pipelines [Pipelines]
+        subgraph pipelines [Pipelines]:::innerBox
             D[Prompt Engineering]:::processNode
         end
-        subgraph analytics [Analytics]
+        subgraph analytics [Analytics]:::innerBox
             E[Google Gemini API]:::apiNode
         end
-        subgraph presentation [Presentation]
+        subgraph presentation [Presentation]:::innerBox
             F[Results Dashboard]:::outputNode
             G[AI Assistant]:::outputNode
             H[Export Engine]:::outputNode
@@ -55,42 +53,38 @@ graph LR
     F --> G
     F --> H
     
-    classDef userNode fill:#FFFFFF,stroke:#FBBC05,stroke-width:2px,color:#3C4043
-    classDef gatewayNode fill:#FFFFFF,stroke:#70757A,stroke-width:2px,color:#3C4043
-    classDef processNode fill:#FFFFFF,stroke:#4285F4,stroke-width:2px,color:#3C4043
-    classDef apiNode fill:#FFFFFF,stroke:#34A853,stroke-width:2px,color:#3C4043
-    classDef outputNode fill:#FFFFFF,stroke:#EA4335,stroke-width:2px,color:#3C4043
+    classDef darkBg fill:#202124,stroke:#5F6368,color:#E8EAED
+    classDef lightBg fill:#FFFFFF,stroke:#DADCE0
+    classDef innerBox fill:#F8F9FA,stroke:#DADCE0
     
-    style userenv fill:#F8F9FA,stroke:#DEE2E6
-    style gatewaysub fill:#F8F9FA,stroke:#DEE2E6
-    style botlogic fill:#F8F9FA,stroke:#DEE2E6
-    style ingest fill:#FFFFFF,stroke:#DEE2E6
-    style pipelines fill:#FFFFFF,stroke:#DEE2E6
-    style analytics fill:#FFFFFF,stroke:#DEE2E6
-    style presentation fill:#FFFFFF,stroke:#DEE2E6
+    classDef userNode fill:#FEFCE8,stroke:#FBBF24,stroke-width:2px,color:#3C4043
+    classDef gatewayNode fill:#F1F3F4,stroke:#70757A,stroke-width:2px,color:#3C4043
+    classDef processNode fill:#E8F0FE,stroke:#4285F4,stroke-width:2px,color:#3C4043
+    classDef apiNode fill:#E6F4EA,stroke:#34A853,stroke-width:2px,color:#3C4043
+    classDef outputNode fill:#FCE8E6,stroke:#EA4335,stroke-width:2px,color:#3C4043
 ```
 
 ### User Journey
 
 ```mermaid
 graph TD
-    subgraph sg1 [Start]
+    subgraph sg1 [Start]:::lightBg
         A[User Opens App]:::startNode
     end
 
-    subgraph sg2 [Input]
+    subgraph sg2 [Input]:::lightBg
         B{Provide Data Context}:::inputNode
         B1[Manual entry]:::inputNode
         B2[Upload SQL or CSV]:::inputNode
     end
     
-    subgraph sg3 [Analysis]
+    subgraph sg3 [Analysis]:::lightBg
         C[Click Analyze]:::analysisNode
         D[Bot calls Gemini API]:::analysisNode
         E[Receive Issues]:::analysisNode
     end
 
-    subgraph sg4 [Insight and Action]
+    subgraph sg4 [Insight and Action]:::lightBg
         F[View Dashboard]:::insightNode
         F1[Filter issues]:::insightNode
         F2[Review Health]:::insightNode
@@ -101,7 +95,7 @@ graph TD
         I2[PowerPoint]:::insightNode
     end
     
-    subgraph sg5 [Goal]
+    subgraph sg5 [Goal]:::lightBg
        J[Actionable Insights]:::goalNode
     end
 
@@ -116,17 +110,12 @@ graph TD
     I2 --> J
     G --> J
 
-    classDef startNode fill:#FFFFFF,stroke:#4285F4,stroke-width:2px
-    classDef inputNode fill:#FFFFFF,stroke:#FBBC05,stroke-width:2px
-    classDef analysisNode fill:#FFFFFF,stroke:#EA4335,stroke-width:2px
-    classDef insightNode fill:#FFFFFF,stroke:#34A853,stroke-width:2px
-    classDef goalNode fill:#FFFFFF,stroke:#3F51B5,stroke-width:2px
-
-    style sg1 fill:#F8F9FA,stroke:#DEE2E6
-    style sg2 fill:#F8F9FA,stroke:#DEE2E6
-    style sg3 fill:#F8F9FA,stroke:#DEE2E6
-    style sg4 fill:#F8F9FA,stroke:#DEE2E6
-    style sg5 fill:#F8F9FA,stroke:#DEE2E6
+    classDef lightBg fill:#FFFFFF,stroke:#DADCE0
+    classDef startNode fill:#E8F0FE,stroke:#4285F4,stroke-width:2px,color:#3C4043
+    classDef inputNode fill:#FEFCE8,stroke:#FBBC05,stroke-width:2px,color:#3C4043
+    classDef analysisNode fill:#FCE8E6,stroke:#EA4335,stroke-width:2px,color:#3C4043
+    classDef insightNode fill:#E6F4EA,stroke:#34A853,stroke-width:2px,color:#3C4043
+    classDef goalNode fill:#E8EAF6,stroke:#3F51B5,stroke-width:2px,color:#3C4043
 ```
 
 # Run and deploy your AI Studio app
