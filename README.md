@@ -1,7 +1,3 @@
-<div align="center">
-<img width="1200" height="475" alt="Data Quality Bot Banner showing the application interface with charts and detected issues." src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
-
 # Data Quality Bot
 
 An intelligent bot that analyzes data metadata and profile reports to detect potential data quality issues like anomalies, schema drift, and type mismatches, providing actionable recommendations.
@@ -21,48 +17,75 @@ The Data Quality Bot is a powerful web application designed for data engineers, 
 
 ## Architecture Diagram
 
-This application utilizes a simple, robust client-side architecture. The React frontend communicates directly and securely with the Google Gemini API to perform data quality analysis. There is no backend server, which simplifies deployment and reduces maintenance overhead.
+<div style="background-color: #4A89F3; color: white; padding: 12px 20px; font-family: sans-serif; font-size: 16px; border-radius: 4px;">
+  <b>Architecture: General > Data Quality Analysis > Client-Side AI Processing</b>
+</div>
 
 ```mermaid
-graph TD
-    subgraph "User's Browser"
-        A["👨‍💻<br/>User"] --> B{Data Quality Bot<br/>(React App)};
+graph LR
+    %% Main containers for visual grouping
+    subgraph User Environment
+        direction TB
+        A["💻<br><b>Standard Devices</b><br>User via Browser (HTTPS)"]
     end
 
-    subgraph "1. Data Input Methods"
-        B --> C1["📝<br/>Manual Input<br/>(Schema, Stats, Samples)"];
-        B --> C2["📄<br/>File Upload<br/>(SQL & CSV)"];
-    end
-
-    subgraph "2. AI Analysis Core"
-        C1 & C2 --> D["⚙️<br/>Prompt Engineering<br/>(Contextual prompts per table)"];
-        D --> E["🤖<br/>Google GenAI SDK"];
-        E -- "Secure API Call (HTTPS)" --> F["✨<br/>Gemini 2.5 Flash API"];
-        F -- "Structured JSON<br/>(Data Quality Issues)" --> E;
+    subgraph " "
+      direction LR
+      B((Gateway))
     end
     
-    subgraph "3. Interactive Results & Insights"
-        E --> G["📊<br/>Results Dashboard<br/>(Health, Hotspots, Filtering)"];
-        G --> H["💬<br/>Conversational Assistant<br/>(Ask follow-up questions)"];
-        G --> I["📜<br/>AI Summary Generation"];
-        G --> J["📤<br/>Export Engine<br/>(PDF & PowerPoint)"];
+    A --> B
+
+    subgraph "Data Quality Bot (Client-Side Logic)"
+        direction LR
+
+        subgraph Ingest
+            direction TB
+            C["📝<br><b>Data Input & Parsing</b><br>Manual Entry, SQL/CSV Uploads"]
+        end
+
+        subgraph Pipelines
+            direction TB
+            D["⚙️<br><b>Prompt Engineering</b><br>Constructs contextual prompts"]
+        end
+
+        subgraph Analytics
+            direction TB
+            E["✨<br><b>Google Gemini API</b><br>Analyzes data and returns structured JSON"]
+        end
+
+        subgraph "Application & Presentation"
+            direction TB
+            F["📊<br><b>Results Dashboard</b><br>Visualizes issues"]
+            G["💬<br><b>AI Assistant</b><br>For conversational insights"]
+            H["📤<br><b>Export Engine</b><br>Generates PDF & PPTX"]
+        end
     end
 
-    subgraph "4. User Actions"
-        G & H & I & J --> A;
-    end
+    B --> C
+    C --> D
+    D -- "Secure API Call" --> E
+    E -- "JSON Response" --> F
+    F --> G & H & A
+    
+    %% Style Definitions to mimic GCP diagram
+    style User Environment fill:#f3e5f5,stroke:#6a1b9a,stroke-width:1px
+    style A fill:#fff,stroke:#6a1b9a,stroke-width:2px
+    style B fill:#f3e5f5,stroke:#6a1b9a,stroke-width:2px,color:#6a1b9a
+    
+    style Ingest fill:#e3f2fd,stroke:#1565c0,stroke-width:1px
+    style C fill:#fff,stroke:#1565c0,stroke-width:2px
 
-    style A fill:#e3f2fd,stroke:#333
-    style B fill:#e0f7fa,stroke:#00796b
-    style C1 fill:#fffde7,stroke:#333
-    style C2 fill:#fffde7,stroke:#333
-    style D fill:#fce4ec,stroke:#ad1457
-    style E fill:#fce4ec,stroke:#ad1457
-    style F fill:#ede7f6,stroke:#5e35b1
-    style G fill:#e8f5e9,stroke:#2e7d32
-    style H fill:#e8f5e9,stroke:#2e7d32
-    style I fill:#e8f5e9,stroke:#2e7d32
-    style J fill:#e8f5e9,stroke:#2e7d32
+    style Pipelines fill:#e3f2fd,stroke:#1565c0,stroke-width:1px
+    style D fill:#fff,stroke:#1565c0,stroke-width:2px
+
+    style Analytics fill:#e3f2fd,stroke:#1565c0,stroke-width:1px
+    style E fill:#fff,stroke:#1565c0,stroke-width:2px
+    
+    style "Application & Presentation" fill:#e3f2fd,stroke:#1565c0,stroke-width:1px
+    style F fill:#fff,stroke:#1565c0,stroke-width:2px
+    style G fill:#fff,stroke:#1565c0,stroke-width:2px
+    style H fill:#fff,stroke:#1565c0,stroke-width:2px
 ```
 
 ## User Journey
@@ -70,38 +93,51 @@ graph TD
 The following diagram illustrates the typical workflow a user follows when interacting with the Data Quality Bot, from providing initial data to exporting final, actionable insights.
 
 ```mermaid
-graph LR
-    subgraph "Start"
-        A[👨‍💻 User Opens App] --> B{Provide Data Context};
+graph TD
+    subgraph "1. Start"
+        A[👨‍💻 User Opens App]
     end
 
-    subgraph "Input Phase"
-        B -- "Option 1" --> B1[📝 Manually enters<br/>schema, stats, etc.];
-        B -- "Option 2" --> B2[📤 Uploads SQL file<br/>for schema & rules];
-        B2 --> B3[📤 Uploads CSV file<br/>for column statistics];
+    subgraph "2. Input Phase"
+        B{Provide Data Context}
+        B1[📝 Manually enters data]
+        B2[📤 Uploads SQL & CSV files]
+    end
+    
+    subgraph "3. Analysis Phase"
+        C[🚀 Clicks 'Analyze Data']
+        D["🤖 Bot constructs prompts & calls Gemini API"]
+        E["✨ Gemini returns a structured list of issues"]
     end
 
-    subgraph "Analysis Phase"
-        B1 & B3 --> C[Clicks 'Analyze Data Quality'];
-        C --> D["🤖 Bot sends context to<br/>Gemini API for analysis"];
-        D --> E["✨ Gemini returns a<br/>structured list of issues"];
+    subgraph "4. Insight & Action Phase"
+        F[📊 Views Interactive Dashboard]
+        F1[🔍 Filters issues by severity/table]
+        F2[🩺 Reviews Table Health & Hotspots]
+        G[💬 Opens AI Chat Assistant for questions]
+        H[📜 Generates AI-powered Summary]
+        I[📤 Exports Professional Reports]
+        I1[📄 Detailed PDF Format]
+        I2[💻 PowerPoint Slides Format]
+    end
+    
+    subgraph "5. Goal"
+       J[✅ User has actionable insights to improve data quality]
     end
 
-    subgraph "Insight & Action Phase"
-        E --> F[📊 Views Interactive Dashboard];
-        F --> F1[🔍 Filters issues by<br/>severity or table];
-        F --> F2[🩺 Reviews Table Health<br/>and Issue Hotspots];
-        F --> G[💬 Opens Chat Assistant];
-        G --> G1[🗣️ Asks follow-up questions<br/>about the results];
-        F --> H[📜 Generates AI Summary];
-        H --> I[📤 Exports Report];
-        I -- "Detailed" --> I1[📄 PDF Format];
-        I -- "Presentation" --> I2[💻 PowerPoint Format];
-    end
-
-    subgraph "End"
-       I1 & I2 --> J[✅ User has actionable insights];
-    end
+    A --> B
+    B --> B1 & B2
+    B1 --> C
+    B2 --> C
+    C --> D
+    D --> E
+    E --> F
+    F --> F1 & F2 & G & H
+    H --> I
+    I --> I1 & I2
+    I1 --> J
+    I2 --> J
+    G --> J
 ```
 
 
