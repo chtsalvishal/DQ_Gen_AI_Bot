@@ -17,48 +17,63 @@ The Data Quality Bot is a powerful web application designed for data engineers, 
 
 ## Architecture Diagram
 
-<div style="background-color: #4A89F3; color: white; padding: 12px 20px; font-family: sans-serif; font-size: 16px; border-radius: 4px;">
+<div style="background-color: #4285F4; color: white; padding: 12px 20px; font-family: 'Roboto', sans-serif; font-size: 16px; border-radius: 4px 4px 0 0;">
   <b>Architecture: General > Data Quality Analysis > Client-Side AI Processing</b>
 </div>
 
 ```mermaid
+%%{
+  init: {
+    "theme": "base",
+    "themeVariables": {
+      "fontFamily": "\"Roboto\", sans-serif",
+      "primaryColor": "#FFFFFF",
+      "primaryTextColor": "#3C4043",
+      "primaryBorderColor": "#4285F4",
+      "lineColor": "#70757A",
+      "textColor": "#3C4043",
+      "clusterBkg": "#F8F9FA",
+      "clusterBorder": "#E0E0E0"
+    }
+  }
+}%%
 graph LR
     %% Main containers for visual grouping
-    subgraph user_env [User Environment]
+    subgraph user_env ["User Environment"]
         direction TB
-        A["💻<br><b>Standard Devices</b><br>User via Browser (HTTPS)"]
+        A["💻<br><b>User via Browser</b><br>(HTTPS)"]:::userNode
     end
 
     subgraph gateway_sub [" "]
       direction LR
-      B((Gateway))
+      B((Gateway)):::gatewayNode
     end
     
-    A --> B
+    A -- "Provides Data Context" --> B
 
-    subgraph bot_logic ["Data Quality Bot (Client-Side Logic)"]
+    subgraph "bot_logic" ["Data Quality Bot (Client-Side Logic)"]
         direction LR
 
         subgraph ingest_sub [Ingest]
             direction TB
-            C["📝<br><b>Data Input & Parsing</b><br>Manual Entry, SQL/CSV Uploads"]
+            C["📝<br><b>Data Input & Parsing</b><br>Manual, SQL/CSV Uploads"]:::processNode
         end
 
         subgraph pipelines_sub [Pipelines]
             direction TB
-            D["⚙️<br><b>Prompt Engineering</b><br>Constructs contextual prompts"]
+            D["⚙️<br><b>Prompt Engineering</b><br>Constructs contextual prompts"]:::processNode
         end
 
         subgraph analytics_sub [Analytics]
             direction TB
-            E["✨<br><b>Google Gemini API</b><br>Analyzes data and returns structured JSON"]
+            E["✨<br><b>Google Gemini API</b><br>Analyzes data and returns JSON"]:::apiNode
         end
 
         subgraph app_sub ["Application & Presentation"]
             direction TB
-            F["📊<br><b>Results Dashboard</b><br>Visualizes issues"]
-            G["💬<br><b>AI Assistant</b><br>For conversational insights"]
-            H["📤<br><b>Export Engine</b><br>Generates PDF & PPTX"]
+            F["📊<br><b>Results Dashboard</b><br>Visualizes issues"]:::outputNode
+            G["💬<br><b>AI Assistant</b><br>Conversational insights"]:::outputNode
+            H["📤<br><b>Export Engine</b><br>Generates PDF & PPTX"]:::outputNode
         end
     end
 
@@ -66,26 +81,15 @@ graph LR
     C --> D
     D -- "Secure API Call" --> E
     E -- "JSON Response" --> F
-    F --> G & H & A
+    F --> G
+    F --> H
     
-    %% Style Definitions to mimic GCP diagram
-    style user_env fill:#f3e5f5,stroke:#6a1b9a,stroke-width:1px
-    style A fill:#fff,stroke:#6a1b9a,stroke-width:2px
-    style B fill:#f3e5f5,stroke:#6a1b9a,stroke-width:2px,color:#6a1b9a
-    
-    style ingest_sub fill:#e3f2fd,stroke:#1565c0,stroke-width:1px
-    style C fill:#fff,stroke:#1565c0,stroke-width:2px
-
-    style pipelines_sub fill:#e3f2fd,stroke:#1565c0,stroke-width:1px
-    style D fill:#fff,stroke:#1565c0,stroke-width:2px
-
-    style analytics_sub fill:#e3f2fd,stroke:#1565c0,stroke-width:1px
-    style E fill:#fff,stroke:#1565c0,stroke-width:2px
-    
-    style app_sub fill:#e3f2fd,stroke:#1565c0,stroke-width:1px
-    style F fill:#fff,stroke:#1565c0,stroke-width:2px
-    style G fill:#fff,stroke:#1565c0,stroke-width:2px
-    style H fill:#fff,stroke:#1565c0,stroke-width:2px
+    %% Style Definitions for a professional, GCP-like feel
+    classDef userNode fill:#FEF7E0,stroke:#FBBC05,stroke-width:2px,color:#3C4043
+    classDef gatewayNode fill:#F1F3F4,stroke:#70757A,stroke-width:2px,color:#3C4043
+    classDef processNode fill:#E8F0FE,stroke:#4285F4,stroke-width:2px,color:#3C4043
+    classDef apiNode fill:#E6F4EA,stroke:#34A853,stroke-width:2px,color:#3C4043
+    classDef outputNode fill:#FCE8E6,stroke:#EA4335,stroke-width:2px,color:#3C4043
 ```
 
 ## User Journey
@@ -93,40 +97,56 @@ graph LR
 The following diagram illustrates the typical workflow a user follows when interacting with the Data Quality Bot, from providing initial data to exporting final, actionable insights.
 
 ```mermaid
+%%{
+  init: {
+    "theme": "base",
+    "themeVariables": {
+      "fontFamily": "\"Roboto\", sans-serif",
+      "primaryColor": "#FFFFFF",
+      "primaryTextColor": "#3C4043",
+      "primaryBorderColor": "#4285F4",
+      "lineColor": "#70757A",
+      "textColor": "#3C4043",
+      "clusterBkg": "#F8F9FA",
+      "clusterBorder": "#E0E0E0"
+    }
+  }
+}%%
 graph TD
     subgraph "1. Start"
-        A[👨‍💻 User Opens App]
+        A[👨‍💻 User Opens App]:::startNode
     end
 
     subgraph "2. Input Phase"
-        B{Provide Data Context}
-        B1[📝 Manually enters data]
-        B2[📤 Uploads SQL & CSV files]
+        B{Provide Data Context}:::inputNode
+        B1[📝 Manually enters data]:::inputNode
+        B2[📤 Uploads SQL & CSV files]:::inputNode
     end
     
     subgraph "3. Analysis Phase"
-        C[🚀 Clicks 'Analyze Data']
-        D["🤖 Bot constructs prompts & calls Gemini API"]
-        E["✨ Gemini returns a structured list of issues"]
+        C[🚀 Clicks 'Analyze Data']:::analysisNode
+        D["🤖 Bot calls Gemini API"]:::analysisNode
+        E["✨ Receives structured issues"]:::analysisNode
     end
 
     subgraph "4. Insight & Action Phase"
-        F[📊 Views Interactive Dashboard]
-        F1[🔍 Filters issues by severity/table]
-        F2[🩺 Reviews Table Health & Hotspots]
-        G[💬 Opens AI Chat Assistant for questions]
-        H[📜 Generates AI-powered Summary]
-        I[📤 Exports Professional Reports]
-        I1[📄 Detailed PDF Format]
-        I2[💻 PowerPoint Slides Format]
+        F[📊 Views Interactive Dashboard]:::insightNode
+        F1[🔍 Filters issues]:::insightNode
+        F2[🩺 Reviews Table Health]:::insightNode
+        G[💬 Opens AI Chat Assistant]:::insightNode
+        H[📜 Generates AI Summary]:::insightNode
+        I[📤 Exports Reports]:::insightNode
+        I1[📄 Detailed PDF]:::insightNode
+        I2[💻 PowerPoint Slides]:::insightNode
     end
     
     subgraph "5. Goal"
-       J[✅ User has actionable insights to improve data quality]
+       J[✅ Actionable Insights Gained]:::goalNode
     end
 
     A --> B
-    B --> B1 & B2
+    B --> B1
+    B --> B2
     B1 --> C
     B2 --> C
     C --> D
@@ -138,6 +158,13 @@ graph TD
     I1 --> J
     I2 --> J
     G --> J
+
+    %% Class Definitions
+    classDef startNode fill:#E8F0FE,stroke:#4285F4,stroke-width:2px
+    classDef inputNode fill:#FEF7E0,stroke:#FBBC05,stroke-width:2px
+    classDef analysisNode fill:#FCE8E6,stroke:#EA4335,stroke-width:2px
+    classDef insightNode fill:#E6F4EA,stroke:#34A853,stroke-width:2px
+    classDef goalNode fill:#E8EAF6,stroke:#3F51B5,stroke-width:2px
 ```
 
 
