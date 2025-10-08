@@ -21,7 +21,7 @@ The Data Quality Bot is a powerful web application designed for data engineers, 
 graph LR
     subgraph userenv [User Environment]
         direction TB
-        A[User via Browser]:::userNode
+        A[User via Browser HTTPS]:::userNode
     end
 
     subgraph gatewaysub [Gateway]
@@ -55,11 +55,19 @@ graph LR
     F --> G
     F --> H
     
-    classDef userNode fill:#FEF7E0,stroke:#FBBC05,stroke-width:2px,color:#3C4043
-    classDef gatewayNode fill:#F1F3F4,stroke:#70757A,stroke-width:2px,color:#3C4043
-    classDef processNode fill:#E8F0FE,stroke:#4285F4,stroke-width:2px,color:#3C4043
-    classDef apiNode fill:#E6F4EA,stroke:#34A853,stroke-width:2px,color:#3C4043
-    classDef outputNode fill:#FCE8E6,stroke:#EA4335,stroke-width:2px,color:#3C4043
+    classDef userNode fill:#FFFFFF,stroke:#FBBC05,stroke-width:2px,color:#3C4043
+    classDef gatewayNode fill:#FFFFFF,stroke:#70757A,stroke-width:2px,color:#3C4043
+    classDef processNode fill:#FFFFFF,stroke:#4285F4,stroke-width:2px,color:#3C4043
+    classDef apiNode fill:#FFFFFF,stroke:#34A853,stroke-width:2px,color:#3C4043
+    classDef outputNode fill:#FFFFFF,stroke:#EA4335,stroke-width:2px,color:#3C4043
+    
+    style userenv fill:#F8F9FA,stroke:#DEE2E6
+    style gatewaysub fill:#F8F9FA,stroke:#DEE2E6
+    style botlogic fill:#F8F9FA,stroke:#DEE2E6
+    style ingest fill:#FFFFFF,stroke:#DEE2E6
+    style pipelines fill:#FFFFFF,stroke:#DEE2E6
+    style analytics fill:#FFFFFF,stroke:#DEE2E6
+    style presentation fill:#FFFFFF,stroke:#DEE2E6
 ```
 
 ### User Journey
@@ -108,11 +116,17 @@ graph TD
     I2 --> J
     G --> J
 
-    classDef startNode fill:#E8F0FE,stroke:#4285F4,stroke-width:2px
-    classDef inputNode fill:#FEF7E0,stroke:#FBBC05,stroke-width:2px
-    classDef analysisNode fill:#FCE8E6,stroke:#EA4335,stroke-width:2px
-    classDef insightNode fill:#E6F4EA,stroke:#34A853,stroke-width:2px
-    classDef goalNode fill:#E8EAF6,stroke:#3F51B5,stroke-width:2px
+    classDef startNode fill:#FFFFFF,stroke:#4285F4,stroke-width:2px
+    classDef inputNode fill:#FFFFFF,stroke:#FBBC05,stroke-width:2px
+    classDef analysisNode fill:#FFFFFF,stroke:#EA4335,stroke-width:2px
+    classDef insightNode fill:#FFFFFF,stroke:#34A853,stroke-width:2px
+    classDef goalNode fill:#FFFFFF,stroke:#3F51B5,stroke-width:2px
+
+    style sg1 fill:#F8F9FA,stroke:#DEE2E6
+    style sg2 fill:#F8F9FA,stroke:#DEE2E6
+    style sg3 fill:#F8F9FA,stroke:#DEE2E6
+    style sg4 fill:#F8F9FA,stroke:#DEE2E6
+    style sg5 fill:#F8F9FA,stroke:#DEE2E6
 ```
 
 # Run and deploy your AI Studio app
