@@ -52,18 +52,18 @@ graph LR
     F --> G
     F --> H
     
-    style userenv fill:#F8F9FA,stroke:#5F6368,color:#3C4043
+    style userenv fill:#F8F9FA,stroke:#5F6368
     style botlogic fill:#FFFFFF,stroke:#DADCE0
     style ingest fill:#F8F9FA,stroke:#DADCE0
     style pipelines fill:#F8F9FA,stroke:#DADCE0
     style analytics fill:#F8F9FA,stroke:#DADCE0
     style presentation fill:#F8F9FA,stroke:#DADCE0
 
-    classDef userNode fill:#FEFCE8,stroke:#FBBF24,stroke-width:2px,color:#3C4043
-    classDef gatewayNode fill:#F1F3F4,stroke:#70757A,stroke-width:2px,color:#3C4043
-    classDef processNode fill:#E9F3FD,stroke:#4285F4,stroke-width:2px,color:#3C4043
-    classDef apiNode fill:#E6F4EA,stroke:#34A853,stroke-width:2px,color:#3C4043
-    classDef outputNode fill:#FCE8E6,stroke:#EA4335,stroke-width:2px,color:#3C4043
+    classDef userNode fill:#FEFCE8,stroke:#FBBF24,stroke-width:2px
+    classDef gatewayNode fill:#F1F3F4,stroke:#70757A,stroke-width:2px
+    classDef processNode fill:#E9F3FD,stroke:#4285F4,stroke-width:2px
+    classDef apiNode fill:#E6F4EA,stroke:#34A853,stroke-width:2px
+    classDef outputNode fill:#FCE8E6,stroke:#EA4335,stroke-width:2px
 ```
 
 ### User Journey
@@ -118,11 +118,11 @@ graph TD
     style sg4 fill:#FFFFFF,stroke:#DADCE0
     style sg5 fill:#FFFFFF,stroke:#DADCE0
 
-    classDef startNode fill:#E8F0FE,stroke:#4285F4,stroke-width:2px,color:#3C4043
-    classDef inputNode fill:#FEFCE8,stroke:#FBBC05,stroke-width:2px,color:#3C4043
-    classDef analysisNode fill:#FCE8E6,stroke:#EA4335,stroke-width:2px,color:#3C4043
-    classDef insightNode fill:#E6F4EA,stroke:#34A853,stroke-width:2px,color:#3C4043
-    classDef goalNode fill:#E8EAF6,stroke:#3F51B5,stroke-width:2px,color:#3C4043
+    classDef startNode fill:#E8F0FE,stroke:#4285F4,stroke-width:2px
+    classDef inputNode fill:#FEFCE8,stroke:#FBBC05,stroke-width:2px
+    classDef analysisNode fill:#FCE8E6,stroke:#EA4335,stroke-width:2px
+    classDef insightNode fill:#E6F4EA,stroke:#34A853,stroke-width:2px
+    classDef goalNode fill:#E8EAF6,stroke:#3F51B5,stroke-width:2px
 ```
 
 # Run and deploy your AI Studio app
