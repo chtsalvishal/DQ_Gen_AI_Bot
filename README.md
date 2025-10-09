@@ -18,7 +18,7 @@ The Data Quality Bot is a powerful web application designed for data engineers, 
 ### Architecture Diagram
 
 ```mermaid
-%%{init: { 'themeVariables': { 'fontSize': '14px', 'fontFamily': 'Inter' } }}%%
+%%{init: { 'themeVariables': { 'fontSize': '16px', 'fontFamily': 'Inter' } }}%%
 graph TD
     subgraph arch [Application Architecture]
         subgraph userenv [User Environment]
@@ -30,7 +30,6 @@ graph TD
         A -- Provides Data Context --> B
 
         subgraph botlogic [Data Quality Bot]
-            direction TD
             subgraph ingest [Ingest]
                 C[Data Input and Parsing]:::processNode
             end
@@ -75,7 +74,7 @@ graph TD
 ### User Journey
 
 ```mermaid
-%%{init: { 'themeVariables': { 'fontSize': '14px', 'fontFamily': 'Inter' } }}%%
+%%{init: { 'themeVariables': { 'fontSize': '16px', 'fontFamily': 'Inter' } }}%%
 graph TD
     subgraph journey [Complete User Journey]
         subgraph sg1 [Start]
