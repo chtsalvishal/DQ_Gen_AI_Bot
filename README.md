@@ -92,31 +92,31 @@ graph TD
 ```mermaid
 %%{init: { 'themeVariables': { 'fontSize': '36px', 'fontFamily': '"Segoe UI", Arial, sans-serif' } }}%%
 graph TD
-    subgraph user_journey [Data Quality Bot User Journey]
+    subgraph user_journey [User Journey]
 
-        subgraph sg1 [1. Start]
+        subgraph sg1 [**1. Start**]
             A["**Initiate Session**<br><br>User opens the<br>Data Quality Bot<br>application.<br>"]:::startNode
         end
 
-        subgraph sg2 [2. Input & Context]
+        subgraph sg2 [**2. Input & Context**]
             B["**Provide Data Context**<br><br>User inputs metadata,<br>statistics, and<br>business rules.<br>"]:::inputNode
             B --> B1["**Manual Entry**<br><br>Type or paste<br>details directly<br>into the form.<br>"]:::inputNode
             B --> B2["**File Upload**<br><br>Import context via<br>.sql and .csv files<br>for efficiency.<br>"]:::inputNode
         end
         
-        subgraph sg3 [3. AI Analysis]
+        subgraph sg3 [**3. AI Analysis**]
             C["**Trigger Analysis**<br><br>Click 'Analyze'<br>to start the AI<br>quality assessment.<br>"]:::analysisNode
             D["**Gemini Processing**<br><br>The app sends a detailed,<br>context-rich prompt for<br>each table to the AI.<br><br>"]:::analysisNode
             E["**Receive Results**<br><br>A structured JSON<br>response is returned<br>with all findings.<br>"]:::analysisNode
         end
 
-        subgraph sg4 [4. Insight & Action]
+        subgraph sg4 [**4. Insight & Action**]
             F["**Explore Dashboard**<br><br>Visualize results, filter<br>issues, and review<br>table health scores.<br>"]:::insightNode
             G["**Conversational AI**<br><br>Ask follow-up questions<br>to the integrated<br>AI Assistant.<br>"]:::insightNode
             H["**Export & Share**<br><br>Generate professional PDF<br>or PowerPoint reports<br>for stakeholders.<br>"]:::insightNode
         end
         
-        subgraph sg5 [5. Goal]
+        subgraph sg5 [**5. Goal**]
            J["**Achieve Data Integrity**<br><br>User gains clear, actionable<br>insights to improve and<br>maintain data quality.<br>"]:::goalNode
         end
     end
