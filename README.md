@@ -38,7 +38,7 @@ The Data Quality Bot is a versatile tool for anyone who relies on high-quality d
 ```mermaid
 %%{init: { 'themeVariables': { 'fontSize': '36px', 'fontFamily': '"Segoe UI", Arial, sans-serif' } }}%%
 graph TD
-    subgraph architecture_diagram [<h1>Architecture Diagram</h1>]
+    subgraph architecture_diagram [<h3>Architecture Diagram</h3>]
         subgraph userenv [User Environment]
             A[User via Browser HTTPS]:::userNode
         end
@@ -92,7 +92,7 @@ graph TD
 ```mermaid
 %%{init: { 'themeVariables': { 'fontSize': '36px', 'fontFamily': '"Segoe UI", Arial, sans-serif' } }}%%
 graph TD
-    subgraph user_journey [<h1>User Journey</h1>]
+    subgraph user_journey [<h3>User Journey</h3>]
 
         subgraph sg1 [**1. Start**]
             A["**Initiate Session**<br><br>User opens the<br>Data Quality Bot<br>application.<br>"]:::startNode
