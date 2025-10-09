@@ -38,36 +38,36 @@ The Data Quality Bot is a versatile tool for anyone who relies on high-quality d
 ```mermaid
 %%{init: { 'themeVariables': { 'fontSize': '36px', 'fontFamily': '"Segoe UI", Arial, sans-serif' } }}%%
 graph TD
-    subgraph architecture_diagram [<h4>Architecture Diagram</h4>]
-        subgraph userenv [User Environment]
-            A[User via Browser HTTPS]:::userNode
+    subgraph architecture_diagram ["Architecture Diagram"]
+        subgraph userenv ["User Environment"]
+            A["User via Browser (HTTPS)"]:::userNode
         end
 
         B((Gateway)):::gatewayNode
         
-        A -- Provides Data Context --> B
+        A -- "Provides Data Context" --> B
 
-        subgraph botlogic [Data Quality Bot]
+        subgraph botlogic ["Data Quality Bot"]
             subgraph ingest [Ingest]
-                C[Data Input and Parsing]:::processNode
+                C["Data Input and Parsing"]:::processNode
             end
             subgraph pipelines [Pipelines]
-                D[Prompt Engineering]:::processNode
+                D["Prompt Engineering"]:::processNode
             end
             subgraph analytics [Analytics]
-                E[Google Gemini API]:::apiNode
+                E["Google Gemini API"]:::apiNode
             end
             subgraph presentation [Presentation]
-                F[Results Dashboard]:::outputNode
-                G[AI Assistant]:::outputNode
-                H[Export Engine]:::outputNode
+                F["Results Dashboard"]:::outputNode
+                G["AI Assistant"]:::outputNode
+                H["Export Engine"]:::outputNode
             end
         end
 
         B --> C
         C --> D
-        D -- Secure API Call --> E
-        E -- JSON Response --> F
+        D -- "Secure API Call" --> E
+        E -- "JSON Response" --> F
         F --> G
         F --> H
     end
@@ -86,38 +86,37 @@ graph TD
     classDef apiNode fill:#E6F4EA,stroke:#34A853,stroke-width:2px,color:#0f172a
     classDef outputNode fill:#FCE8E6,stroke:#EA4335,stroke-width:2px,color:#0f172a
 ```
-<p align="right"><a href="https://mermaid.live/view#base64:JSV7aW5pdDogeyAndGhlbWVWYXJpYWJsZXMnOiB7ICdmb250U2l6ZSc6ICczNnB4JywgJ2ZvbnRGYW1pbHknOiAnIlNlZ29lIFVJIiwgQXJpYWwsIHNhbnMtc2VyaWYnIH0gfX0lJQ0KZ3JhcGggVEQNCiAgICBzdWJncmFwaCBhcmNoaXRlY3R1cmVfZGlhZ3JhbSBbPGg0PkFyY2hpdGVjdHVyZSBEaWFncmFtPC9oND5dDQogICAgICAgIHN1YmdyYXBoIHVzZXJlbnYgW1VzZXIgRW52aXJvbm1lbnRdDQogICAgICAgICAgICBBLtVzZXIgdmlhIEJyb3dzZXIgSFRUUFNdOjo6dXNlck5vZGUNCiAgICAgICAgZW5kDQoNCiAgICAgICAgQigoR2F0ZXdheSkpOjo6Z2F0ZXdheU5vZGUNCiAgICAgICAgDQogICAgICAgIEEgLS0gUHJvdmlkZXMgRGF0YSBDb250ZXh0IC0tPiBCDQoNCiAgICAgICAgc3ViZ3JhcGggYm90bG9naWMgW0RhdGEgUXVhbGl0eSBCb3RdDQogICAgICAgICAgICBzdWJncmFwaCBpbmdlc3QgW0luZ2VzdF0NCiAgICAgICAgICAgICAgICBDW0RhdGEgSW5wdXQgYW5kIFBhcnNpbmddOjo6cHJvY2Vzc05vZGUNCiAgICAgICAgICAgIGVuZA0KICAgICAgICAgICAgc3ViZ3JhcGggcGlwZWxpbmVzIFtQaXBlbGluZXNdDQogICAgICAgICAgICAgICAgRFtQcm9tcHQgRW5naW5lZXJpbmddOjo6cHJvY2Vzc05vZGUNCiAgICAgICAgICAgIGVuZA0KICAgICAgICAgICAgc3ViZ3JhcGggYW5hbHl0aWNzIFtBbmFseXRpY3NdDQogICAgICAgICAgICAgICAgRVtHb29nbGUgR2VtaW5pIEFQSV06Ojp hcGlOb2RlDQogICAgICAgICAgICBlbmQNCiAgICAgICAgICAgIHN1YmdyYXBoIHByZXNlbnRhdGlvbiBbUHJlc2VudGF0aW9uXQ0KICAgICAgICAgICAgICAgIEZbUmVzdWx0cyBEYXNoYm9hcmRdOjo6b3V0cHV0Tm9kZQ0KICAgICAgICAgICAgICAgIEdbQUkgQXNzaXN0YW50XTo6Om91dHB1dE5vZGUNCiAgICAgICAgICAgICAgICBIW0V4cG9ydCBFbmdpbmVdOjo6b3V0cHV0Tm9kZQ0KICAgICAgICAgICAgZW5kDQogICAgICAgIGVuZA0KDQogICAgICAgIEIgLS0+IEMNCiAgICAgICAgQyAtLT4gRA0KICAgICAgICBEIC0tIFNlY3VyZSBBUEkgQ2FsbCAtLT4gRQ0KICAgICAgICBFIC0tIEpTT04gUmVzcG9uc2UgLS0+IEYNCiAgICAgICAgRiAtLT4gRw0KICAgICAgICBGLS0+IEgNCiAgICBlbmQNCiAgICANCiAgICBzdHlsZSBhcmNoaXRlY3R1cmVfZGlhZ3JhbSBmaWxsOiNGMUY1RjksaW50cm9rZTojQ0JENUUxLGNvbG9yOiMwZjE3MmENCiAgICBzdHlsZSB1c2VyZW52IGZpbGw6I0ZGRkZGRixzdHJva2U6Izk0QTNCOCxjb2xvcjojMGYxNzJhDQogICAgc3R5bGUgYm90bG9naWMgZmlsbDojRkZGRkZGLHN0cm9rZTojREFEQ0UwLGNvbG9yOiMwZjE3MmENCiAgICBzdHlsZSBpbmdlc3QgZmlsbDojRjhGOUZBLHN0cm9rZTojREFEQ0UwLGNvbG9yOiMwZjE3MmENCiAgICBzdHlsZSBwaXBlbGluZXMgZmlsbDojRjhGOUZBLHN0cm9rZTojREFEQ0UwLGNvbG9yOiMwZjE3MmENCiAgICBzdHlsZSBhbmFseXRpY3MgZmlsbDojRjhGOUZBLHN0cm9rZTojREFEQ0UwLGNvbG9yOiMwZjE3MmENCiAgICBzdHlsZSBwcmVzZW50YXRpb24gZmlsbDojRjhGOUZBLHN0cm9rZTojREFEQ0UwLGNvbG9yOiMwZjE3MmENCg0KICAgIGNsYXNzRGVmIHVzZXJOb2RlIGZpbGw6I0ZFRkNFOODRzcm9rZTojRkJCRjI0LHN0cm9rZS13aWR0aDoycHgsY29sb3I6IzBmMTcyYQ0KICAgIGNsYXNzRGVmIGdhdGV3YXlOb2RlIGZpbGw6I0YxRjNGNCxzdHJva2U6IzcwNzU3QSxzdHJva2Utd2lkdGg6MnB4LGNvbG9yOiMwZjE3MmENCiAgICBjbGFzc0RlZiBwcm9jZXNzTm9kZSBmaWxsOiNFOUMzRkQsc3Ryb2tlOiM0Mjg1RjQsc3Ryb2tlLXdpZHRoOjJweCxjb2xvcjojMGYxNzJhDQogICAgY2xhc3NEZWYgYXBpTm9kZSBmaWxsOiNFNkY0RUEsc3Ryb2tlOiMzNEE4NTMsc3Ryb2tlLXdpZHRoOjJweCxjb2xvcjojMGYxNzJhDQogICAgY2xhc3NEZWYgb3V0cHV0Tm9kZSBmaWxsOiNGQ0U4RTZsc3Ryb2tlOiNFQTQzMzUsc3Ryb2tlLXdpZHRoOjJweCxjb2xvcjojMGYxNzJh" target="_blank" rel="noopener">Maximize Diagram</a></p>
+<p align="right"><a href="https://mermaid.live/view#base64:eyJjb2RlIjoiJSV7aW5pdDogeyAndGhlbWVWYXJpYWJsZXMnOiB7ICdmb250U2l6ZSc6ICczNnB4JywgJ2ZvbnRGYW1pbHknOiAnXCJTZWdvZSBVSVwiLCBBcmlhbCwgc2Fucy1zZXJpZicgfSB9fSUlXG5ncmFwaCBURFxuICAgIHN1YmdyYXBoIGFyY2hpdGVjdHVyZV9kaWFncmFtIFtcIkFyY2hpdGVjdHVyZSBEaWFncmFtXCJdXG4gICAgICAgIHN1YmdyYXBoIHVzZXJlbnYgW1wiVXNlciBFbnZpcm9ubWVudFwiXVxuICAgICAgICAgICAgQVtcIlVzZXIgdmlhIEJyb3dzZXIgKEhUVFBTKVwiXTo6OnVzZXJOb2RlXG4gICAgICAgIGVuZFxuXG4gICAgICAgIEIoKEdhdGV3YXkpKTo6OmdhdGV3YXlOb2RlXG4gICAgICAgIFxuICAgICAgICBBIC0tIFwiUHJvdmlkZXMgRGF0YSBDb250ZXh0XCIgLS0+IEJcblxuICAgICAgICBzdWJncmFwaCBib3Rsb2dpYyBbXCJEYXRhIFF1YWxpdHkgQm90XCJdXG4gICAgICAgICAgICBzdWJncmFwaCBpbmdlc3QgW0luZ2VzdF1cbiAgICAgICAgICAgICAgICBDW1wiRGF0YSBJbnB1dCBhbmQgUGFyc2luZ1wiXTo6OnByb2Nlc3NOb2RlXG4gICAgICAgICAgICBlbmRcbiAgICAgICAgICAgIHN1YmdyYXBoIHBpcGVsaW5lcyBbUGlwZWxpbmVzXVxuICAgICAgICAgICAgICAgIEVbXCJQcm9tcHQgRW5naW5lZXJpbmddOjo6cHJvY2Vzc05vZGVcbiAgICAgICAgICAgIGVuZFxuICAgICAgICAgICAgc3ViZ3JhcGggYW5hbHl0aWNzIFtBbmFseXRpY3NdXG4gICAgICAgICAgICAgICAgRVtcIkdvb2dsZSBHZW1pbmkgQVBJXCJdOjo6YXBpTm9kZVxuICAgICAgICAgICAgZW5kXG4gICAgICAgICAgICBzdWJncmFwaCBwcmVzZW50YXRpb24gW1ByZXNlbnRhdGlvbl1cbiAgICAgICAgICAgICAgICBGW1wiUmVzdWx0cyBEYXNoYm9hcmRcIl06OjpvdXRwdXROb2RlXG4gICAgICAgICAgICAgICAgR1tcIkFJIExzc2lzdGFudFwiXTo6Om91dHB1dE5vZGVcbiAgICAgICAgICAgICAgICBIW1wiRXhwb3J0IEVuZ2luZVwiXTo6Om91dHB1dE5vZGVcbiAgICAgICAgICAgIGVuZFxuICAgICAgICBlbmRcblxuICAgICAgICBCIC0tPiBDXG4gICAgICAgIEMgLS0+IERcbiAgICAgICAgRCAtLSBcIlNlY3VyZSBBUEkgQ2FsbFwiIC0tPiBFXG4gICAgICAgIEUgLS0gXCJKU09OIFJlc3BvbnNlXCIgLS0+IEZcbiAgICAgICAgRiAtLT4gR1xuICAgICAgICBGIC0tPiBIXG4gICAgZW5kXG4gICAgXG4gICAgc3R5bGUgYXJjaGl0ZWN0dXJlX2RpYWdyYW0gZmlsbDojRjFGNUZZLHlncm9rZTojQ0JENUUxLGNvbG9yOiMwZjE3MmFcbiAgICBzdHlsZSB1c2VyZW52IGZpbGw6I0ZGRkZGRixzdHJva2U6Izk0QTNCOCxjb2xvcjojMGYxNzJhXG4gICAgc3R5bGUgYm90bG9naWMgZmlsbDojRkZGRkZGLHN0cm9rZTojREFEQ0UwLGNvbG9yOiMwZjE3MmFcbiAgICBzdHlsZSBpbmdlc3QgZmlsbDojRjhGOUZBLHN0cm9rZTojREFEQ0UwLGNvbG9yOiMwZjE3MmFcbiAgICBzdHlsZSBwaXBlbGluZXMgZmlsbDojRjhGOUZBLHN0cm9rZTojREFEQ0UwLGNvbG9yOiMwZjE3MmFcbiAgICBzdHlsZSBhbmFseXRpY3MgZmlsbDojRjhGOUZBLHN0cm9rZTojREFEQ0UwLGNvbG9yOiMwZjE3MmFcbiAgICBzdHlsZSBwcmVzZW50YXRpb24gZmlsbDojRjhGOUZBLHN0cm9rZTojREFEQ0UwLGNvbG9yOiMwZjE3MmFcblxuICAgIGNsYXNzRGVmIHVzZXJOb2RlIGZpbGw6I0ZFRkNFOODRzcm9rZTojRkJCRjI0LHN0cm9rZS13aWR0aDoycHgsY29sb3I6IzBmMTcyYVxuICAgIGNsYXNzRGVmIGdhdGV3YXlOb2RlIGZpbGw6I0YxRjNGNCxzdHJva2U6IzcwNzU3QSxzdHJva2Utd2lkdGg6MnB4LGNvbG9yOiMwZjE3MmFcbiAgICBjbGFzc0RlZiBwcm9jZXNzTm9kZSBmaWxsOiNFOUMzRkQsc3Ryb2tlOiM0Mjg1RjQsc3Ryb2tlLXdpZHRoOjJweCxjb2xvcjojMGYxNzJhXG4gICAgY2xhc3NEZWYgYXBpTm9kZSBmaWxsOiNFNkY0RUEsc3Ryb2tlOiMzNEE4NTMsc3Ryb2tlLXdpZHRoOjJweCxjb2xvcjojMGYxNzJhXG4gICAgY2xhc3NEZWYgb3V0cHV0Tm9kZSBmaWxsOiNGQ0U4RTZsc3Ryb2tlOiNFQTQzMzUsc3Ryb2tlLXdpZHRoOjJweCxjb2xvcjojMGYxNzJhIiwibWVybWFpZCI6IntcInRoZW1lXCI6XCJkZWZhdWx0XCJ9IiwiYXV0b1N5bmMiOnRydWV9" target="_blank" rel="noopener">Maximize Diagram</a></p>
 
 ### User Journey
 
 ```mermaid
-
 graph TD
-    subgraph user_journey [<h3>User Journey</h3>]
+    subgraph user_journey ["User Journey"]
 
-        subgraph sg1 [**1. Start**]
+        subgraph sg1 ["**1. Start**"]
             A["**Initiate Session**<br><br>User opens the<br>Data Quality Bot<br>application.<br>"]:::startNode
         end
 
-        subgraph sg2 [**2. Input & Context**]
+        subgraph sg2 ["**2. Input & Context**"]
             B["**Provide Data Context**<br><br>User inputs metadata,<br>statistics, and<br>business rules.<br>"]:::inputNode
             B --> B1["**Manual Entry**<br><br>Type or paste<br>details directly<br>into the form.<br>"]:::inputNode
             B --> B2["**File Upload**<br><br>Import context via<br>.sql and .csv files<br>for efficiency.<br>"]:::inputNode
         end
         
-        subgraph sg3 [**3. AI Analysis**]
+        subgraph sg3 ["**3. AI Analysis**"]
             C["**Trigger Analysis**<br><br>Click 'Analyze'<br>to start the AI<br>quality assessment.<br>"]:::analysisNode
             D["**Gemini Processing**<br><br>The app sends a detailed,<br>context-rich prompt for<br>each table to the AI.<br><br>"]:::analysisNode
             E["**Receive Results**<br><br>A structured JSON<br>response is returned<br>with all findings.<br>"]:::analysisNode
         end
 
-        subgraph sg4 [**4. Insight & Action**]
+        subgraph sg4 ["**4. Insight & Action**"]
             F["**Explore Dashboard**<br><br>Visualize results, filter<br>issues, and review<br>table health scores.<br>"]:::insightNode
             G["**Conversational AI**<br><br>Ask follow-up questions<br>to the integrated<br>AI Assistant.<br>"]:::insightNode
             H["**Export & Share**<br><br>Generate professional PDF<br>or PowerPoint reports<br>for stakeholders.<br>"]:::insightNode
         end
         
-        subgraph sg5 [**5. Goal**]
+        subgraph sg5 ["**5. Goal**"]
            J["**Achieve Data Integrity**<br><br>User gains clear, actionable<br>insights to improve and<br>maintain data quality.<br>"]:::goalNode
         end
     end
@@ -144,7 +143,7 @@ graph TD
     classDef insightNode fill:#E8F8F5,stroke:#2ECC71,stroke-width:3px,color:#212529
     classDef goalNode fill:#EAEBFC,stroke:#5D69B1,stroke-width:3px,color:#212529,font-weight:bold
 ```
-<p align="right"><a href="https://mermaid.live/view#base64:Z3JhcGggVEQNCiAgICBzdWJncmFwaCB1c2VyX2pvdXJuZXkgWzxoMz5Vc2VyIEpvdXJuZXk8L2gzPl0NCg0KICAgICAgICBzdWJncmFwaCBzZzEgWyoqMS4gU3RhcnQqKl0NCiAgICAgICAgICAgIEFbIioqSW5pdGlhdGUgU2Vzc2lvbioqPGJyPjxicj5Vc2VyIG9wZW5zIHRoZTxicj5EYXRhIFF1YWxpdHkgQm90PGJyPmFwcGxpY2F0aW9uLjxicj4iXTo6OnN0YXJ0Tm9kZQ0KICAgICAgICBlbmQNCg0KICAgICAgICBzdWJncmFwaCBzZzIgWyoqMi4gSW5wdXQgJiBDb250ZXh0KipdDQogICAgICAgICAgICBCWyIqKlByb3ZpZGUgRGF0YSBDb250ZXh0Kio8YnI+PGJyPlVzZXIgaW5wdXRzIG1ldGFkYXRhLDxicj5zdGF0aXN0aWNzLCBhbmQ8YnI+YnVzaW5lc3MgcnVsZXMuPGJyPiJdOjo6aW5wdXROb2RlDQogICAgICAgICAgICBCIC0tPiBCMVsiKipNYW51YWwgRW50cnkqKjxicj48YnI+VHlwZSBvciBwYXN0ZTxicj5kZXRhaWxzIGRpcmVjdGx5PGJyPmludG8gdGhlIGZvcm0uPGJyPiJdOjo6aW5wdXROb2RlDQogICAgICAgICAgICBCIC0tPiBCMlsiKipGaWxlIFVwbG9hZCooPGJyPjxicj5JbXBvcnQgY29udGV4dCB2aWE8YnI+LnNxbCBhbmQgLmNzdiBmaWxlczxicj5mb3IgZWZmaWNpZW5jeS48YnI+Il06Ojp pbnB1dE5vZGUNCiAgICAgICAgZW5kDQogICAgICAgIA0KICAgICAgICBzdWJncmFwaCBzZzMgWyoqMy4gQUkgQW5hbHlzaXMqKl0NCiAgICAgICAgICAgIENbIioqVHJpZ2dlciBBbmFseXNpcyoqPGJyPjxicj5DbGljayAnQW5hbHl6ZSc8YnI+dG8gc3RhcnQgdGhlIEFJPGJyPnF1YWxpdHkgYXNzZXNzbWVudC48YnI+Il06Ojp hbmFseXNpc05vZGUNCiAgICAgICAgICAgIERbIioqR2VtaW5pIFByb2Nlc3NpbmcqKjxicj48YnI+VGhlIGFwcCBzZW5kcyBhIGRldGFpbGVkLDxicj5jb250ZXh0LXJpY2ggcHJvbXB0IGZvcjxicj5lYWNoIHRhYmxlIHRvIHRoZSBBS S48YnI+PGJyPiJdOjo6YW5hbHlzaXNOb2RlDQogICAgICAgICAgICBFWyIqKlJlY2VpdmUgUmVzdWx0cyoqPGJyPjxicj5BIHN0cnVjdHVyZWQgSlNPTjxicj5yZXNwb25zZSBpcyByZXR1cm5lZDxicj53aXRoIGFsbCBmaW5kaW5ncy48YnI+Il06Ojp hbmFseXNpc05vZGUNCiAgICAgICAgZW5kDQoNCiAgICAgICAgc3ViZ3JhcGggc2c0IFsqKjQuIEluc2lnaHQgJiBBY3Rpb24qKl0NCiAgICAgICAgICAgIEZbIioqRXhwbG9yZSBEYXNoYm9hcmQqKjxicj48YnI+VmlzdWFsaXplIHJlc3VsdHMsIGZpbHRlcjxicj5pc3N1ZXMsIGFuZCByZXZpZXc8YnI+dGFibGUgaGVhbHRoIHNjb3Jlcy48YnI+Il06Ojp pbnNpZ2h0Tm9kZQ0KICAgICAgICAgICAgR1siKipDb252ZXJzYXRpb25hbCBBSSoqPGJyPjxicj5Bc2sgZm9sbG93LXVwIHF1ZXN0aW9uczxicj50byB0aGUgaW50ZWdyYXRlZDxicj5BSSBBc3Npc3RhbnQuPGJyPiJdOjo6aW5zaWdodE5vZGUNCiAgICAgICAgICAgIEhbIioqRXhwb3J0ICYgU2hhcmUqKjxicj48YnI+R2VuZXJhdGUgcHJvZmVzc2lvbmFsIFBERjxicj5vciBQb3dlclBvaW50IHJlcG9ydHM8YnI+Zm9yIHN0YWtlaG9sZGVycy48YnI+Il06Ojp pbnNpZ2h0Tm9kZQ0KICAgICAgICBlbmQNCiAgICAgICAgDQogICAgICAgIHN1YmdyYXBoIHNnNSBbKio1LiBHb2FsKipdDQogICAgICAgICAgIEpbIioqQWNoaWV2ZSBEYXRhIEludGVncml0eSoqPGJyPjxicj5Vc2VyIGdhaW5zIGNsZWFyLCBhY3Rpb25hYmxlPGJyPmluc2lnaHRzIHRvIGltcHJvdmUgYW5kPGJyPm1haW50YWluIGRhdGEgcXVhbGl0eS48YnI+Il06Ojpnb2FsTm9kZQ0KICAgICAgICBlbmQNCiAgICBlbmQNCg0KICAgIEEgLS0+IEINCiAgICBCMSAtLT4gQw0KICAgIEIyIC0tPiBDDQogICAgQyAtLT4gRCAtLT4gRQ0KICAgIEUgLS0+IEYNCiAgICBGIC0tPiBHICYgSA0KICAgIEcgLS0+IEoNCiAgICBIIC0tPiBKDQogICAgDQogICAgc3R5bGUgdXNlcl9qb3VybmV5IGZpbGw6I0VGRjZGRixzdHJva2U6I0JGREJGRSxjb2xvcjojMWUyOTNiDQogICAgc3R5bGUgc2cxIGZpbGw6I0Y4RjlGQSxzdHJva2U6I0RBRENFMCxjb2xvcjojMGYxNzJhDQogICAgc3R5bGUgc2cyIGZpbGw6I0Y4RjlGQSxzdHJva2U6I0RBRENFMCxjb2xvcjojMGYxNzJhDQogICAgc3R5bGUgc2czIGZpbGw6I0Y4RjlGQSxzdHJva2U6I0RBRENFMCxjb2xvcjojMGYxNzJhDQogICAgc3R5bGUgc2c0IGZpbGw6I0Y4RjlGQSxzdHJva2U6I0RBRENFMCxjb2xvcjojMGYxNzJhDQogICAgc3R5bGUgc2c1IGZpbGw6I0Y4RjlGQSxzdHJva2U6I0RBRENFMCxjb2xvcjojMGYxNzJhDQoNCiAgICBjbGFzc0RlZiBzdGFydE5vZGUgZmlsbDojRThGMEZFLHN0cm9rZTojNEE5MEUyLHN0cm9rZS13aWR0aDozcHgsY29sb3I6IzIxMjUyOSxmb250LXdlaWdodDpib2xkDQogICAgY2xhc3NEZWYgaW5wdXROb2RlIGZpbGw6I0ZFRjlFNyxzdHJva2U6I0Y1QjA0MSxzdHJva2Utd2lkdGg6M3B4LGNvbG9yOiMyMTI1MjkNCiAgICBjbGFzc0RlZiBhbmFseXNpc05vZGUgZmlsbDojRkRFRkVGLHN0cm9rZTojRTc0QzNDLHN0cm9rZS13aWR0aDozcHgsY29sb3I6IzIxMjUyOQ0KICAgIGNsYXNzRGVmIGluc2lnaHROb2RlIGZpbGw6I0U4RjhGNSxzdHJva2U6IzJFQ0M3MSxzdHJva2Utd2lkdGg6M3B4LGNvbG9yOiMyMTI1MjkNCiAgICBjbGFzc0RlZiBnb2FsTm9kZSBmaWxsOiNFQUVCRkMsc3Ryb2tlOiM1RDY5QjEsc3Ryb9rZS13aWR0aDozcHgsY29sb3I6IzIxMjUyOSxmb250LXdlaWdodDpib2xk" target="_blank" rel="noopener">Maximize Diagram</a></p>
+<p align="right"><a href="https://mermaid.live/view#base64:eyJjb2RlIjoiZ3JhcGggVERcbiAgICBzdWJncmFwaCB1c2VyX2pvdXJuZXkgW1wiVXNlciBKb3VybmV5XCJdXG5cbiAgICAgICAgc3ViZ3JhcGggc2cxIFtcIioqMS4gU3RhcnQqKlwiXVxuICAgICAgICAgICAgQVtcIioqSW5pdGlhdGUgU2Vzc2lvbioqPGJyPjxicj5Vc2VyIG9wZW5zIHRoZTxicj5EYXRhIFF1YWxpdHkgQm90PGJyPmFwcGxpY2F0aW9uLjxicj5cIl06OjpzdGFydE5vZGVcbiAgICAgICAgZW5kXG5cbiAgICAgICAgc3ViZ3JhcGggc2cyIFtcIioqMi4gSW5wdXQgJiBDb250ZXh0KipcIl1xuICAgICAgICAgICAgQltcIioqUHJvdmlkZSBEYXRhIENvbnRleHQqKjxicj48YnI+VXNlciBpbnB1dHMgbWV0YWRhdGEsPGJyPnN0YXRpc3RpY3MsIGFuZDxicj5idXNpbmVzcyBydWxlcy48YnI+XCJdOjo6aW5wdXROb2RlXG4gICAgICAgICAgICBCIC0tPiBCMVtcIioqTWFudWFsIEVudHJ5Kio8YnI+PGJyPlR5cGUgb3IgcGFzdGU8YnI+ZGV0YWlscyBkaXJlY3RseTxicj5pbnRvIHRoZSBmb3JtLjxicj5cIl06Ojp pbnB1dE5vZGVcbiAgICAgICAgICAgIEIgLS0+IEIyW1wiKipGaWxlIFVwbG9hZCooPGJyPjxicj5JbXBvcnQgY29udGV4dCB2aWE8YnI+LnNxbCBhbmQgLmNzdiBmaWxlczxicj5mb3IgZWZmaWNpZW5jeS48YnI+XCJdOjo6aW5wdXROb2RlXG4gICAgICAgIGVuZFxuICAgICAgICBcbiAgICAgICAgc3ViZ3JhcGggc2czIFtcIioqMy4gQUkgQW5hbHlzaXMqKlwiXVxuICAgICAgICAgICAgQ1tcIioqVHJpZ2dlciBBbmFseXNpcyoqPGJyPjxicj5DbGljayAnQW5hbHl6ZSc8YnI+dG8gc3RhcnQgdGhlIEFJPGJyPnF1YWxpdHkgYXNzZXNzbWVudC48YnI+XCJdOjo6YW5hbHlzaXNOb2RlXG4gICAgICAgICAgICBEW1wiKipHZW1pbmkgUHJvY2Vzc2luZyoqPGJyPjxicj5UaGUgYXBwIHNlbmRzIGEgZGV0YWlsZWQsPGJyPmNvbnRleHQtcmljaCBwcm9tcHQgZm9yPGJyPmVhY2ggdGFibGUgdG8gdGhlIEFJLjxicj48YnI+XCJdOjo6YW5hbHlzaXNOb2RlXG4gICAgICAgICAgICBFW1wiKipSZWNlaXZlIFJlc3VsdHMqKjxicj48YnI+QSBzdHJ1Y3R1cmVkIEpTT048YnI+cmVzcG9uc2UgaXMgcmV0dXJuZWQ8YnI+d2l0aCBhbGwgZmluZGluZ3MuPGJyPlwiXTo6OmFuYWx5c2lzTm9kZVxuICAgICAgICBlbmRcblxuICAgICAgICBzdWJncmFwaCBzZzQgW1wiKio0LiBJbnNpZ2h0ICYgQWN0aW9uKipcIl1xuICAgICAgICAgICAgRltcIioqRXhwbG9yZSBEYXNoYm9hcmQqKjxicj48YnI+VmlzdWFsaXplIHJlc3VsdHMsIGZpbHRlcjxicj5pc3N1ZXMsIGFuZCByZXZpZXc8YnI+dGFibGUgaGVhbHRoIHNjb3Jlcy48YnI+XCJdOjo6aW5zaWdodE5vZGVcbiAgICAgICAgICAgIEdbXCIqKkNvbnZlcnNhdGlvbmFsIEFJKio8YnI+PGJyPkFzayBmb2xsb3ctdXAgcXVlc3Rpb25zPGJyPnRvIHRoZSBpbnRlZ3JhdGVkPGJyPkFJIExzc2lzdGFudC48YnI+XCJdOjo6aW5zaWdodE5vZGVcbiAgICAgICAgICAgIEhbXCIqKkV4cG9ydCAmIFNoYXJlKio8YnI+PGJyPkdlbmVyYXRlIHByb2Zlc3Npb25hbCBQREY8YnI+b3IgUG93ZXJQb2ludCByZXBvcnRzPGJyPmZvciBzdGFrZWhvbGRlcnMuPGJyPlwiXTo6Omluc2lnaHROb2RlXG4gICAgICAgIGVuZFxuICAgICAgICBcbiAgICAgICAgc3ViZ3JhcGggc2c1IFtcIioqNS4gR29hbCoqXCJdXG4gICAgICAgICAgIEpbXCIqKkFjaGlldmUgRGF0YSBJbnRlZ3JpdHkqKjxicj48YnI+VXNlciBnYWlucyBjbGVhciwgYWN0aW9uYWJsZTxicj5pbnNpZ2h0cyB0byBpbXByb3ZlIGFuZDxicj5tYWludGFpbiBkYXRhIHF1YWxpdHkuPGJyPlwiXTo6OmdvYWxOb2RlXG4gICAgICAgIGVuZFxuICAgIGVuZFxuXG4gICAgQSAtLT4gQlxuICAgIEIxIC0tPiBDXG4gICAgQjIgLS0+IEMgXG4gICAgQyAtLT4gRCAtLT4gRVxuICAgIEUgLS0+IEYgXG4gICAgRiAtLT4gRyAmIEggXG4gICAgRyAtLT4gSlxuICAgIEggLS0+IEpcbiAgICBcbiAgICBzdHlsZSB1c2VyX2pvdXJuZXkgZmlsbDojRUZGNkZGLHN0cm9rZTojQkZEQkZFLGNvbG9yOiMxZTI5M2JcbiAgICBzdHlsZSBzZzEgZmlsbDojRjhGOUZBLHN0cm9rZTojREFEQ0UwLGNvbG9yOiMwZjE3MmFcbiAgICBzdHlsZSBzZzIgZmlsbDojRjhGOUZBLHN0cm9rZTojREFEQ0UwLGNvbG9yOiMwZjE3MmFcbiAgICBzdHlsZSBzZzMgZmlsbDojRjhGOUZBLHN0cm9rZTojREFEQ0UwLGNvbG9yOiMwZjE3MmFcbiAgICBzdHlsZSBzZzQgZmlsbDojRjhGOUZBLHN0cm9rZTojREFEQ0UwLGNvbG9yOiMwZjE3MmFcbiAgICBzdHlsZSBzZzUgZmlsbDojRjhGOUZBLHN0cm9rZTojREFEQ0UwLGNvbG9yOiMwZjE3MmFcblxuICAgIGNsYXNzRGVmIHN0YXJ0Tm9kZSBmaWxsOiNFOEYwRkUsc3Ryb2tlOiM0QTkwRTIsY3Ryb2tlLXdpZHRoOjNweCxjb2xvcjojMjEyNTI5LGZvbnQtd2VpZ2h0OmJvbGRcbiAgICBjbGFzc0RlZiBpbnB1dE5vZGUgZmlsbDojRkVGOUU3LHN0cm9rZTojRjVCMDQxLHN0cm9rZS13aWR0aDozcHgsY29sb3I6IzIxMjUyOVxuICAgIGNsYXNzRGVmIGFuYWx5c2lzTm9kZSBmaWxsOiNGREVGRUYsc3Ryb2tlOiNFNzRDMyMsc3Ryb2tlLXdpZHRoOjNweCxjb2xvcjojMjEyNTI5XG4gICAgY2xhc3NEZWYgaW5zaWdodE5vZGUgZmlsbDojRThGOEY1LHN0cm9rZTojMkVDQzcxLHN0cm9rZS13aWR0aDozcHgsY29sb3I6IzIxMjUyOVxuICAgIGNsYXNzRGVmIGdvYWxOb2RlIGZpbGw6I0VBRUJGQyxzdHJva2U6IzVENjlCMSxzdHJva2Utd2lkdGg6M3B4LGNvbG9yOiMyMTI1Mjkmb250LXdlaWdodDpib2xkIiwibWVybWFpZCI6IntcInRoZW1lXCI6XCJkZWZhdWx0XCJ9IiwiYXV0b1N5bmMiOnRydWV9" target="_blank" rel="noopener">Maximize Diagram</a></p>
 
 # Run and deploy your AI Studio app
 
