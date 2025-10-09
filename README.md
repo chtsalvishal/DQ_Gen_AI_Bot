@@ -90,7 +90,7 @@ graph TD
 ### User Journey
 
 ```mermaid
-%%{init: { 'themeVariables': { 'fontSize': '36px', 'fontFamily': '"Segoe UI", Arial, sans-serif' } }}%%
+
 graph TD
     subgraph user_journey [<h3>User Journey</h3>]
 
