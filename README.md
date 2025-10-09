@@ -36,9 +36,9 @@ The Data Quality Bot is a versatile tool for anyone who relies on high-quality d
 ### Architecture Diagram
 
 ```mermaid
-%%{init: { 'themeVariables': { 'fontSize': '16px', 'fontFamily': 'Arial' } }}%%
+%%{init: { 'themeVariables': { 'fontSize': '36px', 'fontFamily': '"Segoe UI", Arial, sans-serif' } }}%%
 graph TD
-    subgraph application_boundary [Application Boundary]
+    subgraph architecture_diagram [Architecture Diagram]
         subgraph userenv [User Environment]
             A[User via Browser HTTPS]:::userNode
         end
@@ -72,7 +72,7 @@ graph TD
         F --> H
     end
     
-    style application_boundary fill:#F1F5F9,stroke:#CBD5E1,color:#0f172a
+    style architecture_diagram fill:#F1F5F9,stroke:#CBD5E1,color:#0f172a
     style userenv fill:#FFFFFF,stroke:#94A3B8,color:#0f172a
     style botlogic fill:#FFFFFF,stroke:#DADCE0,color:#0f172a
     style ingest fill:#F8F9FA,stroke:#DADCE0,color:#0f172a
@@ -92,7 +92,7 @@ graph TD
 ```mermaid
 %%{init: { 'themeVariables': { 'fontSize': '36px', 'fontFamily': '"Segoe UI", Arial, sans-serif' } }}%%
 graph TD
-    subgraph user_journey [User Journey: From Data to Decision-Making]
+    subgraph user_journey [Data Quality Bot User Journey]
 
         subgraph sg1 [1. Start]
             A["**Initiate Session**<br><br>User opens the<br>Data Quality Bot<br>application.<br>"]:::startNode
