@@ -96,51 +96,29 @@ graph LR
         direction LR
 
         subgraph sg1 [1. Start]
-            A(
-                "**Initiate Session**<br><br>User opens the<br>Data Quality Bot."
-            ):::startNode
+            A("**Initiate Session**<br><br>User opens the<br>Data Quality Bot."):::startNode
         end
 
         subgraph sg2 [2. Input & Context]
-            B{
-                "**Provide Data Context**<br><br>User inputs metadata,<br>statistics, and rules."
-            }:::inputNode
-            B --> B1(
-                "**Manual Entry**<br>Type or paste<br>details directly."
-            ):::inputNode
-            B --> B2(
-                "**File Upload**<br>Import via .sql<br>and .csv files."
-            ):::inputNode
+            B{"**Provide Data Context**<br><br>User inputs metadata,<br>statistics, and rules."}:::inputNode
+            B --> B1("**Manual Entry**<br>Type or paste<br>details directly."):::inputNode
+            B --> B2("**File Upload**<br>Import via .sql<br>and .csv files."):::inputNode
         end
         
         subgraph sg3 [3. AI Analysis]
-            C(
-                "**Trigger Analysis**<br><br>Click 'Analyze'<br>to start the process."
-            ):::analysisNode
-            D[
-                "**Gemini Processing**<br><br>The app sends a detailed,<br>context-rich prompt for<br>each table to the AI."
-            ]:::analysisNode
-            E(
-                "**Receive Results**<br><br>A structured JSON<br>response is returned<br>with all findings."
-            ):::analysisNode
+            C("**Trigger Analysis**<br><br>Click 'Analyze'<br>to start the process."):::analysisNode
+            D["**Gemini Processing**<br><br>The app sends a detailed,<br>context-rich prompt for<br>each table to the AI."]:::analysisNode
+            E("**Receive Results**<br><br>A structured JSON<br>response is returned<br>with all findings."):::analysisNode
         end
 
         subgraph sg4 [4. Insight & Action]
-            F[
-                "**Explore Dashboard**<br><br>Visualize results, filter issues,<br>and review table health scores."
-            ]:::insightNode
-            G(
-                "**Conversational AI**<br><br>Ask follow-up questions<br>to the integrated AI Assistant."
-            ):::insightNode
-            H(
-                "**Export & Share**<br><br>Generate professional PDF<br>or PowerPoint reports for<br>stakeholder collaboration."
-            ):::insightNode
+            F["**Explore Dashboard**<br><br>Visualize results, filter issues,<br>and review table health scores."]:::insightNode
+            G("**Conversational AI**<br><br>Ask follow-up questions<br>to the integrated AI Assistant."):::insightNode
+            H("**Export & Share**<br><br>Generate professional PDF<br>or PowerPoint reports for<br>stakeholder collaboration."):::insightNode
         end
         
         subgraph sg5 [5. Goal]
-           J(
-               "**Achieve Data Integrity**<br><br>User gains clear, actionable<br>insights to improve and<br>maintain data quality."
-           ):::goalNode
+           J("**Achieve Data Integrity**<br><br>User gains clear, actionable<br>insights to improve and<br>maintain data quality."):::goalNode
         end
     end
 
