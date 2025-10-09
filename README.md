@@ -92,35 +92,37 @@ graph TD
 ```mermaid
 %%{init: { 'themeVariables': { 'fontSize': '16px', 'fontFamily': 'Arial' } }}%%
 graph TD
-    subgraph sg1 [Start]
-        A[User Opens App]:::startNode
-    end
+    subgraph user_journey [User Journey Flow]
+        subgraph sg1 [Start]
+            A[User Opens App]:::startNode
+        end
 
-    subgraph sg2 [Input]
-        B{Provide Data Context}:::inputNode
-        B1[Manual entry]:::inputNode
-        B2[Upload SQL or CSV]:::inputNode
-    end
-    
-    subgraph sg3 [Analysis]
-        C[Click Analyze]:::analysisNode
-        D[Bot calls Gemini API]:::analysisNode
-        E[Receive Issues]:::analysisNode
-    end
+        subgraph sg2 [Input]
+            B{Provide Data Context}:::inputNode
+            B1[Manual entry]:::inputNode
+            B2[Upload SQL or CSV]:::inputNode
+        end
+        
+        subgraph sg3 [Analysis]
+            C[Click Analyze]:::analysisNode
+            D[Bot calls Gemini API]:::analysisNode
+            E[Receive Issues]:::analysisNode
+        end
 
-    subgraph sg4 [Insight and Action]
-        F[View Dashboard]:::insightNode
-        F1[Filter issues]:::insightNode
-        F2[Review Health]:::insightNode
-        G[Open AI Chat]:::insightNode
-        H[Generate Summary]:::insightNode
-        I[Export Reports]:::insightNode
-        I1[PDF]:::insightNode
-        I2[PowerPoint]:::insightNode
-    end
-    
-    subgraph sg5 [Goal]
-       J[Actionable Insights]:::goalNode
+        subgraph sg4 [Insight and Action]
+            F[View Dashboard]:::insightNode
+            F1[Filter issues]:::insightNode
+            F2[Review Health]:::insightNode
+            G[Open AI Chat]:::insightNode
+            H[Generate Summary]:::insightNode
+            I[Export Reports]:::insightNode
+            I1[PDF]:::insightNode
+            I2[PowerPoint]:::insightNode
+        end
+        
+        subgraph sg5 [Goal]
+           J[Actionable Insights]:::goalNode
+        end
     end
 
     A --> B
@@ -142,6 +144,7 @@ graph TD
     I2 --> J
     G --> J
     
+    style user_journey fill:#F1F5F9,stroke:#CBD5E1,color:#0f172a
     style sg1 fill:#FFFFFF,stroke:#DADCE0,color:#0f172a
     style sg2 fill:#FFFFFF,stroke:#DADCE0,color:#0f172a
     style sg3 fill:#FFFFFF,stroke:#DADCE0,color:#0f172a
