@@ -91,9 +91,9 @@ graph TD
 
 ```mermaid
 %%{init: { 'themeVariables': { 'fontSize': '36px', 'fontFamily': '"Segoe UI", Arial, sans-serif' } }}%%
-graph LR
+graph TD
     subgraph user_journey [User Journey: From Data to Decision]
-        direction LR
+        direction TD
 
         subgraph sg1 [1. Start]
             A["**Initiate Session**<br><br>User opens the<br>Data Quality Bot<br>application.<br>"]:::startNode
