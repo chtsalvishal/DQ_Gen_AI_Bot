@@ -90,38 +90,38 @@ graph TD
 ### User Journey
 
 ```mermaid
-%%{init: { 'themeVariables': { 'fontSize': '20px', 'fontFamily': 'Arial' } }}%%
+%%{init: { 'themeVariables': { 'fontSize': '24px', 'fontFamily': 'Arial' } }}%%
 graph TD
     subgraph user_journey [User Journey Flow]
         subgraph sg1 [Start]
-            A[User opens the<br>Data Quality Bot<br>web application.]:::startNode
+            A[User opens the<br>Data Quality Bot<br>in their browser.]:::startNode
         end
 
         subgraph sg2 [Input]
-            B{Provide Data Context<br>via the User Interface}:::inputNode
-            B1[Option A: Manually enters<br>table schemas, statistics,<br>and business rules.]:::inputNode
-            B2[Option B: Uploads a .sql file<br>for schemas and a .csv for<br>column statistics.]:::inputNode
+            B{Provide Comprehensive<br>Data Context via<br>the User Interface}:::inputNode
+            B1[Option A:<br>Manually enter details for<br>each table, including schemas,<br>statistics, and rules.]:::inputNode
+            B2[Option B:<br>Upload a structured .sql file<br>for all table schemas and a<br>.csv for column statistics.]:::inputNode
         end
         
         subgraph sg3 [Analysis]
-            C[Initiates analysis by clicking<br>'Analyze Data Quality'.]:::analysisNode
-            D[Application sends a detailed prompt<br>for each table to the<br>Gemini API.]:::analysisNode
-            E[Receives a structured JSON<br>response with a list of<br>detected issues.]:::analysisNode
+            C[Initiates the Analysis<br>by clicking the<br>'Analyze Data Quality' button.]:::analysisNode
+            D[The application constructs<br>a detailed, context-rich prompt<br>for each table and sends it<br>securely to the Gemini API.]:::analysisNode
+            E[Receives a structured JSON response<br>containing a comprehensive list<br>of all detected data quality issues.]:::analysisNode
         end
 
         subgraph sg4 [Insight and Action]
-            F[Explore the Interactive<br>Dashboard to view results.]:::insightNode
-            F1[Filter issues by<br>severity or by table.]:::insightNode
-            F2[Review table health scores<br>and identify issue hotspots.]:::insightNode
-            G[Ask follow-up questions<br>using the AI Assistant<br>for deeper insights.]:::insightNode
-            H[Generate an AI-powered<br>executive summary of<br>the key findings.]:::insightNode
-            I[Export findings for<br>stakeholders in various formats.]:::insightNode
-            I1[Download a detailed<br>report as a PDF.]:::insightNode
-            I2[Download a slide deck<br>as a PowerPoint file.]:::insightNode
+            F[Explore the Interactive Dashboard<br>to visualize and understand<br>the analysis results.]:::insightNode
+            F1[Dynamically filter the<br>detected issues by their<br>severity or by table.]:::insightNode
+            F2[Review at-a-glance table<br>health scores to quickly<br>identify problem hotspots.]:::insightNode
+            G[Ask detailed follow-up questions<br>using the integrated AI Assistant<br>to gain deeper, contextual insights.]:::insightNode
+            H[Generate an AI-powered<br>executive summary report<br>of the key findings.]:::insightNode
+            I[Export the complete findings for<br>stakeholders in various<br>professional formats.]:::insightNode
+            I1[Download a detailed, multi-page<br>technical report as a PDF file.]:::insightNode
+            I2[Download a high-level slide deck<br>overview as a PowerPoint file.]:::insightNode
         end
         
         subgraph sg5 [Goal]
-           J[User gains clear,<br>actionable insights to<br>improve data quality.]:::goalNode
+           J[The user gains clear,<br>actionable, and shareable insights<br>to efficiently improve<br>overall data quality.]:::goalNode
         end
     end
 
