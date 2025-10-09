@@ -103,12 +103,20 @@ graph TD
     end
 
     A --> B
-    B --> B1 & B2
+    B --> B1
+    B --> B2
     B1 --> C
     B2 --> C
-    C --> D --> E --> F
-    F --> F1 & F2 & G & H
-    H --> I --> I1 & I2
+    C --> D
+    D --> E
+    E --> F
+    F --> F1
+    F --> F2
+    F --> G
+    F --> H
+    H --> I
+    I --> I1
+    I --> I2
     I1 --> J
     I2 --> J
     G --> J
