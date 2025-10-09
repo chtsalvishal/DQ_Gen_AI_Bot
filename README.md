@@ -38,39 +38,44 @@ The Data Quality Bot is a versatile tool for anyone who relies on high-quality d
 ```mermaid
 %%{init: { 'themeVariables': { 'fontSize': '16px', 'fontFamily': 'Arial' } }}%%
 graph TD
-    subgraph userenv [User Environment]
-        A[User via Browser HTTPS]:::userNode
+    subgraph application_boundary [Application Boundary]
+        direction TD
+        
+        subgraph userenv [User Environment]
+            A[User via Browser HTTPS]:::userNode
+        end
+
+        B((Gateway)):::gatewayNode
+        
+        A -- Provides Data Context --> B
+
+        subgraph botlogic [Data Quality Bot]
+            subgraph ingest [Ingest]
+                C[Data Input and Parsing]:::processNode
+            end
+            subgraph pipelines [Pipelines]
+                D[Prompt Engineering]:::processNode
+            end
+            subgraph analytics [Analytics]
+                E[Google Gemini API]:::apiNode
+            end
+            subgraph presentation [Presentation]
+                F[Results Dashboard]:::outputNode
+                G[AI Assistant]:::outputNode
+                H[Export Engine]:::outputNode
+            end
+        end
+
+        B --> C
+        C --> D
+        D -- Secure API Call --> E
+        E -- JSON Response --> F
+        F --> G
+        F --> H
     end
-
-    B((Gateway)):::gatewayNode
     
-    A -- Provides Data Context --> B
-
-    subgraph botlogic [Data Quality Bot]
-        subgraph ingest [Ingest]
-            C[Data Input and Parsing]:::processNode
-        end
-        subgraph pipelines [Pipelines]
-            D[Prompt Engineering]:::processNode
-        end
-        subgraph analytics [Analytics]
-            E[Google Gemini API]:::apiNode
-        end
-        subgraph presentation [Presentation]
-            F[Results Dashboard]:::outputNode
-            G[AI Assistant]:::outputNode
-            H[Export Engine]:::outputNode
-        end
-    end
-
-    B --> C
-    C --> D
-    D -- Secure API Call --> E
-    E -- JSON Response --> F
-    F --> G
-    F --> H
-    
-    style userenv fill:#F8F9FA,stroke:#5F6368,color:#0f172a
+    style application_boundary fill:#F1F5F9,stroke:#CBD5E1,color:#0f172a
+    style userenv fill:#FFFFFF,stroke:#94A3B8,color:#0f172a
     style botlogic fill:#FFFFFF,stroke:#DADCE0,color:#0f172a
     style ingest fill:#F8F9FA,stroke:#DADCE0,color:#0f172a
     style pipelines fill:#F8F9FA,stroke:#DADCE0,color:#0f172a
