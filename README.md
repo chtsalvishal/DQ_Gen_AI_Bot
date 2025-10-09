@@ -90,38 +90,38 @@ graph TD
 ### User Journey
 
 ```mermaid
-%%{init: { 'themeVariables': { 'fontSize': '16px', 'fontFamily': 'Arial' } }}%%
+%%{init: { 'themeVariables': { 'fontSize': '18px', 'fontFamily': 'Arial' } }}%%
 graph TD
     subgraph user_journey [User Journey Flow]
         subgraph sg1 [Start]
-            A[User Opens App]:::startNode
+            A[User Opens the Data Quality Bot<br>Web Application]:::startNode
         end
 
         subgraph sg2 [Input]
-            B{Provide Data Context}:::inputNode
-            B1[Manual entry]:::inputNode
-            B2[Upload SQL or CSV]:::inputNode
+            B{Provide Data Context<br>via UI}:::inputNode
+            B1[Manually enters table schemas,<br>stats, and business rules]:::inputNode
+            B2[Uploads SQL file for schemas<br>and CSV for column statistics]:::inputNode
         end
         
         subgraph sg3 [Analysis]
-            C[Click Analyze]:::analysisNode
-            D[Bot calls Gemini API]:::analysisNode
-            E[Receive Issues]:::analysisNode
+            C[Initiates analysis by clicking<br>'Analyze Data Quality']:::analysisNode
+            D[Application sends a structured prompt<br>for each table to the Gemini API]:::analysisNode
+            E[Receives a structured JSON response<br>with detected issues]:::analysisNode
         end
 
         subgraph sg4 [Insight and Action]
-            F[View Dashboard]:::insightNode
-            F1[Filter issues]:::insightNode
-            F2[Review Health]:::insightNode
-            G[Open AI Chat]:::insightNode
-            H[Generate Summary]:::insightNode
-            I[Export Reports]:::insightNode
-            I1[PDF]:::insightNode
-            I2[PowerPoint]:::insightNode
+            F[Explore Interactive<br>Dashboard]:::insightNode
+            F1[Filter issues by severity<br>or table]:::insightNode
+            F2[Review table health scores<br>and issue hotspots]:::insightNode
+            G[Ask follow-up questions<br>using the AI Assistant]:::insightNode
+            H[Generate an AI-powered<br>executive summary]:::insightNode
+            I[Export findings for<br>stakeholders]:::insightNode
+            I1[Download detailed<br>PDF report]:::insightNode
+            I2[Download PowerPoint<br>presentation]:::insightNode
         end
         
         subgraph sg5 [Goal]
-           J[Actionable Insights]:::goalNode
+           J[User gains clear, actionable insights<br>to improve data quality]:::goalNode
         end
     end
 
