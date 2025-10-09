@@ -1,103 +1,172 @@
-<svg id="architecture-diagram" xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 900 850">
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 1250 820">
     <style>
-        .container { font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif; }
-        .title { font-size: 24px; font-weight: 600; fill: #0f172a; text-anchor: middle; }
-        .group-title { font-size: 16px; font-weight: 600; fill: #334155; text-anchor: middle; }
-        .box { stroke-width: 1.5; rx: 8; ry: 8; }
-        .box-text { font-size: 15px; font-weight: 500; color: #0f172a; text-align: center; display: flex; justify-content: center; align-items: center; height: 100%; }
-        .arrow { stroke: #475569; stroke-width: 1.5; fill: none; marker-end: url(#arrowhead); }
-        .arrow-label { font-size: 14px; fill: #1e293b; text-anchor: middle; }
-
-        .user-box { fill: #fefce8; stroke: #fde047; }
-        .process-box { fill: #eff6ff; stroke: #60a5fa; }
-        .api-box { fill: #f0fdf4; stroke: #4ade80; }
-        .output-box { fill: #fff1f2; stroke: #fb7185; }
-        .gateway-circle { fill: #f8fafc; stroke: #94a3b8; }
-
-        .main-cluster { fill: #f8fafc; stroke: #e2e8f0; }
-        .sub-cluster { fill: #ffffff; stroke: #cbd5e1; }
+        .container {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            font-size: 13px;
+        }
+        .title { font-size: 28px; font-weight: 600; text-anchor: middle; fill: #1E293B; }
+        .cluster-box { fill: #F1F5F9; stroke: #E2E8F0; stroke-width: 1.5; rx: 8; ry: 8; }
+        .cluster-title { font-size: 14px; font-weight: 500; fill: #475569; }
+        .component-box { stroke-width: 1.5; rx: 8; ry: 8; fill: #FFFFFF; }
+        .component-box-inner { border: 1.5px solid #CBD5E1; border-radius: 6px; background-color: #F8FAFC; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; box-sizing: border-box; }
+        .component-text-wrapper { text-align: center; font-size: 13px; line-height: 1.3; }
+        .component-title { font-weight: 600; color: #1E293B; }
+        .component-subtitle { color: #64748B; }
+        .actor-wrapper { text-align: center; }
+        .actor-label { font-size: 13px; font-weight: 500; fill: #1E293B; }
+        .arrow { stroke-width: 1.5; fill: none; marker-end: url(#arrowhead); }
+        .arrow-blue { stroke: #3880E8; }
+        .arrow-green { stroke: #34A853; }
+        .arrow-label { font-size: 12px; fill: #475569; text-anchor: middle; }
     </style>
     <defs>
         <marker id="arrowhead" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-            <path d="M 0 0 L 10 5 L 0 10 z" fill="#475569" />
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#3880E8" />
+        </marker>
+        <marker id="arrowhead-green" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#34A853" />
         </marker>
     </defs>
     <g class="container">
-        <!-- Titles -->
-        <text x="450" y="40" class="title">Architecture Diagram</text>
+        <!-- Title -->
+        <text x="625" y="40" class="title">End-to-End Google Cloud DevOps Flow</text>
 
-        <!-- Main Cluster Box -->
-        <rect x="250" y="80" width="620" height="740" class="main-cluster box" />
-        <text x="560" y="110" class="group-title">Data Quality Bot</text>
+        <!-- Clusters -->
+        <rect x="20" y="80" width="300" height="720" class="cluster-box"/>
+        <rect x="340" y="80" width="900" height="200" class="cluster-box"/>
+        <rect x="340" y="300" width="900" height="500" class="cluster-box"/>
 
-        <!-- Sub Clusters -->
-        <rect x="270" y="130" width="580" height="130" class="sub-cluster box" />
-        <rect x="270" y="580" width="580" height="220" class="sub-cluster box" />
-        <text x="560" y="570" class="group-title">Presentation</text>
+        <!-- Cluster Titles -->
+        <text x="40" y="105" class="cluster-title">Source Code Repository</text>
+        <text x="40" y="275" class="cluster-title">Continuous Integration</text>
+        <text x="40" y="475" class="cluster-title">Artifact Management</text>
+        <text x="360" y="105" class="cluster-title">Test Environment</text>
+        <text x="660" y="105" class="cluster-title">Stage Environment</text>
+        <text x="960" y="105" class="cluster-title">Prod Environment</text>
+        <text x="360" y="325" class="cluster-title">Continuous Delivery</text>
 
-        <!-- Nodes -->
-        <g id="user-node">
-            <rect x="30" y="158" width="200" height="75" class="box user-box" />
-            <foreignObject x="30" y="158" width="200" height="75">
-                <div xmlns="http://www.w3.org/1999/xhtml" class="box-text">User via Browser HTTPS</div>
+        <!-- Components -->
+        <!-- Source Code -->
+        <g transform="translate(40, 130)">
+            <rect width="260" height="100" class="component-box" stroke="#CBD5E1" />
+            <foreignObject width="260" height="100">
+                <div xmlns="http://www.w3.org/1999/xhtml" class="component-box-inner">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <svg width="40" height="40" viewBox="0 0 24 24"><path fill="#334155" d="M22.5 10.5c-.2-.5-.5-.9-.9-1.2L13.2 1c-.8-.7-2-.7-2.8 0l-8.4 8.2c-.4.3-.7.7-.9 1.2a2.3 2.3 0 0 0 0 2.2c.2.5.5.9.9 1.2l8.4 8.2c.8.7 2 .7 2.8 0l8.4-8.2c.4-.3.7-.7.9-1.2.5-1 .5-2 0-3zm-1.8 2.3l-8.4 8.2c-.4.3-1 .3-1.4 0l-8.4-8.2c-.2-.2-.3-.4-.4-.6s-.1-.5 0-.8c.1-.2.2-.4.4-.6l8.4-8.2c.4-.3 1-.3 1.4 0l8.4 8.2c.2.2.3.4.4.6.1.2.1.5 0 .8s-.2.4-.4.6zM12 17a5 5 0 1 1 0-10a5 5 0 0 1 0 10zm0-8.5a3.5 3.5 0 1 0 0 7a3.5 3.5 0 0 0 0-7zM15 8h-1.5V6h-3v2H9V5H7v3c0 .6.4 1 1 1h1.5v2h3V9H14a1 1 0 0 0 1-1V5h-2v3z"/></svg>
+                        <div class="component-text-wrapper"><div class="component-title">Git</div><div class="component-subtitle">Source Repository</div></div>
+                    </div>
+                </div>
             </foreignObject>
         </g>
-        <g id="gateway-node">
-            <circle cx="130" cy="330" r="45" class="box gateway-circle" />
-            <foreignObject x="85" y="285" width="90" height="90">
-                <div xmlns="http://www.w3.org/1999/xhtml" class="box-text">Gateway</div>
+
+        <!-- Cloud Build -->
+        <g transform="translate(40, 300)">
+            <rect width="260" height="100" class="component-box" stroke="#CBD5E1" />
+            <foreignObject width="260" height="100">
+                <div xmlns="http://www.w3.org/1999/xhtml" class="component-box-inner">
+                     <div style="display: flex; align-items: center; gap: 10px;">
+                        <svg width="40" height="40" viewBox="0 0 24 24"><path fill="#4285F4" d="M12.01 20.33l-7.3-4.22l-.01-8.42l7.31-4.22l7.31 4.22l.01 8.42l-7.32 4.22zm-5.8-5.11l5.8 3.35l5.8-3.35v-6.69l-5.8-3.35l-5.8 3.35v6.69z"/><path fill="#4285F4" d="m11.11 12.35l-3.36-1.94v-1.39l4.26 2.47l4.26-2.47v1.39l-3.36 1.94l-0.9 0.52l-0.9-0.52z"/></svg>
+                        <div class="component-text-wrapper"><div class="component-title">Cloud Build</div></div>
+                    </div>
+                </div>
             </foreignObject>
         </g>
-        <g id="data-input-node">
-            <rect x="290" y="158" width="200" height="75" class="box process-box" />
-            <foreignObject x="290" y="158" width="200" height="75">
-                <div xmlns="http://www.w3.org/1999/xhtml" class="box-text">Data Input and Parsing</div>
+
+        <!-- Artifacts -->
+        <g transform="translate(40, 500)">
+            <rect width="260" height="100" class="component-box" stroke="#CBD5E1" />
+            <foreignObject width="260" height="100">
+                <div xmlns="http://www.w3.org/1999/xhtml" class="component-box-inner">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <svg width="40" height="40" viewBox="0 0 24 24"><path fill="#4285F4" d="M18.88 15.12V4.88L12 1.12L5.12 4.88v10.24L12 18.88l6.88-3.76m-1-2.48l-5.88 3.2V9.04l5.88-3.2v6.88M6.12 6.56l5.88-3.2v6.8l-5.88 3.2V6.56M12 22.88l-8-4.3V4l8-4.3l8 4.3v14.48l-8 4.4z"/></svg>
+                        <div class="component-text-wrapper"><div class="component-title">Image Storage</div><div class="component-subtitle">Artifact Registry</div></div>
+                    </div>
+                </div>
             </foreignObject>
         </g>
-        <g id="prompt-eng-node">
-            <rect x="580" y="158" width="200" height="75" class="box process-box" />
-            <foreignObject x="580" y="158" width="200" height="75">
-                <div xmlns="http://www.w3.org/1999/xhtml" class="box-text">Prompt Engineering</div>
+        <g transform="translate(40, 620)">
+            <rect width="260" height="100" class="component-box" stroke="#CBD5E1" />
+            <foreignObject width="260" height="100">
+                <div xmlns="http://www.w3.org/1999/xhtml" class="component-box-inner">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <svg width="40" height="40" viewBox="0 0 24 24"><path fill="#4285F4" d="M18.88 15.12V4.88L12 1.12L5.12 4.88v10.24L12 18.88l6.88-3.76m-1-2.48l-5.88 3.2V9.04l5.88-3.2v6.88M6.12 6.56l5.88-3.2v6.8l-5.88 3.2V6.56M12 22.88l-8-4.3V4l8-4.3l8 4.3v14.48l-8 4.4z"/></svg>
+                        <div class="component-text-wrapper"><div class="component-title">Vulnerability Scan</div><div class="component-subtitle">Artifact Analysis</div></div>
+                    </div>
+                </div>
             </foreignObject>
         </g>
-        <g id="gemini-api-node">
-            <rect x="400" y="380" width="200" height="75" class="box api-box" />
-            <foreignObject x="400" y="380" width="200" height="75">
-                <div xmlns="http://www.w3.org/1999/xhtml" class="box-text">Google Gemini API</div>
-            </foreignObject>
+
+        <!-- CD -->
+        <g transform="translate(360, 360)"><rect width="200" height="100" class="component-box" stroke="#3880E8"/><foreignObject width="200" height="100"><div xmlns="http://www.w3.org/1999/xhtml" class="component-box-inner"><div class="component-text-wrapper"><div class="component-title">Release Creation</div><div class="component-subtitle">Cloud Deploy</div></div></div></foreignObject></g>
+        <g transform="translate(580, 360)"><rect width="200" height="100" class="component-box" stroke="#3880E8"/><foreignObject width="200" height="100"><div xmlns="http://www.w3.org/1999/xhtml" class="component-box-inner"><div class="component-text-wrapper"><div class="component-title">Test Rollout</div><div class="component-subtitle">Cloud Deploy</div></div></div></foreignObject></g>
+        <g transform="translate(800, 360)"><rect width="200" height="100" class="component-box" stroke="#3880E8"/><foreignObject width="200" height="100"><div xmlns="http://www.w3.org/1999/xhtml" class="component-box-inner"><div class="component-text-wrapper"><div class="component-title">Stage Rollout</div><div class="component-subtitle">Cloud Deploy</div></div></div></foreignObject></g>
+        <g transform="translate(1020, 360)"><rect width="200" height="100" class="component-box" stroke="#3880E8"/><foreignObject width="200" height="100"><div xmlns="http://www.w3.org/1999/xhtml" class="component-box-inner"><div class="component-text-wrapper"><div class="component-title">Prod Rollout</div><div class="component-subtitle">Cloud Deploy</div></div></div></foreignObject></g>
+        <g transform="translate(580, 480)"><rect width="420" height="100" class="component-box" stroke="#3880E8"/><foreignObject width="420" height="100"><div xmlns="http://www.w3.org/1999/xhtml" class="component-box-inner"><div class="component-text-wrapper"><div class="component-title">Promote</div><div class="component-subtitle">Cloud Deploy</div></div></div></foreignObject></g>
+        
+        <!-- K8s Engines -->
+        <g transform="translate(360, 130)"><rect width="280" height="100" class="component-box" stroke="#CBD5E1"/><foreignObject width="280" height="100"><div xmlns="http://www.w3.org/1999/xhtml" class="component-box-inner"><div class="component-text-wrapper"><div class="component-title">Test</div><div class="component-subtitle">Kubernetes Engine</div></div></div></foreignObject></g>
+        <g transform="translate(660, 130)"><rect width="280" height="100" class="component-box" stroke="#CBD5E1"/><foreignObject width="280" height="100"><div xmlns="http://www.w3.org/1999/xhtml" class="component-box-inner"><div class="component-text-wrapper"><div class="component-title">Stage</div><div class="component-subtitle">Kubernetes Engine</div></div></div></foreignObject></g>
+        <g transform="translate(960, 130)"><rect width="280" height="100" class="component-box" stroke="#CBD5E1"/><foreignObject width="280" height="100"><div xmlns="http://www.w3.org/1999/xhtml" class="component-box-inner"><div class="component-text-wrapper"><div class="component-title">Production</div><div class="component-subtitle">Kubernetes Engine</div></div></div></foreignObject></g>
+        
+        <!-- Approval -->
+        <path d="M1070 240 l50 50 l-50 50 l-50 -50 Z" class="component-box" stroke="#34A853" stroke-dasharray="4 4" fill="#E6F4EA"/>
+        <text x="1070" y="295" text-anchor="middle" font-weight="600" fill="#1E293B">Approval</text>
+
+        <!-- Actors -->
+        <g class="actor-wrapper" transform="translate(40, 60)">
+             <svg x="20" y="185" width="40" height="40" viewBox="0 0 24 24"><circle cx="12" cy="7" r="3" fill="#475569"/><path d="M12 10c-1.7 0-3 1.3-3 3v6h6v-6c0-1.7-1.3-3-3-3z" fill="#475569"/></svg>
+            <text x="40" y="245" class="actor-label" text-anchor="middle">Developer</text>
         </g>
-        <g id="results-dash-node">
-            <rect x="320" y="610" width="200" height="75" class="box output-box" />
-            <foreignObject x="320" y="610" width="200" height="75">
-                <div xmlns="http://www.w3.org/1999/xhtml" class="box-text">Results Dashboard</div>
-            </foreignObject>
+        <g class="actor-wrapper" transform="translate(40, 240)">
+            <svg x="20" y="185" width="40" height="40" viewBox="0 0 24 24"><path d="M16 9a4 4 0 1 0-8 0a4 4 0 0 0 8 0zm-4 5c-3.3 0-6 2.7-6 6v1h12v-1c0-3.3-2.7-6-6-6z" fill="#475569"/><path d="M8 9a4 4 0 1 1-8 0a4 4 0 0 1 8 0zm-4 5c-3.3 0-6 2.7-6 6v1h12v-1c0-3.3-2.7-6-6-6z" transform="translate(12,0)" fill="#475569"/></svg>
+            <text x="40" y="245" class="actor-label" text-anchor="middle">DevOps</text>
         </g>
-        <g id="export-engine-node">
-            <rect x="580" y="610" width="200" height="75" class="box output-box" />
-            <foreignObject x="580" y="610" width="200" height="75">
-                <div xmlns="http://www.w3.org/1999/xhtml" class="box-text">Export Engine</div>
-            </foreignObject>
+        <g class="actor-wrapper" transform="translate(40, 440)">
+            <svg x="20" y="185" width="40" height="40" viewBox="0 0 24 24"><path d="M16 9a4 4 0 1 0-8 0a4 4 0 0 0 8 0zm-4 5c-3.3 0-6 2.7-6 6v1h12v-1c0-3.3-2.7-6-6-6z" fill="#475569"/><path d="M8 9a4 4 0 1 1-8 0a4 4 0 0 1 8 0zm-4 5c-3.3 0-6 2.7-6 6v1h12v-1c0-3.3-2.7-6-6-6z" transform="translate(12,0)" fill="#475569"/></svg>
+            <text x="40" y="245" class="actor-label" text-anchor="middle">DevOps</text>
         </g>
-        <g id="ai-assistant-node">
-            <rect x="450" y="715" width="200" height="75" class="box output-box" />
-            <foreignObject x="450" y="715" width="200" height="75">
-                <div xmlns="http://www.w3.org/1999/xhtml" class="box-text">AI Assistant</div>
-            </foreignObject>
+        <g class="actor-wrapper" transform="translate(360, 580)">
+             <svg x="20" y="185" width="40" height="40" viewBox="0 0 24 24"><path d="M16 9a4 4 0 1 0-8 0a4 4 0 0 0 8 0zm-4 5c-3.3 0-6 2.7-6 6v1h12v-1c0-3.3-2.7-6-6-6z" fill="#475569"/><path d="M8 9a4 4 0 1 1-8 0a4 4 0 0 1 8 0zm-4 5c-3.3 0-6 2.7-6 6v1h12v-1c0-3.3-2.7-6-6-6z" transform="translate(12,0)" fill="#475569"/></svg>
+            <text x="40" y="245" class="actor-label" text-anchor="middle">DevOps</text>
+        </g>
+        <g class="actor-wrapper" transform="translate(970, 235)">
+            <svg x="20" y="185" width="40" height="40" viewBox="0 0 24 24"><path d="M16 9a4 4 0 1 0-8 0a4 4 0 0 0 8 0zm-4 5c-3.3 0-6 2.7-6 6v1h12v-1c0-3.3-2.7-6-6-6z" fill="#475569"/><path d="M8 9a4 4 0 1 1-8 0a4 4 0 0 1 8 0zm-4 5c-3.3 0-6 2.7-6 6v1h12v-1c0-3.3-2.7-6-6-6z" transform="translate(12,0)" fill="#475569"/><path d="M2 9a4 4 0 1 1-8 0a4 4 0 0 1 8 0zm-4 5c-3.3 0-6 2.7-6 6v1h12v-1c0-3.3-2.7-6-6-6z" transform="translate(24,0)" fill="#475569"/></svg>
+            <text x="40" y="245" class="actor-label" text-anchor="middle">Ops</text>
         </g>
 
         <!-- Arrows -->
-        <path d="M 130 233 V 285" class="arrow" />
-        <text x="80" y="265" class="arrow-label">Provides Data Context</text>
+        <path d="M100 230 H 100 V 300" class="arrow arrow-blue" />
+        <text x="130" y="260" class="arrow-label">Commit PR</text>
+        <path d="M170 300 V 260 H 170" class="arrow arrow-blue" marker-end="url(#arrowhead)"/>
+        <text x="205" y="275" class="arrow-label">Trigger CI</text>
+        <path d="M170 400 V 500 H 170" class="arrow arrow-green" marker-end="url(#arrowhead-green)"/>
+        <text x="205" y="450" class="arrow-label">Image Push</text>
+        <path d="M170 600 V 620" class="arrow arrow-green" marker-end="url(#arrowhead-green)"/>
+        <path d="M170 720 V 700" class="arrow arrow-green" marker-end="url(#arrowhead-green)"/>
+        <path d="M300 350 H 360" class="arrow arrow-blue"/>
+        <text x="330" y="340" class="arrow-label">Trigger</text>
+        <text x="330" y="355" class="arrow-label">Release</text>
+        <text x="330" y="370" class="arrow-label">Creation</text>
+
+        <path d="M560 410 H 580" class="arrow arrow-blue"/>
+        <path d="M780 410 H 800" class="arrow arrow-blue"/>
+        <path d="M1000 410 H 1020" class="arrow arrow-blue"/>
+
+        <path d="M460 630 H 460 V 580" class="arrow arrow-blue"/>
+        <path d="M460 480 V 460" class="arrow arrow-blue"/>
+        <path d="M680 460 V 480" class="arrow arrow-blue"/>
+        <path d="M580 530 H 460" class="arrow arrow-blue"/>
+        <path d="M1000 530 H 900 V 460" class="arrow arrow-blue"/>
         
-        <path d="M 175 330 H 290" class="arrow" />
-        <path d="M 490 195 H 580" class="arrow" />
-        <path d="M 680 233 V 380 H 600" class="arrow" />
-        <text x="690" y="320" class="arrow-label">Secure API Call</text>
+        <path d="M500 230 V 360" class="arrow arrow-green" marker-end="url(#arrowhead-green)"/>
+        <text x="470" y="295" class="arrow-label" transform="rotate(-90 470 295)">Hydrated Manifest</text>
+        <path d="M800 230 V 360" class="arrow arrow-green" marker-end="url(#arrowhead-green)"/>
+        <text x="770" y="295" class="arrow-label" transform="rotate(-90 770 295)">Hydrated Manifest</text>
+        <path d="M1100 230 V 290" class="arrow arrow-green" marker-end="url(#arrowhead-green)"/>
+        <text x="1130" y="260" class="arrow-label">Hydrated Manifest</text>
 
-        <path d="M 500 455 V 610 H 520" class="arrow" />
-        <text x="500" y="540" class="arrow-label" transform="rotate(-90 500 540)">JSON Response</text>
+        <path d="M1020 290 H 1020" class="arrow arrow-blue"/>
+        <path d="M1070 340 V 410 H 1120" class="arrow arrow-green" marker-end="url(#arrowhead-green)"/>
 
-        <path d="M 520 647 H 580" class="arrow" />
-        <path d="M 420 685 V 715 H 450" class="arrow" />
     </g>
 </svg>

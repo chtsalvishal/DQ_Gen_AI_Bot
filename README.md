@@ -31,15 +31,9 @@ The Data Quality Bot is a versatile tool for anyone who relies on high-quality d
 5.  **Conversational Insights**: A built-in chat assistant allows users to ask follow-up questions about the results in natural language, making it easy to understand complex relationships and prioritize fixes.
 6.  **Export & Share**: Findings can be exported into professional, stakeholder-ready formats, including a detailed PDF report or a PowerPoint presentation.
 
-## Architecture
+## End-to-End Google Cloud DevOps Flow
 
-### Architecture Diagram
-
-![Architecture Diagram](./docs/images/architecture-diagram.svg)
-
-### User Journey
-
-![User Journey Diagram](./docs/images/user-journey-diagram.svg)
+![End-to-End Google Cloud DevOps Flow](./docs/images/architecture-diagram.svg)
 
 # Run and deploy your AI Studio app
 
