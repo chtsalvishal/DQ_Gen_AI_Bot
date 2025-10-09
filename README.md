@@ -39,8 +39,6 @@ The Data Quality Bot is a versatile tool for anyone who relies on high-quality d
 %%{init: { 'themeVariables': { 'fontSize': '16px', 'fontFamily': 'Arial' } }}%%
 graph TD
     subgraph application_boundary [Application Boundary]
-        direction TD
-        
         subgraph userenv [User Environment]
             A[User via Browser HTTPS]:::userNode
         end
