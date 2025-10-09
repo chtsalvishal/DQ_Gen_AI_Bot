@@ -90,35 +90,35 @@ graph TD
 ### User Journey
 
 ```mermaid
-%%{init: { 'themeVariables': { 'fontSize': '28px', 'fontFamily': '"Segoe UI", Arial, sans-serif' } }}%%
+%%{init: { 'themeVariables': { 'fontSize': '36px', 'fontFamily': '"Segoe UI", Arial, sans-serif' } }}%%
 graph LR
     subgraph user_journey [User Journey: From Data to Decision]
         direction LR
 
         subgraph sg1 [1. Start]
-            A("**Initiate Session**<br><br>User opens the<br>Data Quality Bot."):::startNode
+            A("**Initiate Session**<br><br>User opens the<br>Data Quality Bot<br>application.<br>"):::startNode
         end
 
         subgraph sg2 [2. Input & Context]
-            B{"**Provide Data Context**<br><br>User inputs metadata,<br>statistics, and rules."}:::inputNode
-            B --> B1("**Manual Entry**<br>Type or paste<br>details directly."):::inputNode
-            B --> B2("**File Upload**<br>Import via .sql<br>and .csv files."):::inputNode
+            B{"**Provide Data Context**<br><br>User inputs metadata,<br>statistics, and<br>business rules.<br>"}:::inputNode
+            B --> B1("**Manual Entry**<br><br>Type or paste<br>details directly<br>into the form.<br>"):::inputNode
+            B --> B2("**File Upload**<br><br>Import context via<br>.sql and .csv files<br>for efficiency.<br>"):::inputNode
         end
         
         subgraph sg3 [3. AI Analysis]
-            C("**Trigger Analysis**<br><br>Click 'Analyze'<br>to start the process."):::analysisNode
-            D["**Gemini Processing**<br><br>The app sends a detailed,<br>context-rich prompt for<br>each table to the AI."]:::analysisNode
-            E("**Receive Results**<br><br>A structured JSON<br>response is returned<br>with all findings."):::analysisNode
+            C("**Trigger Analysis**<br><br>Click 'Analyze'<br>to start the AI<br>quality assessment.<br>"):::analysisNode
+            D["**Gemini Processing**<br><br>The app sends a detailed,<br>context-rich prompt for<br>each table to the AI.<br><br>"]:::analysisNode
+            E("**Receive Results**<br><br>A structured JSON<br>response is returned<br>with all findings.<br>"):::analysisNode
         end
 
         subgraph sg4 [4. Insight & Action]
-            F["**Explore Dashboard**<br><br>Visualize results, filter issues,<br>and review table health scores."]:::insightNode
-            G("**Conversational AI**<br><br>Ask follow-up questions<br>to the integrated AI Assistant."):::insightNode
-            H("**Export & Share**<br><br>Generate professional PDF<br>or PowerPoint reports for<br>stakeholder collaboration."):::insightNode
+            F["**Explore Dashboard**<br><br>Visualize results, filter<br>issues, and review<br>table health scores.<br>"]:::insightNode
+            G("**Conversational AI**<br><br>Ask follow-up questions<br>to the integrated<br>AI Assistant.<br>"):::insightNode
+            H("**Export & Share**<br><br>Generate professional PDF<br>or PowerPoint reports<br>for stakeholders.<br>"):::insightNode
         end
         
         subgraph sg5 [5. Goal]
-           J("**Achieve Data Integrity**<br><br>User gains clear, actionable<br>insights to improve and<br>maintain data quality."):::goalNode
+           J("**Achieve Data Integrity**<br><br>User gains clear, actionable<br>insights to improve and<br>maintain data quality.<br>"):::goalNode
         end
     end
 
@@ -131,7 +131,7 @@ graph LR
     G --> J
     H --> J
     
-    style user_journey fill:#F1F5F9,stroke:#CBD5E1,color:#0f172a
+    style user_journey fill:#EFF6FF,stroke:#BFDBFE,color:#1e293b
     
     classDef startNode fill:#E8F0FE,stroke:#4A90E2,stroke-width:3px,color:#212529,font-weight:bold
     classDef inputNode fill:#FEF9E7,stroke:#F5B041,stroke-width:3px,color:#212529
