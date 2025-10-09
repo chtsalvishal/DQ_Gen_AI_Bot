@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Architecture Diagram</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 20px;
+            box-sizing: border-box;
+            background-color: #f1f5f9;
+        }
+        .mermaid {
+            width: 95vw;
+            max-width: 1600px;
+        }
+    </style>
+</head>
+<body>
+    <pre class="mermaid">
+        %%{init: { 'themeVariables': { 'fontSize': '16px', 'fontFamily': '"Segoe UI", Arial, sans-serif' } }}%%
+        graph TD
+            subgraph architecture_diagram ["Architecture Diagram"]
+                subgraph userenv ["User Environment"]
+                    A["User via Browser (HTTPS)"]:::userNode
+                end
+
+                B((Gateway)):::gatewayNode
+                
+                A -- "Provides Data Context" --> B
+
+                subgraph botlogic ["Data Quality Bot"]
+                    subgraph ingest [Ingest]
+                        C["Data Input and Parsing"]:::processNode
+                    end
+                    subgraph pipelines [Pipelines]
+                        D["Prompt Engineering"]:::processNode
+                    end
+                    subgraph analytics [Analytics]
+                        E["Google Gemini API"]:::apiNode
+                    end
+                    subgraph presentation [Presentation]
+                        F["Results Dashboard"]:::outputNode
+                        G["AI Assistant"]:::outputNode
+                        H["Export Engine"]:::outputNode
+                    end
+                end
+
+                B --> C
+                C --> D
+                D -- "Secure API Call" --> E
+                E -- "JSON Response" --> F
+                F --> G
+                F --> H
+            end
+            
+            style architecture_diagram fill:#F1F5F9,stroke:#CBD5E1,color:#0f172a
+            style userenv fill:#FFFFFF,stroke:#94A3B8,color:#0f172a
+            style botlogic fill:#FFFFFF,stroke:#DADCE0,color:#0f172a
+            style ingest fill:#F8F9FA,stroke:#DADCE0,color:#0f172a
+            style pipelines fill:#F8F9FA,stroke:#DADCE0,color:#0f172a
+            style analytics fill:#F8F9FA,stroke:#DADCE0,color:#0f172a
+            style presentation fill:#F8F9FA,stroke:#DADCE0,color:#0f172a
+
+            classDef userNode fill:#FEFCE8,stroke:#FBBF24,stroke-width:2px,color:#0f172a
+            classDef gatewayNode fill:#F1F3F4,stroke:#70757A,stroke-width:2px,color:#0f172a
+            classDef processNode fill:#E9F3FD,stroke:#4285F4,stroke-width:2px,color:#0f172a
+            classDef apiNode fill:#E6F4EA,stroke:#34A853,stroke-width:2px,color:#0f172a
+            classDef outputNode fill:#FCE8E6,stroke:#EA4335,stroke-width:2px,color:#0f172a
+    </pre>
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ startOnLoad: true });
+    </script>
+</body>
+</html>
