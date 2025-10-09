@@ -1,359 +1,103 @@
-<svg id="mermaid-svg-arch" xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="-5 -5 950 995">
+<svg id="architecture-diagram" xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 900 850">
     <style>
-        .label {
-            font-family: "trebuchet ms", verdana, arial, sans-serif;
-            color: #333;
-        }
-        .label text {
-            fill: #333;
-        }
-        .node rect,
-        .node circle,
-        .node ellipse,
-        .node polygon,
-        .node path {
-            fill: #ECECFF;
-            stroke: #9370DB;
-            stroke-width: 1px;
-        }
-        .node .label {
-            text-align: center;
-        }
-        .node.clickable {
-            cursor: pointer;
-        }
-        .arrowheadPath {
-            fill: #333;
-        }
-        .edgePath .path {
-            stroke: #333;
-            stroke-width: 1.5px;
-        }
-        .flowchart-link {
-            stroke: #333;
-            fill: none;
-        }
-        .edgeLabel {
-            background-color: #e8e8e8;
-            text-align: center;
-        }
-        .edgeLabel rect {
-            opacity: 0.5;
-            background-color: #e8e8e8;
-            fill: #e8e8e8;
-        }
-        .cluster rect {
-            fill: #ffffde;
-            stroke: #aa3;
-            stroke-width: 1px;
-        }
-        .cluster text {
-            fill: #333;
-        }
-        .cluster span {
-            color: #333;
-        }
-        div.mermaidTooltip {
-            position: absolute;
-            text-align: center;
-            max-width: 200px;
-            padding: 2px;
-            font-family: "trebuchet ms", verdana, arial, sans-serif;
-            font-size: 12px;
-            background: hsl(80, 100%, 96.27%);
-            border: 1px solid #9370DB;
-            border-radius: 2px;
-            pointer-events: none;
-            z-index: 100;
-        }
-        .flowchartTitleText {
-            text-anchor: middle;
-            font-size: 18px;
-            fill: #333;
-        }
-        .userNode>rect {
-            fill: #FEFCE8;
-            stroke-width: 2px;
-            stroke: #FBBF24;
-        }
-        .userNode text {
-            fill: #0f172a;
-        }
-        .gatewayNode>rect {
-            fill: #F1F3F4;
-            stroke-width: 2px;
-            stroke: #70757A;
-        }
-        .gatewayNode>circle {
-            fill: #F1F3F4;
-            stroke-width: 2px;
-            stroke: #70757A;
-        }
-        .gatewayNode text {
-            fill: #0f172a;
-        }
-        .processNode>rect {
-            fill: #E9F3FD;
-            stroke-width: 2px;
-            stroke: #4285F4;
-        }
-        .processNode text {
-            fill: #0f172a;
-        }
-        .apiNode>rect {
-            fill: #E6F4EA;
-            stroke-width: 2px;
-            stroke: #34A853;
-        }
-        .apiNode text {
-            fill: #0f172a;
-        }
-        .outputNode>rect {
-            fill: #FCE8E6;
-            stroke-width: 2px;
-            stroke: #EA4335;
-        }
-        .outputNode text {
-            fill: #0f172a;
-        }
+        .container { font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif; }
+        .title { font-size: 24px; font-weight: 600; fill: #0f172a; text-anchor: middle; }
+        .group-title { font-size: 16px; font-weight: 600; fill: #334155; text-anchor: middle; }
+        .box { stroke-width: 1.5; rx: 8; ry: 8; }
+        .box-text { font-size: 15px; font-weight: 500; color: #0f172a; text-align: center; display: flex; justify-content: center; align-items: center; height: 100%; }
+        .arrow { stroke: #475569; stroke-width: 1.5; fill: none; marker-end: url(#arrowhead); }
+        .arrow-label { font-size: 14px; fill: #1e293b; text-anchor: middle; }
+
+        .user-box { fill: #fefce8; stroke: #fde047; }
+        .process-box { fill: #eff6ff; stroke: #60a5fa; }
+        .api-box { fill: #f0fdf4; stroke: #4ade80; }
+        .output-box { fill: #fff1f2; stroke: #fb7185; }
+        .gateway-circle { fill: #f8fafc; stroke: #94a3b8; }
+
+        .main-cluster { fill: #f8fafc; stroke: #e2e8f0; }
+        .sub-cluster { fill: #ffffff; stroke: #cbd5e1; }
     </style>
-    <g>
-        <g class="clusters">
-            <g id="cluster-architecture_diagram" class="cluster" transform="translate(469.84375,492.35156)">
-                <rect width="919.6875" height="964.7031" x="-459.84375" y="-482.35156" rx="5" ry="5" style="fill:#f1f5f9;stroke:#cbd5e1"></rect>
-                <g class="label" transform="translate(0,-461.85156)">
-                    <g transform="translate(0,0)">
-                        <foreignObject width="269" height="41">
-                            <div style="display:inline-block;white-space:nowrap" xmlns="http://www.w3.org/1999/xhtml">
-                                <h4 style="color:#0f172a;margin:0">Architecture Diagram</h4>
-                            </div>
-                        </foreignObject>
-                    </g>
-                </g>
-            </g>
-            <g id="cluster-userenv" class="cluster" transform="translate(201.19531,127.5)">
-                <rect width="346.39062" height="115" x="-173.19531" y="-57.5" rx="5" ry="5" style="fill:#fff;stroke:#94a3b8"></rect>
-                <g class="label" transform="translate(0,-37)">
-                    <g transform="translate(0,0)">
-                        <foreignObject width="151" height="41">
-                            <div style="display:inline-block;white-space:nowrap" xmlns="http://www.w3.org/1999/xhtml"><span style="color:#0f172a">User Environment</span></div>
-                        </foreignObject>
-                    </g>
-                </g>
-            </g>
-            <g id="cluster-botlogic" class="cluster" transform="translate(584.8281,515.35938)">
-                <rect width="610.3125" height="788.3906" x="-305.15625" y="-394.1953" rx="5" ry="5" style="fill:#fff;stroke:#dadce0"></rect>
-                <g class="label" transform="translate(0,-373.6953)">
-                    <g transform="translate(0,0)">
-                        <foreignObject width="186" height="41">
-                            <div style="display:inline-block;white-space:nowrap" xmlns="http://www.w3.org/1999/xhtml"><span style="color:#0f172a">Data Quality Bot</span></div>
-                        </foreignObject>
-                    </g>
-                </g>
-            </g>
-            <g id="cluster-ingest" class="cluster" transform="translate(428.82812,217.10938)">
-                <rect width="250" height="115" x="-125" y="-57.5" rx="5" ry="5" style="fill:#f8f9fa;stroke:#dadce0"></rect>
-                <g class="label" transform="translate(0,-37)">
-                    <g transform="translate(0,0)">
-                        <foreignObject width="65" height="41">
-                            <div style="display:inline-block;white-space:nowrap" xmlns="http://www.w3.org/1999/xhtml"><span style="color:#0f172a">Ingest</span></div>
-                        </foreignObject>
-                    </g>
-                </g>
-            </g>
-            <g id="cluster-pipelines" class="cluster" transform="translate(740.8281,217.10938)">
-                <rect width="250" height="115" x="-125" y="-57.5" rx="5" ry="5" style="fill:#f8f9fa;stroke:#dadce0"></rect>
-                <g class="label" transform="translate(0,-37)">
-                    <g transform="translate(0,0)">
-                        <foreignObject width="95" height="41">
-                            <div style="display:inline-block;white-space:nowrap" xmlns="http://www.w3.org/1999/xhtml"><span style="color:#0f172a">Pipelines</span></div>
-                        </foreignObject>
-                    </g>
-                </g>
-            </g>
-            <g id="cluster-analytics" class="cluster" transform="translate(584.8281,419.10938)">
-                <rect width="250" height="115" x="-125" y="-57.5" rx="5" ry="5" style="fill:#f8f9fa;stroke:#dadce0"></rect>
-                <g class="label" transform="translate(0,-37)">
-                    <g transform="translate(0,0)">
-                        <foreignObject width="99" height="41">
-                            <div style="display:inline-block;white-space:nowrap" xmlns="http://www.w3.org/1999/xhtml"><span style="color:#0f172a">Analytics</span></div>
-                        </foreignObject>
-                    </g>
-                </g>
-            </g>
-            <g id="cluster-presentation" class="cluster" transform="translate(584.8281,742.85938)">
-                <rect width="610.3125" height="262.5" x="-305.15625" y="-131.25" rx="5" ry="5" style="fill:#f8f9fa;stroke:#dadce0"></rect>
-                <g class="label" transform="translate(0,-110.75)">
-                    <g transform="translate(0,0)">
-                        <foreignObject width="138" height="41">
-                            <div style="display:inline-block;white-space:nowrap" xmlns="http://www.w3.org/1999/xhtml"><span style="color:#0f172a">Presentation</span></div>
-                        </foreignObject>
-                    </g>
-                </g>
-            </g>
+    <defs>
+        <marker id="arrowhead" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#475569" />
+        </marker>
+    </defs>
+    <g class="container">
+        <!-- Titles -->
+        <text x="450" y="40" class="title">Architecture Diagram</text>
+
+        <!-- Main Cluster Box -->
+        <rect x="250" y="80" width="620" height="740" class="main-cluster box" />
+        <text x="560" y="110" class="group-title">Data Quality Bot</text>
+
+        <!-- Sub Clusters -->
+        <rect x="270" y="130" width="580" height="130" class="sub-cluster box" />
+        <rect x="270" y="580" width="580" height="220" class="sub-cluster box" />
+        <text x="560" y="570" class="group-title">Presentation</text>
+
+        <!-- Nodes -->
+        <g id="user-node">
+            <rect x="30" y="158" width="200" height="75" class="box user-box" />
+            <foreignObject x="30" y="158" width="200" height="75">
+                <div xmlns="http://www.w3.org/1999/xhtml" class="box-text">User via Browser HTTPS</div>
+            </foreignObject>
         </g>
-        <g class="nodes">
-            <g id="node-A" class="node userNode" transform="translate(201.19531,127.5)">
-                <rect width="326.39062" height="75" x="-163.19531" y="-37.5" rx="5" ry="5"></rect>
-                <g class="label" transform="translate(0,0)">
-                    <g transform="translate(0,0)">
-                        <foreignObject width="306.39062" height="55">
-                            <div style="display:inline-block;white-space:nowrap;text-align:center" xmlns="http://www.w3.org/1999/xhtml"><span style="color:#0f172a">User via Browser HTTPS</span></div>
-                        </foreignObject>
-                    </g>
-                </g>
-            </g>
-            <g id="node-B" class="node gatewayNode" transform="translate(201.19531,274.60938)">
-                <circle r="37.5" cx="0" cy="0"></circle>
-                <g class="label" transform="translate(0,0)">
-                    <g transform="translate(0,0)">
-                        <foreignObject width="75" height="41">
-                            <div style="display:inline-block;white-space:nowrap;text-align:center" xmlns="http://www.w3.org/1999/xhtml"><span style="color:#0f172a">Gateway</span></div>
-                        </foreignObject>
-                    </g>
-                </g>
-            </g>
-            <g id="node-C" class="node processNode" transform="translate(428.82812,217.10938)">
-                <rect width="230" height="75" x="-115" y="-37.5" rx="5" ry="5"></rect>
-                <g class="label" transform="translate(0,0)">
-                    <g transform="translate(0,0)">
-                        <foreignObject width="210" height="55">
-                            <div style="display:inline-block;white-space:nowrap;text-align:center" xmlns="http://www.w3.org/1999/xhtml"><span style="color:#0f172a">Data Input and Parsing</span></div>
-                        </foreignObject>
-                    </g>
-                </g>
-            </g>
-            <g id="node-D" class="node processNode" transform="translate(740.8281,217.10938)">
-                <rect width="230" height="75" x="-115" y="-37.5" rx="5" ry="5"></rect>
-                <g class="label" transform="translate(0,0)">
-                    <g transform="translate(0,0)">
-                        <foreignObject width="210" height="55">
-                            <div style="display:inline-block;white-space:nowrap;text-align:center" xmlns="http://www.w3.org/1999/xhtml"><span style="color:#0f172a">Prompt Engineering</span></div>
-                        </foreignObject>
-                    </g>
-                </g>
-            </g>
-            <g id="node-E" class="node apiNode" transform="translate(584.8281,419.10938)">
-                <rect width="230" height="75" x="-115" y="-37.5" rx="5" ry="5"></rect>
-                <g class="label" transform="translate(0,0)">
-                    <g transform="translate(0,0)">
-                        <foreignObject width="210" height="55">
-                            <div style="display:inline-block;white-space:nowrap;text-align:center" xmlns="http://www.w3.org/1999/xhtml"><span style="color:#0f172a">Google Gemini API</span></div>
-                        </foreignObject>
-                    </g>
-                </g>
-            </g>
-            <g id="node-F" class="node outputNode" transform="translate(415.96875,742.85938)">
-                <rect width="230" height="75" x="-115" y="-37.5" rx="5" ry="5"></rect>
-                <g class="label" transform="translate(0,0)">
-                    <g transform="translate(0,0)">
-                        <foreignObject width="210" height="55">
-                            <div style="display:inline-block;white-space:nowrap;text-align:center" xmlns="http://www.w3.org/1999/xhtml"><span style="color:#0f172a">Results Dashboard</span></div>
-                        </foreignObject>
-                    </g>
-                </g>
-            </g>
-            <g id="node-G" class="node outputNode" transform="translate(584.8281,835.35938)">
-                <rect width="180" height="75" x="-90" y="-37.5" rx="5" ry="5"></rect>
-                <g class="label" transform="translate(0,0)">
-                    <g transform="translate(0,0)">
-                        <foreignObject width="160" height="55">
-                            <div style="display:inline-block;white-space:nowrap;text-align:center" xmlns="http://www.w3.org/1999/xhtml"><span style="color:#0f172a">AI Assistant</span></div>
-                        </foreignObject>
-                    </g>
-                </g>
-            </g>
-            <g id="node-H" class="node outputNode" transform="translate(753.6875,742.85938)">
-                <rect width="180" height="75" x="-90" y="-37.5" rx="5" ry="5"></rect>
-                <g class="label" transform="translate(0,0)">
-                    <g transform="translate(0,0)">
-                        <foreignObject width="160" height="55">
-                            <div style="display:inline-block;white-space:nowrap;text-align:center" xmlns="http://www.w3.org/1999/xhtml"><span style="color:#0f172a">Export Engine</span></div>
-                        </foreignObject>
-                    </g>
-                </g>
-            </g>
+        <g id="gateway-node">
+            <circle cx="130" cy="330" r="45" class="box gateway-circle" />
+            <foreignObject x="85" y="285" width="90" height="90">
+                <div xmlns="http://www.w3.org/1999/xhtml" class="box-text">Gateway</div>
+            </foreignObject>
         </g>
-        <g class="edgePaths">
-            <g class="edgePath" style="opacity:1">
-                <path d="M201.19531 165C201.19531 186.29 201.19531 219.04 201.19531 237.11" class="path" marker-end="url(#arrowhead-0)" style="fill:none"></path>
-                <defs>
-                    <marker id="arrowhead-0" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="strokeWidth" markerWidth="8" markerHeight="6" orient="auto">
-                        <path d="M0 0L10 5 0 10z" class="arrowheadPath" style="stroke-width:1;stroke-dasharray:1,0"></path>
-                    </marker>
-                </defs>
-            </g>
-            <g class="edgePath" style="opacity:1">
-                <path d="M238.69531 274.60938C274.69702 265.68265 326.64166 253.56528 368.82812 247.10938" class="path" marker-end="url(#arrowhead-1)" style="fill:none"></path>
-                <defs>
-                    <marker id="arrowhead-1" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="strokeWidth" markerWidth="8" markerHeight="6" orient="auto">
-                        <path d="M0 0L10 5 0 10z" class="arrowheadPath" style="stroke-width:1;stroke-dasharray:1,0"></path>
-                    </marker>
-                </defs>
-            </g>
-            <g class="edgePath" style="opacity:1">
-                <path d="M543.8281 217.10938C584.09314 217.10938 648.9912 217.10938 698.9688 217.10938" class="path" marker-end="url(#arrowhead-2)" style="fill:none"></path>
-                <defs>
-                    <marker id="arrowhead-2" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="strokeWidth" markerWidth="8" markerHeight="6" orient="auto">
-                        <path d="M0 0L10 5 0 10z" class="arrowheadPath" style="stroke-width:1;stroke-dasharray:1,0"></path>
-                    </marker>
-                </defs>
-            </g>
-            <g class="edgePath" style="opacity:1">
-                <path d="M740.8281 254.60938C713.4533 281.9843 656.8778 338.5598 620.99847 381.60938" class="path" marker-end="url(#arrowhead-3)" style="fill:none"></path>
-                <defs>
-                    <marker id="arrowhead-3" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="strokeWidth" markerWidth="8" markerHeight="6" orient="auto">
-                        <path d="M0 0L10 5 0 10z" class="arrowheadPath" style="stroke-width:1;stroke-dasharray:1,0"></path>
-                    </marker>
-                </defs>
-            </g>
-            <g class="edgePath" style="opacity:1">
-                <path d="M584.8281 456.60938C552.51868 510.99966 479.7215 628.9810 438.06876 692.8594" class="path" marker-end="url(#arrowhead-4)" style="fill:none"></path>
-                <defs>
-                    <marker id="arrowhead-4" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="strokeWidth" markerWidth="8" markerHeight="6" orient="auto">
-                        <path d="M0 0L10 5 0 10z" class="arrowheadPath" style="stroke-width:1;stroke-dasharray:1,0"></path>
-                    </marker>
-                </defs>
-            </g>
-            <g class="edgePath" style="opacity:1">
-                <path d="M449.69708 780.35938C486.8228 797.58984 535.22894 819.0645 566.5781 829.76465" class="path" marker-end="url(#arrowhead-5)" style="fill:none"></path>
-                <defs>
-                    <marker id="arrowhead-5" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="strokeWidth" markerWidth="8" markerHeight="6" orient="auto">
-                        <path d="M0 0L10 5 0 10z" class="arrowheadPath" style="stroke-width:1;stroke-dasharray:1,0"></path>
-                    </marker>
-                </defs>
-            </g>
-            <g class="edgePath" style="opacity:1">
-                <path d="M487.49127 772.5251C556.8048 763.8255 653.90155 751.82635 713.3079 746.46698" class="path" marker-end="url(#arrowhead-6)" style="fill:none"></path>
-                <defs>
-                    <marker id="arrowhead-6" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="strokeWidth" markerWidth="8" markerHeight="6" orient="auto">
-                        <path d="M0 0L10 5 0 10z" class="arrowheadPath" style="stroke-width:1;stroke-dasharray:1,0"></path>
-                    </marker>
-                </defs>
-            </g>
+        <g id="data-input-node">
+            <rect x="290" y="158" width="200" height="75" class="box process-box" />
+            <foreignObject x="290" y="158" width="200" height="75">
+                <div xmlns="http://www.w3.org/1999/xhtml" class="box-text">Data Input and Parsing</div>
+            </foreignObject>
         </g>
-        <g class="edgeLabels">
-            <g class="edgeLabel" transform="translate(201.19531,202.55469)">
-                <g transform="translate(-112.5,-20.5)">
-                    <foreignObject width="225" height="41">
-                        <div style="display:inline-block;white-space:nowrap" xmlns="http://www.w3.org/1999/xhtml"><span class="edgeLabel">Provides Data Context</span></div>
-                    </foreignObject>
-                </g>
-            </g>
-            <g class="edgeLabel" transform="translate(662.9284,333.35938)">
-                <g transform="translate(-87.5,-20.5)">
-                    <foreignObject width="175" height="41">
-                        <div style="display:inline-block;white-space:nowrap" xmlns="http://www.w3.org/1999/xhtml"><span class="edgeLabel">Secure API Call</span></div>
-                    </foreignObject>
-                </g>
-            </g>
-            <g class="edgeLabel" transform="translate(509.1953,574.73438)">
-                <g transform="translate(-97.5,-20.5)">
-                    <foreignObject width="195" height="41">
-                        <div style="display:inline-block;white-space:nowrap" xmlns="http://www.w3.org/1999/xhtml"><span class="edgeLabel">JSON Response</span></div>
-                    </foreignObject>
-                </g>
-            </g>
+        <g id="prompt-eng-node">
+            <rect x="580" y="158" width="200" height="75" class="box process-box" />
+            <foreignObject x="580" y="158" width="200" height="75">
+                <div xmlns="http://www.w3.org/1999/xhtml" class="box-text">Prompt Engineering</div>
+            </foreignObject>
         </g>
+        <g id="gemini-api-node">
+            <rect x="400" y="380" width="200" height="75" class="box api-box" />
+            <foreignObject x="400" y="380" width="200" height="75">
+                <div xmlns="http://www.w3.org/1999/xhtml" class="box-text">Google Gemini API</div>
+            </foreignObject>
+        </g>
+        <g id="results-dash-node">
+            <rect x="320" y="610" width="200" height="75" class="box output-box" />
+            <foreignObject x="320" y="610" width="200" height="75">
+                <div xmlns="http://www.w3.org/1999/xhtml" class="box-text">Results Dashboard</div>
+            </foreignObject>
+        </g>
+        <g id="export-engine-node">
+            <rect x="580" y="610" width="200" height="75" class="box output-box" />
+            <foreignObject x="580" y="610" width="200" height="75">
+                <div xmlns="http://www.w3.org/1999/xhtml" class="box-text">Export Engine</div>
+            </foreignObject>
+        </g>
+        <g id="ai-assistant-node">
+            <rect x="450" y="715" width="200" height="75" class="box output-box" />
+            <foreignObject x="450" y="715" width="200" height="75">
+                <div xmlns="http://www.w3.org/1999/xhtml" class="box-text">AI Assistant</div>
+            </foreignObject>
+        </g>
+
+        <!-- Arrows -->
+        <path d="M 130 233 V 285" class="arrow" />
+        <text x="80" y="265" class="arrow-label">Provides Data Context</text>
+        
+        <path d="M 175 330 H 290" class="arrow" />
+        <path d="M 490 195 H 580" class="arrow" />
+        <path d="M 680 233 V 380 H 600" class="arrow" />
+        <text x="690" y="320" class="arrow-label">Secure API Call</text>
+
+        <path d="M 500 455 V 610 H 520" class="arrow" />
+        <text x="500" y="540" class="arrow-label" transform="rotate(-90 500 540)">JSON Response</text>
+
+        <path d="M 520 647 H 580" class="arrow" />
+        <path d="M 420 685 V 715 H 450" class="arrow" />
     </g>
 </svg>
