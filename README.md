@@ -90,38 +90,38 @@ graph TD
 ### User Journey
 
 ```mermaid
-%%{init: { 'themeVariables': { 'fontSize': '18px', 'fontFamily': 'Arial' } }}%%
+%%{init: { 'themeVariables': { 'fontSize': '20px', 'fontFamily': 'Arial' } }}%%
 graph TD
     subgraph user_journey [User Journey Flow]
         subgraph sg1 [Start]
-            A[User Opens the Data Quality Bot<br>Web Application]:::startNode
+            A[User opens the<br>Data Quality Bot<br>web application.]:::startNode
         end
 
         subgraph sg2 [Input]
-            B{Provide Data Context<br>via UI}:::inputNode
-            B1[Manually enters table schemas,<br>stats, and business rules]:::inputNode
-            B2[Uploads SQL file for schemas<br>and CSV for column statistics]:::inputNode
+            B{Provide Data Context<br>via the User Interface}:::inputNode
+            B1[Option A: Manually enters<br>table schemas, statistics,<br>and business rules.]:::inputNode
+            B2[Option B: Uploads a .sql file<br>for schemas and a .csv for<br>column statistics.]:::inputNode
         end
         
         subgraph sg3 [Analysis]
-            C[Initiates analysis by clicking<br>'Analyze Data Quality']:::analysisNode
-            D[Application sends a structured prompt<br>for each table to the Gemini API]:::analysisNode
-            E[Receives a structured JSON response<br>with detected issues]:::analysisNode
+            C[Initiates analysis by clicking<br>'Analyze Data Quality'.]:::analysisNode
+            D[Application sends a detailed prompt<br>for each table to the<br>Gemini API.]:::analysisNode
+            E[Receives a structured JSON<br>response with a list of<br>detected issues.]:::analysisNode
         end
 
         subgraph sg4 [Insight and Action]
-            F[Explore Interactive<br>Dashboard]:::insightNode
-            F1[Filter issues by severity<br>or table]:::insightNode
-            F2[Review table health scores<br>and issue hotspots]:::insightNode
-            G[Ask follow-up questions<br>using the AI Assistant]:::insightNode
-            H[Generate an AI-powered<br>executive summary]:::insightNode
-            I[Export findings for<br>stakeholders]:::insightNode
-            I1[Download detailed<br>PDF report]:::insightNode
-            I2[Download PowerPoint<br>presentation]:::insightNode
+            F[Explore the Interactive<br>Dashboard to view results.]:::insightNode
+            F1[Filter issues by<br>severity or by table.]:::insightNode
+            F2[Review table health scores<br>and identify issue hotspots.]:::insightNode
+            G[Ask follow-up questions<br>using the AI Assistant<br>for deeper insights.]:::insightNode
+            H[Generate an AI-powered<br>executive summary of<br>the key findings.]:::insightNode
+            I[Export findings for<br>stakeholders in various formats.]:::insightNode
+            I1[Download a detailed<br>report as a PDF.]:::insightNode
+            I2[Download a slide deck<br>as a PowerPoint file.]:::insightNode
         end
         
         subgraph sg5 [Goal]
-           J[User gains clear, actionable insights<br>to improve data quality]:::goalNode
+           J[User gains clear,<br>actionable insights to<br>improve data quality.]:::goalNode
         end
     end
 
