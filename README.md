@@ -115,6 +115,8 @@ graph TD
         G[Open AI Chat]:::insightNode
         H[Generate Summary]:::insightNode
         I[Export Reports]:::insightNode
+        I1[PDF]:::insightNode
+        I2[PowerPoint]:::insightNode
     end
     
     subgraph sg5 [Goal]
@@ -134,8 +136,8 @@ graph TD
     F --> G
     F --> H
     H --> I
-    I --> I1[PDF]
-    I --> I2[PowerPoint]
+    I --> I1
+    I --> I2
     I1 --> J
     I2 --> J
     G --> J
