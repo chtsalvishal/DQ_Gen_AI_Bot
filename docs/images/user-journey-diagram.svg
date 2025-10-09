@@ -1,1 +1,259 @@
-<svg id="mermaid-svg-sU2l86tG7F8YxUf8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1374 302"><style>.label{font-family:"trebuchet ms", verdana, arial, sans-serif;color:#333}.label text{fill:#333}.node rect,.node circle,.node ellipse,.node polygon,.node path{fill:#ECECFF;stroke:#9370DB;stroke-width:1px}.node .label{text-align:center}.arrowheadPath{fill:#333}.edgePath .path{stroke:#333;stroke-width:1.5px}.flowchart-link{stroke:#333;fill:none}.edgeLabel{background-color:#e8e8e8;text-align:center}.edgeLabel rect{opacity:0.5;background-color:#e8e8e8;fill:#e8e8e8}.cluster rect{fill:#ffffde;stroke:#aa3;stroke-width:1px}.cluster text{fill:#333}.cluster span{color:#333}div.mermaidTooltip{position:absolute;text-align:center;max-width:200px;padding:2px;font-family:"trebuchet ms", verdana, arial, sans-serif;font-size:12px;background:hsl(80, 100%, 96.27%);border:1px solid #9370DB;border-radius:2px;pointer-events:none;z-index:100}.flowchartTitleText{text-anchor:middle;font-size:18px;fill:#333}</style><g><g class="clusters"><g class="cluster" id="cluster-User_Journey" transform="translate(686.9921875,150.5390625)"><rect width="1353.984375" height="281.078125" x="-676.9921875" y="-140.5390625" style="fill:rgb(241, 245, 249); stroke:rgb(203, 213, 225);"></rect><g class="label" transform="translate(0,-120.0390625)"><g transform="translate(0,0)"><foreignObject width="127" height="41"><div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; white-space: nowrap;"><h4 style="color: rgb(15, 23, 42); margin: 0px;">User Journey</h4></div></foreignObject></g></g></g><g class="cluster" id="cluster-1._Input_Phase" transform="translate(203,150.5390625)"><rect width="346" height="175" x="-173" y="-87.5" style="fill:rgb(255, 255, 255); stroke:rgb(148, 163, 184);"></rect><g class="label" transform="translate(0,-67)"><g transform="translate(0,0)"><foreignObject width="112" height="41"><div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; white-space: nowrap;"><span style="color: rgb(15, 23, 42);">1. Input Phase</span></div></foreignObject></g></g></g><g class="cluster" id="cluster-2._Analysis_Phase" transform="translate(637.5,150.5390625)"><rect width="351" height="175" x="-175.5" y="-87.5" style="fill:rgb(255, 255, 255); stroke:rgb(148, 163, 184);"></rect><g class="label" transform="translate(0,-67)"><g transform="translate(0,0)"><foreignObject width="128" height="41"><div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; white-space: nowrap;"><span style="color: rgb(15, 23, 42);">2. Analysis Phase</span></div></foreignObject></g></g></g><g class="cluster" id="cluster-3._Review_&amp;_Action_Phase" transform="translate(1126.984375,150.5390625)"><rect width="484" height="175" x="-242" y="-87.5" style="fill:rgb(255, 255, 255); stroke:rgb(148, 163, 184);"></rect><g class="label" transform="translate(0,-67)"><g transform="translate(0,0)"><foreignObject width="194" height="41"><div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; white-space: nowrap;"><span style="color: rgb(15, 23, 42);">3. Review &amp; Action Phase</span></div></foreignObject></g></g></g></g><g class="nodes"><g class="node" id="node-A" transform="translate(203,150.5390625)"><rect width="326" height="95" x="-163" y="-47.5" rx="5" ry="5" style="fill:rgb(239, 246, 255); stroke:rgb(96, 165, 250);"></rect><g class="label" transform="translate(0,0)"><g transform="translate(0,0)"><foreignObject width="306" height="75"><div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; white-space: nowrap; text-align: center;">Provide Data Context <br/> User inputs schemas, stats, rules via UI</div></foreignObject></g></g></g><g class="node" id="node-B" transform="translate(547,150.5390625)"><rect width="150" height="95" x="-75" y="-47.5" rx="5" ry="5" style="fill:rgb(239, 246, 255); stroke:rgb(96, 165, 250);"></rect><g class="label" transform="translate(0,0)"><g transform="translate(0,0)"><foreignObject width="130" height="75"><div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; white-space: nowrap; text-align: center;">AI-Powered Analysis <br/> App constructs prompt and calls Gemini</div></foreignObject></g></g></g><g class="node" id="node-C" transform="translate(728,150.5390625)"><rect width="151" height="95" x="-75.5" y="-47.5" rx="5" ry="5" style="fill:rgb(239, 246, 255); stroke:rgb(96, 165, 250);"></rect><g class="label" transform="translate(0,0)"><g transform="translate(0,0)"><foreignObject width="131" height="75"><div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; white-space: nowrap; text-align: center;">Structured Results <br/> Gemini returns JSON with detected issues</div></foreignObject></g></g></g><g class="node" id="node-D" transform="translate(979.984375,150.5390625)"><rect width="150" height="95" x="-75" y="-47.5" rx="5" ry="5" style="fill:rgb(220, 252, 231); stroke:rgb(34, 197, 94);"></rect><g class="label" transform="translate(0,0)"><g transform="translate(0,0)"><foreignObject width="130" height="75"><div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; white-space: nowrap; text-align: center;">Visualize &amp; Explore <br/> UI renders an interactive dashboard</div></foreignObject></g></g></g><g class="node" id="node-E" transform="translate(1151.984375,150.5390625)"><rect width="170" height="95" x="-85" y="-47.5" rx="5" ry="5" style="fill:rgb(220, 252, 231); stroke:rgb(34, 197, 94);"></rect><g class="label" transform="translate(0,0)"><g transform="translate(0,0)"><foreignObject width="150" height="75"><div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; white-space: nowrap; text-align: center;">Conversational Insights <br/> User asks follow-up questions to AI Assistant</div></foreignObject></g></g></g><g class="node" id="node-F" transform="translate(1308.984375,150.5390625)"><rect width="150" height="95" x="-75" y="-47.5" rx="5" ry="5" style="fill:rgb(220, 252, 231); stroke:rgb(34, 197, 94);"></rect><g class="label" transform="translate(0,0)"><g transform="translate(0,0)"><foreignObject width="130" height="75"><div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; white-space: nowrap; text-align: center;">Export &amp; Share <br/> User exports PDF/PPTX for stakeholders</div></foreignObject></g></g></g></g><g class="edgePaths"><g class="edgePath" style="opacity: 1;"><path d="M 366 150.5390625 C 392.53 150.5390625 428.69 150.5390625 458.58 150.5390625" class="path" marker-end="url(#arrowhead-0)" style="fill:none"></path><defs><marker id="arrowhead-0" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="strokeWidth" markerWidth="8" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" class="arrowheadPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"></path></marker></defs></g><g class="edgePath" style="opacity: 1;"><path d="M 622 150.5390625 C 632.4 150.5390625 642.8 150.5390625 652.5 150.5390625" class="path" marker-end="url(#arrowhead-1)" style="fill:none"></path><defs><marker id="arrowhead-1" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="strokeWidth" markerWidth="8" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" class="arrowheadPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"></path></marker></defs></g><g class="edgePath" style="opacity: 1;"><path d="M 803.5 150.5390625 C 832.9 150.5390625 873.34 150.5390625 904.38 150.5390625" class="path" marker-end="url(#arrowhead-2)" style="fill:none"></path><defs><marker id="arrowhead-2" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="strokeWidth" markerWidth="8" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" class="arrowheadPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"></path></marker></defs></g><g class="edgePath" style="opacity: 1;"><path d="M 1054.984375 150.5390625 C 1065.38 150.5390625 1075.78 150.5390625 1085.58 150.5390625" class="path" marker-end="url(#arrowhead-3)" style="fill:none"></path><defs><marker id="arrowhead-3" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="strokeWidth" markerWidth="8" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" class="arrowheadPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"></path></marker></defs></g><g class="edgePath" style="opacity: 1;"><path d="M 1054.984375 150.5390625 C 1114.98 150.5390625 1177.38 150.5390625 1233.38 150.5390625" class="path" marker-end="url(#arrowhead-4)" style="fill:none"></path><defs><marker id="arrowhead-4" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="strokeWidth" markerWidth="8" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" class="arrowheadPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"></path></marker></defs></g></g><g class="edgeLabels"><g class="edgeLabel" transform="translate(412.28515625,150.5390625)"><g transform="translate(-56,-20.5)"><foreignObject width="112" height="41"><div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; white-space: nowrap;">Data Context</div></foreignObject></g></g><g class="edgeLabel" transform="translate(675.25,150.5390625)"><g transform="translate(-39.5,-20.5)"><foreignObject width="79" height="41"><div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; white-space: nowrap;">Analyzes</div></foreignObject></g></g><g class="edgeLabel" transform="translate(854.4421875,150.5390625)"><g transform="translate(-36,-20.5)"><foreignObject width="72" height="41"><div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; white-space: nowrap;">Renders</div></foreignObject></g></g><g class="edgeLabel" transform="translate(1070.2821875,150.5390625)"><g transform="translate(-35,-20.5)"><foreignObject width="70" height="41"><div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; white-space: nowrap;">Enables</div></foreignObject></g></g><g class="edgeLabel" transform="translate(1144.1821875,150.5390625)"><g transform="translate(-35,-20.5)"><foreignObject width="70" height="41"><div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; white-space: nowrap;">Enables</div></foreignObject></g></g></g></g></svg>
+<svg id="mermaid-svg-journey" xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="-5 -5 1384 312">
+    <style>
+        .label {
+            font-family: "trebuchet ms", verdana, arial, sans-serif;
+            color: #333;
+        }
+        .label text {
+            fill: #333;
+        }
+        .node rect,
+        .node circle,
+        .node ellipse,
+        .node polygon,
+        .node path {
+            fill: #ECECFF;
+            stroke: #9370DB;
+            stroke-width: 1px;
+        }
+        .node .label {
+            text-align: center;
+        }
+        .arrowheadPath {
+            fill: #333;
+        }
+        .edgePath .path {
+            stroke: #333;
+            stroke-width: 1.5px;
+        }
+        .flowchart-link {
+            stroke: #333;
+            fill: none;
+        }
+        .edgeLabel {
+            background-color: #e8e8e8;
+            text-align: center;
+        }
+        .edgeLabel rect {
+            opacity: 0.5;
+            background-color: #e8e8e8;
+            fill: #e8e8e8;
+        }
+        .cluster rect {
+            fill: #ffffde;
+            stroke: #aa3;
+            stroke-width: 1px;
+        }
+        .cluster text {
+            fill: #333;
+        }
+        .cluster span {
+            color: #333;
+        }
+        div.mermaidTooltip {
+            position: absolute;
+            text-align: center;
+            max-width: 200px;
+            padding: 2px;
+            font-family: "trebuchet ms", verdana, arial, sans-serif;
+            font-size: 12px;
+            background: hsl(80, 100%, 96.27%);
+            border: 1px solid #9370DB;
+            border-radius: 2px;
+            pointer-events: none;
+            z-index: 100;
+        }
+        .flowchartTitleText {
+            text-anchor: middle;
+            font-size: 18px;
+            fill: #333;
+        }
+    </style>
+    <g>
+        <g class="clusters">
+            <g id="cluster-User_Journey" class="cluster" transform="translate(686.9922,150.53906)">
+                <rect width="1353.9844" height="281.07812" x="-676.9922" y="-140.53906" style="fill:#f1f5f9;stroke:#cbd5e1"></rect>
+                <g class="label" transform="translate(0,-120.03906)">
+                    <g transform="translate(0,0)">
+                        <foreignObject width="127" height="41">
+                            <div style="display:inline-block;white-space:nowrap" xmlns="http://www.w3.org/1999/xhtml">
+                                <h4 style="color:#0f172a;margin:0">User Journey</h4>
+                            </div>
+                        </foreignObject>
+                    </g>
+                </g>
+            </g>
+            <g id="cluster-1._Input_Phase" class="cluster" transform="translate(203,150.53906)">
+                <rect width="346" height="175" x="-173" y="-87.5" style="fill:#fff;stroke:#94a3b8"></rect>
+                <g class="label" transform="translate(0,-67)">
+                    <g transform="translate(0,0)">
+                        <foreignObject width="112" height="41">
+                            <div style="display:inline-block;white-space:nowrap" xmlns="http://www.w3.org/1999/xhtml"><span style="color:#0f172a">1. Input Phase</span></div>
+                        </foreignObject>
+                    </g>
+                </g>
+            </g>
+            <g id="cluster-2._Analysis_Phase" class="cluster" transform="translate(637.5,150.53906)">
+                <rect width="351" height="175" x="-175.5" y="-87.5" style="fill:#fff;stroke:#94a3b8"></rect>
+                <g class="label" transform="translate(0,-67)">
+                    <g transform="translate(0,0)">
+                        <foreignObject width="128" height="41">
+                            <div style="display:inline-block;white-space:nowrap" xmlns="http://www.w3.org/1999/xhtml"><span style="color:#0f172a">2. Analysis Phase</span></div>
+                        </foreignObject>
+                    </g>
+                </g>
+            </g>
+            <g id="cluster-3._Review_&amp;_Action_Phase" class="cluster" transform="translate(1126.9844,150.53906)">
+                <rect width="484" height="175" x="-242" y="-87.5" style="fill:#fff;stroke:#94a3b8"></rect>
+                <g class="label" transform="translate(0,-67)">
+                    <g transform="translate(0,0)">
+                        <foreignObject width="194" height="41">
+                            <div style="display:inline-block;white-space:nowrap" xmlns="http://www.w3.org/1999/xhtml"><span style="color:#0f172a">3. Review &amp; Action Phase</span></div>
+                        </foreignObject>
+                    </g>
+                </g>
+            </g>
+        </g>
+        <g class="nodes">
+            <g id="node-A" class="node" transform="translate(203,150.53906)">
+                <rect width="326" height="95" x="-163" y="-47.5" rx="5" ry="5" style="fill:#eff6ff;stroke:#60a5fa"></rect>
+                <g class="label" transform="translate(0,0)">
+                    <g transform="translate(0,0)">
+                        <foreignObject width="306" height="75">
+                            <div style="display:inline-block;white-space:nowrap;text-align:center" xmlns="http://www.w3.org/1999/xhtml">Provide Data Context <br /> User inputs schemas, stats, rules via UI</div>
+                        </foreignObject>
+                    </g>
+                </g>
+            </g>
+            <g id="node-B" class="node" transform="translate(547,150.53906)">
+                <rect width="150" height="95" x="-75" y="-47.5" rx="5" ry="5" style="fill:#eff6ff;stroke:#60a5fa"></rect>
+                <g class="label" transform="translate(0,0)">
+                    <g transform="translate(0,0)">
+                        <foreignObject width="130" height="75">
+                            <div style="display:inline-block;white-space:nowrap;text-align:center" xmlns="http://www.w3.org/1999/xhtml">AI-Powered Analysis <br /> App constructs prompt and calls Gemini</div>
+                        </foreignObject>
+                    </g>
+                </g>
+            </g>
+            <g id="node-C" class="node" transform="translate(728,150.53906)">
+                <rect width="151" height="95" x="-75.5" y="-47.5" rx="5" ry="5" style="fill:#eff6ff;stroke:#60a5fa"></rect>
+                <g class="label" transform="translate(0,0)">
+                    <g transform="translate(0,0)">
+                        <foreignObject width="131" height="75">
+                            <div style="display:inline-block;white-space:nowrap;text-align:center" xmlns="http://www.w3.org/1999/xhtml">Structured Results <br /> Gemini returns JSON with detected issues</div>
+                        </foreignObject>
+                    </g>
+                </g>
+            </g>
+            <g id="node-D" class="node" transform="translate(979.9844,150.53906)">
+                <rect width="150" height="95" x="-75" y="-47.5" rx="5" ry="5" style="fill:#dcfce7;stroke:#22c55e"></rect>
+                <g class="label" transform="translate(0,0)">
+                    <g transform="translate(0,0)">
+                        <foreignObject width="130" height="75">
+                            <div style="display:inline-block;white-space:nowrap;text-align:center" xmlns="http://www.w3.org/1999/xhtml">Visualize &amp; Explore <br /> UI renders an interactive dashboard</div>
+                        </foreignObject>
+                    </g>
+                </g>
+            </g>
+            <g id="node-E" class="node" transform="translate(1151.9844,150.53906)">
+                <rect width="170" height="95" x="-85" y="-47.5" rx="5" ry="5" style="fill:#dcfce7;stroke:#22c55e"></rect>
+                <g class="label" transform="translate(0,0)">
+                    <g transform="translate(0,0)">
+                        <foreignObject width="150" height="75">
+                            <div style="display:inline-block;white-space:nowrap;text-align:center" xmlns="http://www.w3.org/1999/xhtml">Conversational Insights <br /> User asks follow-up questions to AI Assistant</div>
+                        </foreignObject>
+                    </g>
+                </g>
+            </g>
+            <g id="node-F" class="node" transform="translate(1308.9844,150.53906)">
+                <rect width="150" height="95" x="-75" y="-47.5" rx="5" ry="5" style="fill:#dcfce7;stroke:#22c55e"></rect>
+                <g class="label" transform="translate(0,0)">
+                    <g transform="translate(0,0)">
+                        <foreignObject width="130" height="75">
+                            <div style="display:inline-block;white-space:nowrap;text-align:center" xmlns="http://www.w3.org/1999/xhtml">Export &amp; Share <br /> User exports PDF/PPTX for stakeholders</div>
+                        </foreignObject>
+                    </g>
+                </g>
+            </g>
+        </g>
+        <g class="edgePaths">
+            <g class="edgePath" style="opacity:1">
+                <path d="M366 150.53906C392.53 150.53906 428.69 150.53906 458.58 150.53906" class="path" marker-end="url(#arrowhead-0)" style="fill:none"></path>
+                <defs>
+                    <marker id="arrowhead-0" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="strokeWidth" markerWidth="8" markerHeight="6" orient="auto">
+                        <path d="M0 0L10 5 0 10z" class="arrowheadPath" style="stroke-width:1;stroke-dasharray:1,0"></path>
+                    </marker>
+                </defs>
+            </g>
+            <g class="edgePath" style="opacity:1">
+                <path d="M622 150.53906C632.4 150.53906 642.8 150.53906 652.5 150.53906" class="path" marker-end="url(#arrowhead-1)" style="fill:none"></path>
+                <defs>
+                    <marker id="arrowhead-1" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="strokeWidth" markerWidth="8" markerHeight="6" orient="auto">
+                        <path d="M0 0L10 5 0 10z" class="arrowheadPath" style="stroke-width:1;stroke-dasharray:1,0"></path>
+                    </marker>
+                </defs>
+            </g>
+            <g class="edgePath" style="opacity:1">
+                <path d="M803.5 150.53906C832.9 150.53906 873.34 150.53906 904.38 150.53906" class="path" marker-end="url(#arrowhead-2)" style="fill:none"></path>
+                <defs>
+                    <marker id="arrowhead-2" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="strokeWidth" markerWidth="8" markerHeight="6" orient="auto">
+                        <path d="M0 0L10 5 0 10z" class="arrowheadPath" style="stroke-width:1;stroke-dasharray:1,0"></path>
+                    </marker>
+                </defs>
+            </g>
+            <g class="edgePath" style="opacity:1">
+                <path d="M1054.9844 150.53906C1065.3844 150.53906 1075.7844 150.53906 1085.5844 150.53906" class="path" marker-end="url(#arrowhead-3)" style="fill:none"></path>
+                <defs>
+                    <marker id="arrowhead-3" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="strokeWidth" markerWidth="8" markerHeight="6" orient="auto">
+                        <path d="M0 0L10 5 0 10z" class="arrowheadPath" style="stroke-width:1;stroke-dasharray:1,0"></path>
+                    </marker>
+                </defs>
+            </g>
+            <g class="edgePath" style="opacity:1">
+                <path d="M1054.9844 150.53906C1114.9844 150.53906 1177.3844 150.53906 1233.3844 150.53906" class="path" marker-end="url(#arrowhead-4)" style="fill:none"></path>
+                <defs>
+                    <marker id="arrowhead-4" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="strokeWidth" markerWidth="8" markerHeight="6" orient="auto">
+                        <path d="M0 0L10 5 0 10z" class="arrowheadPath" style="stroke-width:1;stroke-dasharray:1,0"></path>
+                    </marker>
+                </defs>
+            </g>
+        </g>
+        <g class="edgeLabels">
+            <g class="edgeLabel" transform="translate(412.28516,150.53906)">
+                <g transform="translate(-56,-20.5)">
+                    <foreignObject width="112" height="41">
+                        <div style="display:inline-block;white-space:nowrap" xmlns="http://www.w3.org/1999/xhtml">Data Context</div>
+                    </foreignObject>
+                </g>
+            </g>
+            <g class="edgeLabel" transform="translate(675.25,150.53906)">
+                <g transform="translate(-39.5,-20.5)">
+                    <foreignObject width="79" height="41">
+                        <div style="display:inline-block;white-space:nowrap" xmlns="http://www.w3.org/1999/xhtml">Analyzes</div>
+                    </foreignObject>
+                </g>
+            </g>
+            <g class="edgeLabel" transform="translate(854.4422,150.53906)">
+                <g transform="translate(-36,-20.5)">
+                    <foreignObject width="72" height="41">
+                        <div style="display:inline-block;white-space:nowrap" xmlns="http://www.w3.org/1999/xhtml">Renders</div>
+                    </foreignObject>
+                </g>
+            </g>
+            <g class="edgeLabel" transform="translate(1070.2844,150.53906)">
+                <g transform="translate(-35,-20.5)">
+                    <foreignObject width="70" height="41">
+                        <div style="display:inline-block;white-space:nowrap" xmlns="http://www.w3.org/1999/xhtml">Enables</div>
+                    </foreignObject>
+                </g>
+            </g>
+            <g class="edgeLabel" transform="translate(1144.1844,150.53906)">
+                <g transform="translate(-35,-20.5)">
+                    <foreignObject width="70" height="41">
+                        <div style="display:inline-block;white-space:nowrap" xmlns="http://www.w3.org/1999/xhtml">Enables</div>
+                    </foreignObject>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
