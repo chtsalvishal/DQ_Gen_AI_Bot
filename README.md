@@ -35,114 +35,11 @@ The Data Quality Bot is a versatile tool for anyone who relies on high-quality d
 
 ### Architecture Diagram
 
-```mermaid
-%%{init: { 'themeVariables': { 'fontSize': '36px', 'fontFamily': '"Segoe UI", Arial, sans-serif' } }}%%
-graph TD
-    subgraph architecture_diagram [<h4>Architecture Diagram</h4>]
-        subgraph userenv [User Environment]
-            A[User via Browser HTTPS]:::userNode
-        end
-
-        B((Gateway)):::gatewayNode
-        
-        A -- Provides Data Context --> B
-
-        subgraph botlogic [Data Quality Bot]
-            subgraph ingest [Ingest]
-                C[Data Input and Parsing]:::processNode
-            end
-            subgraph pipelines [Pipelines]
-                D[Prompt Engineering]:::processNode
-            end
-            subgraph analytics [Analytics]
-                E[Google Gemini API]:::apiNode
-            end
-            subgraph presentation [Presentation]
-                F[Results Dashboard]:::outputNode
-                G[AI Assistant]:::outputNode
-                H[Export Engine]:::outputNode
-            end
-        end
-
-        B --> C
-        C --> D
-        D -- Secure API Call --> E
-        E -- JSON Response --> F
-        F --> G
-        F --> H
-    end
-    
-    style architecture_diagram fill:#F1F5F9,stroke:#CBD5E1,color:#0f172a
-    style userenv fill:#FFFFFF,stroke:#94A3B8,color:#0f172a
-    style botlogic fill:#FFFFFF,stroke:#DADCE0,color:#0f172a
-    style ingest fill:#F8F9FA,stroke:#DADCE0,color:#0f172a
-    style pipelines fill:#F8F9FA,stroke:#DADCE0,color:#0f172a
-    style analytics fill:#F8F9FA,stroke:#DADCE0,color:#0f172a
-    style presentation fill:#F8F9FA,stroke:#DADCE0,color:#0f172a
-
-    classDef userNode fill:#FEFCE8,stroke:#FBBF24,stroke-width:2px,color:#0f172a
-    classDef gatewayNode fill:#F1F3F4,stroke:#70757A,stroke-width:2px,color:#0f172a
-    classDef processNode fill:#E9F3FD,stroke:#4285F4,stroke-width:2px,color:#0f172a
-    classDef apiNode fill:#E6F4EA,stroke:#34A853,stroke-width:2px,color:#0f172a
-    classDef outputNode fill:#FCE8E6,stroke:#EA4335,stroke-width:2px,color:#0f172a
-```
+![Architecture Diagram](./docs/images/architecture-diagram.svg)
 
 ### User Journey
 
-```mermaid
-
-graph TD
-    subgraph user_journey [<h3>User Journey</h3>]
-
-        subgraph sg1 [**1. Start**]
-            A["**Initiate Session**<br><br>User opens the<br>Data Quality Bot<br>application.<br>"]:::startNode
-        end
-
-        subgraph sg2 [**2. Input & Context**]
-            B["**Provide Data Context**<br><br>User inputs metadata,<br>statistics, and<br>business rules.<br>"]:::inputNode
-            B --> B1["**Manual Entry**<br><br>Type or paste<br>details directly<br>into the form.<br>"]:::inputNode
-            B --> B2["**File Upload**<br><br>Import context via<br>.sql and .csv files<br>for efficiency.<br>"]:::inputNode
-        end
-        
-        subgraph sg3 [**3. AI Analysis**]
-            C["**Trigger Analysis**<br><br>Click 'Analyze'<br>to start the AI<br>quality assessment.<br>"]:::analysisNode
-            D["**Gemini Processing**<br><br>The app sends a detailed,<br>context-rich prompt for<br>each table to the AI.<br><br>"]:::analysisNode
-            E["**Receive Results**<br><br>A structured JSON<br>response is returned<br>with all findings.<br>"]:::analysisNode
-        end
-
-        subgraph sg4 [**4. Insight & Action**]
-            F["**Explore Dashboard**<br><br>Visualize results, filter<br>issues, and review<br>table health scores.<br>"]:::insightNode
-            G["**Conversational AI**<br><br>Ask follow-up questions<br>to the integrated<br>AI Assistant.<br>"]:::insightNode
-            H["**Export & Share**<br><br>Generate professional PDF<br>or PowerPoint reports<br>for stakeholders.<br>"]:::insightNode
-        end
-        
-        subgraph sg5 [**5. Goal**]
-           J["**Achieve Data Integrity**<br><br>User gains clear, actionable<br>insights to improve and<br>maintain data quality.<br>"]:::goalNode
-        end
-    end
-
-    A --> B
-    B1 --> C
-    B2 --> C
-    C --> D --> E
-    E --> F
-    F --> G & H
-    G --> J
-    H --> J
-    
-    style user_journey fill:#EFF6FF,stroke:#BFDBFE,color:#1e293b
-    style sg1 fill:#F8F9FA,stroke:#DADCE0,color:#0f172a
-    style sg2 fill:#F8F9FA,stroke:#DADCE0,color:#0f172a
-    style sg3 fill:#F8F9FA,stroke:#DADCE0,color:#0f172a
-    style sg4 fill:#F8F9FA,stroke:#DADCE0,color:#0f172a
-    style sg5 fill:#F8F9FA,stroke:#DADCE0,color:#0f172a
-
-    classDef startNode fill:#E8F0FE,stroke:#4A90E2,stroke-width:3px,color:#212529,font-weight:bold
-    classDef inputNode fill:#FEF9E7,stroke:#F5B041,stroke-width:3px,color:#212529
-    classDef analysisNode fill:#FDEFEF,stroke:#E74C3C,stroke-width:3px,color:#212529
-    classDef insightNode fill:#E8F8F5,stroke:#2ECC71,stroke-width:3px,color:#212529
-    classDef goalNode fill:#EAEBFC,stroke:#5D69B1,stroke-width:3px,color:#212529,font-weight:bold
-```
+![User Journey Diagram](./docs/images/user-journey-diagram.svg)
 
 # Run and deploy your AI Studio app
 
