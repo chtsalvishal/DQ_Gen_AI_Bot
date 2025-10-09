@@ -90,72 +90,76 @@ graph TD
 ### User Journey
 
 ```mermaid
-%%{init: { 'themeVariables': { 'fontSize': '24px', 'fontFamily': 'Arial' } }}%%
-graph TD
-    subgraph user_journey [User Journey Flow]
-        subgraph sg1 [Start]
-            A[User opens the<br>Data Quality Bot<br>in their browser.]:::startNode
+%%{init: { 'themeVariables': { 'fontSize': '28px', 'fontFamily': '"Segoe UI", Arial, sans-serif' } }}%%
+graph LR
+    subgraph user_journey [User Journey: From Data to Decision]
+        direction LR
+
+        subgraph sg1 [1. Start]
+            A(
+                "**Initiate Session**<br><br>User opens the<br>Data Quality Bot."
+            ):::startNode
         end
 
-        subgraph sg2 [Input]
-            B{Provide Comprehensive<br>Data Context via<br>the User Interface}:::inputNode
-            B1[Option A:<br>Manually enter details for<br>each table, including schemas,<br>statistics, and rules.]:::inputNode
-            B2[Option B:<br>Upload a structured .sql file<br>for all table schemas and a<br>.csv for column statistics.]:::inputNode
+        subgraph sg2 [2. Input & Context]
+            B{
+                "**Provide Data Context**<br><br>User inputs metadata,<br>statistics, and rules."
+            }:::inputNode
+            B --> B1(
+                "**Manual Entry**<br>Type or paste<br>details directly."
+            ):::inputNode
+            B --> B2(
+                "**File Upload**<br>Import via .sql<br>and .csv files."
+            ):::inputNode
         end
         
-        subgraph sg3 [Analysis]
-            C[Initiates the Analysis<br>by clicking the<br>'Analyze Data Quality' button.]:::analysisNode
-            D[The application constructs<br>a detailed, context-rich prompt<br>for each table and sends it<br>securely to the Gemini API.]:::analysisNode
-            E[Receives a structured JSON response<br>containing a comprehensive list<br>of all detected data quality issues.]:::analysisNode
+        subgraph sg3 [3. AI Analysis]
+            C(
+                "**Trigger Analysis**<br><br>Click 'Analyze'<br>to start the process."
+            ):::analysisNode
+            D[
+                "**Gemini Processing**<br><br>The app sends a detailed,<br>context-rich prompt for<br>each table to the AI."
+            ]:::analysisNode
+            E(
+                "**Receive Results**<br><br>A structured JSON<br>response is returned<br>with all findings."
+            ):::analysisNode
         end
 
-        subgraph sg4 [Insight and Action]
-            F[Explore the Interactive Dashboard<br>to visualize and understand<br>the analysis results.]:::insightNode
-            F1[Dynamically filter the<br>detected issues by their<br>severity or by table.]:::insightNode
-            F2[Review at-a-glance table<br>health scores to quickly<br>identify problem hotspots.]:::insightNode
-            G[Ask detailed follow-up questions<br>using the integrated AI Assistant<br>to gain deeper, contextual insights.]:::insightNode
-            H[Generate an AI-powered<br>executive summary report<br>of the key findings.]:::insightNode
-            I[Export the complete findings for<br>stakeholders in various<br>professional formats.]:::insightNode
-            I1[Download a detailed, multi-page<br>technical report as a PDF file.]:::insightNode
-            I2[Download a high-level slide deck<br>overview as a PowerPoint file.]:::insightNode
+        subgraph sg4 [4. Insight & Action]
+            F[
+                "**Explore Dashboard**<br><br>Visualize results, filter issues,<br>and review table health scores."
+            ]:::insightNode
+            G(
+                "**Conversational AI**<br><br>Ask follow-up questions<br>to the integrated AI Assistant."
+            ):::insightNode
+            H(
+                "**Export & Share**<br><br>Generate professional PDF<br>or PowerPoint reports for<br>stakeholder collaboration."
+            ):::insightNode
         end
         
-        subgraph sg5 [Goal]
-           J[The user gains clear,<br>actionable, and shareable insights<br>to efficiently improve<br>overall data quality.]:::goalNode
+        subgraph sg5 [5. Goal]
+           J(
+               "**Achieve Data Integrity**<br><br>User gains clear, actionable<br>insights to improve and<br>maintain data quality."
+           ):::goalNode
         end
     end
 
     A --> B
-    B --> B1
-    B --> B2
     B1 --> C
     B2 --> C
-    C --> D
-    D --> E
+    C --> D --> E
     E --> F
-    F --> F1
-    F --> F2
-    F --> G
-    F --> H
-    H --> I
-    I --> I1
-    I --> I2
-    I1 --> J
-    I2 --> J
+    F --> G & H
     G --> J
+    H --> J
     
     style user_journey fill:#F1F5F9,stroke:#CBD5E1,color:#0f172a
-    style sg1 fill:#FFFFFF,stroke:#DADCE0,color:#0f172a
-    style sg2 fill:#FFFFFF,stroke:#DADCE0,color:#0f172a
-    style sg3 fill:#FFFFFF,stroke:#DADCE0,color:#0f172a
-    style sg4 fill:#FFFFFF,stroke:#DADCE0,color:#0f172a
-    style sg5 fill:#FFFFFF,stroke:#DADCE0,color:#0f172a
     
-    classDef startNode fill:#E8F0FE,stroke:#4285F4,stroke-width:2px,color:#0f172a
-    classDef inputNode fill:#FEFCE8,stroke:#FBBC05,stroke-width:2px,color:#0f172a
-    classDef analysisNode fill:#FCE8E6,stroke:#EA4335,stroke-width:2px,color:#0f172a
-    classDef insightNode fill:#E6F4EA,stroke:#34A853,stroke-width:2px,color:#0f172a
-    classDef goalNode fill:#E8EAF6,stroke:#3F51B5,stroke-width:2px,color:#0f172a
+    classDef startNode fill:#E8F0FE,stroke:#4A90E2,stroke-width:3px,color:#212529,font-weight:bold
+    classDef inputNode fill:#FEF9E7,stroke:#F5B041,stroke-width:3px,color:#212529
+    classDef analysisNode fill:#FDEFEF,stroke:#E74C3C,stroke-width:3px,color:#212529
+    classDef insightNode fill:#E8F8F5,stroke:#2ECC71,stroke-width:3px,color:#212529
+    classDef goalNode fill:#EAEBFC,stroke:#5D69B1,stroke-width:3px,color:#212529,font-weight:bold
 ```
 
 # Run and deploy your AI Studio app
