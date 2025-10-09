@@ -92,7 +92,7 @@ graph TD
 ```mermaid
 %%{init: { 'themeVariables': { 'fontSize': '36px', 'fontFamily': '"Segoe UI", Arial, sans-serif' } }}%%
 graph TD
-    subgraph user_journey [User Journey]
+    subgraph user_journey [**User Journey**]
 
         subgraph sg1 [**1. Start**]
             A["**Initiate Session**<br><br>User opens the<br>Data Quality Bot<br>application.<br>"]:::startNode
