@@ -86,7 +86,6 @@ graph TD
     classDef apiNode fill:#E6F4EA,stroke:#34A853,stroke-width:2px,color:#0f172a
     classDef outputNode fill:#FCE8E6,stroke:#EA4335,stroke-width:2px,color:#0f172a
 ```
-<p align="right"><a href="./architecture-diagram.html" target="_blank" rel="noopener">Maximize Diagram</a></p>
 
 ### User Journey
 
@@ -143,7 +142,6 @@ graph TD
     classDef insightNode fill:#E8F8F5,stroke:#2ECC71,stroke-width:3px,color:#212529
     classDef goalNode fill:#EAEBFC,stroke:#5D69B1,stroke-width:3px,color:#212529,font-weight:bold
 ```
-<p align="right"><a href="./user-journey-diagram.html" target="_blank" rel="noopener">Maximize Diagram</a></p>
 
 # Run and deploy your AI Studio app
 
