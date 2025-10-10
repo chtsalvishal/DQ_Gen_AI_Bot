@@ -31,113 +31,141 @@
 
   <style>
     .diagram-font { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji"; }
-    .main-title { font-size: 20px; font-weight: bold; fill: #0f172a; }
-    .group-title { font-size: 16px; font-weight: bold; fill: #334155; }
-    .box-title { font-size: 14px; font-weight: bold; fill: #0f172a; }
-    .box-subtitle { font-size: 12px; fill: #475569; }
-    .arrow-label { font-size: 12px; font-weight: 500; fill: #475569; }
+    
+    /* Light Mode Styles */
+    .main-title, .group-title, .box-title { fill: #0f172a; }
+    .box-subtitle, .arrow-label { fill: #475569; }
+    .group-box { fill: #f8fafc; stroke: #e2e8f0; }
+    .user-box { fill: #fefce8; stroke: #facc15; }
+    .gateway-box { fill: #f1f5f9; stroke: #cbd5e1; }
+    .ingest-box, .pipelines-box { fill: #eff6ff; stroke: #60a5fa; }
+    .analytics-box { fill: #f0fdf4; stroke: #4ade80; }
+    .dashboard-box, .assistant-box, .export-box { fill: #fef2f2; stroke: #f87171; }
+    .arrow-path { stroke: #94a3b8; }
+    #arrowhead polygon { fill: #94a3b8; }
+
     .icon { stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
     .icon-user { stroke: #ca8a04; }
     .icon-gateway { stroke: #64748b; }
     .icon-input, .icon-engineering { stroke: #0ea5e9; }
     .icon-gemini { stroke: #10b981; }
     .icon-dashboard, .icon-assistant, .icon-export { stroke: #ef4444; }
+
+    /* Dark Mode Overrides */
+    @media (prefers-color-scheme: dark) {
+      .main-title, .group-title, .box-title { fill: #f1f5f9; }
+      .box-subtitle, .arrow-label { fill: #94a3b8; }
+      .group-box { fill: #1e293b; stroke: #334155; }
+      .user-box { fill: #451a03; stroke: #facc15; }
+      .gateway-box { fill: #334155; stroke: #64748b; }
+      .ingest-box, .pipelines-box { fill: #1e3a8a; stroke: #60a5fa; }
+      .analytics-box { fill: #14532d; stroke: #4ade80; }
+      .dashboard-box, .assistant-box, .export-box { fill: #450a0a; stroke: #f87171; }
+      .arrow-path { stroke: #94a3b8; }
+      #arrowhead polygon { fill: #94a3b8; }
+
+      .icon-user { stroke: #fde047; }
+      .icon-gateway { stroke: #94a3b8; }
+      .icon-input, .icon-engineering { stroke: #93c5fd; }
+      .icon-gemini { stroke: #86efac; }
+      .icon-dashboard, .icon-assistant, .icon-export { stroke: #fca5a5; }
+    }
   </style>
 
   <!-- Main Title -->
-  <text x="775" y="25" text-anchor="middle" class="main-title diagram-font">Architecture Diagram</text>
+  <text x="775" y="25" text-anchor="middle" class="main-title diagram-font" style="font-size: 20px; font-weight: bold;">Architecture Diagram</text>
   
   <!-- Group Boxes -->
-  <rect x="20" y="120" width="200" height="180" rx="8" ry="8" fill="#f8fafc" stroke="#e2e8f0"/>
-  <text x="120" y="110" text-anchor="middle" class="group-title diagram-font">User Environment</text>
+  <rect x="20" y="120" width="200" height="180" rx="8" ry="8" class="group-box"/>
+  <text x="120" y="110" text-anchor="middle" class="group-title diagram-font" style="font-size: 16px; font-weight: bold;">User Environment</text>
   
-  <rect x="390" y="60" width="650" height="300" rx="8" ry="8" fill="#f8fafc" stroke="#e2e8f0"/>
-  <text x="715" y="50" text-anchor="middle" class="group-title diagram-font">Data Quality Bot</text>
+  <rect x="390" y="60" width="650" height="300" rx="8" ry="8" class="group-box"/>
+  <text x="715" y="50" text-anchor="middle" class="group-title diagram-font" style="font-size: 16px; font-weight: bold;">Data Quality Bot</text>
   
-  <rect x="1100" y="60" width="430" height="300" rx="8" ry="8" fill="#f8fafc" stroke="#e2e8f0"/>
-  <text x="1315" y="50" text-anchor="middle" class="group-title diagram-font">Presentation</text>
+  <rect x="1100" y="60" width="430" height="300" rx="8" ry="8" class="group-box"/>
+  <text x="1315" y="50" text-anchor="middle" class="group-title diagram-font" style="font-size: 16px; font-weight: bold;">Presentation</text>
 
   <!-- Component Boxes -->
   <!-- User -->
   <g transform="translate(40, 150)">
-    <rect width="160" height="120" rx="8" ry="8" fill="#fefce8" stroke="#facc15"/>
+    <rect width="160" height="120" rx="8" ry="8" class="user-box"/>
     <use xlink:href="#icon-user" class="icon icon-user" x="60" y="15" width="40" height="40"/>
-    <text x="80" y="80" text-anchor="middle" class="box-title diagram-font">User</text>
-    <text x="80" y="100" text-anchor="middle" class="box-subtitle diagram-font">via Browser HTTPS</text>
+    <text x="80" y="80" text-anchor="middle" class="box-title diagram-font" style="font-size: 14px; font-weight: bold;">User</text>
+    <text x="80" y="100" text-anchor="middle" class="box-subtitle diagram-font" style="font-size: 12px;">via Browser HTTPS</text>
   </g>
 
   <!-- Gateway -->
   <g transform="translate(265, 175)">
-    <circle cx="40" cy="40" r="40" fill="#f1f5f9" stroke="#cbd5e1"/>
+    <circle cx="40" cy="40" r="40" class="gateway-box"/>
     <use xlink:href="#icon-gateway" class="icon icon-gateway" x="20" y="20" width="40" height="40"/>
-    <text x="40" y="100" text-anchor="middle" class="box-subtitle diagram-font">Gateway</text>
+    <text x="40" y="100" text-anchor="middle" class="box-subtitle diagram-font" style="font-size: 12px;">Gateway</text>
   </g>
   
   <!-- Ingest -->
   <g transform="translate(410, 150)">
-    <rect width="180" height="120" rx="8" ry="8" fill="#eff6ff" stroke="#60a5fa"/>
-    <text x="90" y="30" text-anchor="middle" class="group-title diagram-font">Ingest</text>
+    <rect width="180" height="120" rx="8" ry="8" class="ingest-box"/>
+    <text x="90" y="30" text-anchor="middle" class="group-title diagram-font" style="font-size: 16px; font-weight: bold;">Ingest</text>
     <use xlink:href="#icon-input" class="icon icon-input" x="70" y="45" width="40" height="40"/>
-    <text x="90" y="105" text-anchor="middle" class="box-subtitle diagram-font">Data Input and Parsing</text>
+    <text x="90" y="105" text-anchor="middle" class="box-subtitle diagram-font" style="font-size: 12px;">Data Input and Parsing</text>
   </g>
 
   <!-- Pipelines -->
   <g transform="translate(620, 150)">
-    <rect width="180" height="120" rx="8" ry="8" fill="#eff6ff" stroke="#60a5fa"/>
-    <text x="90" y="30" text-anchor="middle" class="group-title diagram-font">Pipelines</text>
+    <rect width="180" height="120" rx="8" ry="8" class="pipelines-box"/>
+    <text x="90" y="30" text-anchor="middle" class="group-title diagram-font" style="font-size: 16px; font-weight: bold;">Pipelines</text>
     <use xlink:href="#icon-engineering" class="icon icon-engineering" x="70" y="45" width="40" height="40"/>
-    <text x="90" y="105" text-anchor="middle" class="box-subtitle diagram-font">Prompt Engineering</text>
+    <text x="90" y="105" text-anchor="middle" class="box-subtitle diagram-font" style="font-size: 12px;">Prompt Engineering</text>
   </g>
 
   <!-- Analytics -->
   <g transform="translate(840, 150)">
-    <rect width="180" height="120" rx="8" ry="8" fill="#f0fdf4" stroke="#4ade80"/>
-    <text x="90" y="30" text-anchor="middle" class="group-title diagram-font">Analytics</text>
+    <rect width="180" height="120" rx="8" ry="8" class="analytics-box"/>
+    <text x="90" y="30" text-anchor="middle" class="group-title diagram-font" style="font-size: 16px; font-weight: bold;">Analytics</text>
     <use xlink:href="#icon-gemini" class="icon icon-gemini" x="70" y="45" width="40" height="40"/>
-    <text x="90" y="105" text-anchor="middle" class="box-subtitle diagram-font">Google Gemini API</text>
+    <text x="90" y="105" text-anchor="middle" class="box-subtitle diagram-font" style="font-size: 12px;">Google Gemini API</text>
   </g>
 
   <!-- Results Dashboard -->
   <g transform="translate(1120, 150)">
-    <rect width="180" height="120" rx="8" ry="8" fill="#fef2f2" stroke="#f87171"/>
+    <rect width="180" height="120" rx="8" ry="8" class="dashboard-box"/>
     <use xlink:href="#icon-dashboard" class="icon icon-dashboard" x="70" y="20" width="40" height="40"/>
-    <text x="90" y="85" text-anchor="middle" class="box-title diagram-font">Results Dashboard</text>
+    <text x="90" y="85" text-anchor="middle" class="box-title diagram-font" style="font-size: 14px; font-weight: bold;">Results Dashboard</text>
   </g>
 
   <!-- AI Assistant -->
   <g transform="translate(1330, 80)">
-    <rect width="180" height="90" rx="8" ry="8" fill="#fef2f2" stroke="#f87171"/>
+    <rect width="180" height="90" rx="8" ry="8" class="assistant-box"/>
     <use xlink:href="#icon-assistant" class="icon icon-assistant" x="70" y="15" width="40" height="40"/>
-    <text x="90" y="75" text-anchor="middle" class="box-title diagram-font">AI Assistant</text>
+    <text x="90" y="75" text-anchor="middle" class="box-title diagram-font" style="font-size: 14px; font-weight: bold;">AI Assistant</text>
   </g>
 
   <!-- Export Engine -->
   <g transform="translate(1330, 220)">
-    <rect width="180" height="90" rx="8" ry="8" fill="#fef2f2" stroke="#f87171"/>
+    <rect width="180" height="90" rx="8" ry="8" class="export-box"/>
     <use xlink:href="#icon-export" class="icon icon-export" x="70" y="15" width="40" height="40"/>
-    <text x="90" y="75" text-anchor="middle" class="box-title diagram-font">Export Engine</text>
+    <text x="90" y="75" text-anchor="middle" class="box-title diagram-font" style="font-size: 14px; font-weight: bold;">Export Engine</text>
   </g>
 
   <!-- Arrows -->
   <defs>
     <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
-      <polygon points="0 0, 10 3.5, 0 7" fill="#94a3b8"/>
+      <polygon points="0 0, 10 3.5, 0 7" />
     </marker>
   </defs>
   
-  <path d="M200 210 L 265 210" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrowhead)"/>
-  <text x="232.5" y="195" text-anchor="middle" class="arrow-label diagram-font"><tspan x="232.5" dy="0em">Provides Data</tspan><tspan x="232.5" dy="1.2em">Context</tspan></text>
+  <path d="M200 210 L 265 210" class="arrow-path" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="232.5" y="195" text-anchor="middle" class="arrow-label diagram-font" style="font-size: 12px; font-weight: 500;"><tspan x="232.5" dy="0em">Provides Data</tspan><tspan x="232.5" dy="1.2em">Context</tspan></text>
 
-  <path d="M345 215 L 410 215" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <path d="M345 215 L 410 215" class="arrow-path" stroke-width="2" marker-end="url(#arrowhead)"/>
   
-  <path d="M590 215 L 620 215" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <path d="M590 215 L 620 215" class="arrow-path" stroke-width="2" marker-end="url(#arrowhead)"/>
 
-  <path d="M800 215 L 840 215" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrowhead)"/>
-  <text x="820" y="200" text-anchor="middle" class="arrow-label diagram-font">Secure API Call</text>
+  <path d="M800 215 L 840 215" class="arrow-path" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="820" y="200" text-anchor="middle" class="arrow-label diagram-font" style="font-size: 12px; font-weight: 500;">Secure API Call</text>
   
-  <path d="M1020 215 L 1120 215" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrowhead)"/>
-  <text x="1070" y="200" text-anchor="middle" class="arrow-label diagram-font">JSON Response</text>
+  <path d="M1020 215 L 1120 215" class="arrow-path" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="1070" y="200" text-anchor="middle" class="arrow-label diagram-font" style="font-size: 12px; font-weight: 500;">JSON Response</text>
 
-  <path d="M1300 210 C 1320 210, 1320 125, 1330 125" stroke="#94a3b8" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
-  <path d="M1300 210 C 1320 210, 1320 265, 1330 265" stroke="#94a3b8" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+  <path d="M1300 210 C 1320 210, 1320 125, 1330 125" class="arrow-path" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+  <path d="M1300 210 C 1320 210, 1320 265, 1330 265" class="arrow-path" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
 </svg>
