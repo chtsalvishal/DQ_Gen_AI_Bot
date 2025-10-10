@@ -35,7 +35,7 @@ const groupIssuesByTable = (issues: Issue[]): Record<string, Issue[]> => {
 export const generatePdfReport = async (issues: Issue[]): Promise<void> => {
   try {
     const { default: jsPDF } = await import('https://esm.sh/jspdf@2.5.1');
-    await import('https://esm.sh/jspdf-autotable@3.8.2');
+    const { default: autoTable } = await import('https://esm.sh/jspdf-autotable@3.8.2');
 
     const doc = new jsPDF({ orientation: 'p', unit: 'mm', format: 'a4' });
     const pageHeight = doc.internal.pageSize.getHeight();
@@ -100,7 +100,7 @@ export const generatePdfReport = async (issues: Issue[]): Promise<void> => {
       margin: { left: 15, right: 15 },
     };
 
-    (doc as any).autoTable(autoTableOptions);
+    autoTable(doc, autoTableOptions);
 
     // --- Page 3: Table of Contents Placeholder ---
     doc.addPage();

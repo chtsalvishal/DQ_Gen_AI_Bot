@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Issue } from '../types';
 import SeverityBadge from './SeverityBadge';
-import { BulbIcon, ImpactIcon, WrenchIcon, ChevronDownIcon } from './icons';
+import { BulbIcon, ImpactIcon, WrenchIcon, ChevronDownIcon, GavelIcon } from './icons';
 
 interface IssueCardProps {
   issue: Issue;
@@ -20,6 +20,8 @@ const InfoSection: React.FC<{ icon: React.ReactNode; title: string; children: Re
 
 const IssueCard: React.FC<IssueCardProps> = ({ issue, isInitiallyExpanded = false }) => {
   const [isExpanded, setIsExpanded] = useState(isInitiallyExpanded);
+  
+  const isBusinessRule = issue.type === 'Business Rule Violation';
 
   const severityStyles = {
     High: 'border-l-4 border-severity-high',
@@ -27,8 +29,12 @@ const IssueCard: React.FC<IssueCardProps> = ({ issue, isInitiallyExpanded = fals
     Low: 'border-l-4 border-severity-low',
   };
 
+  const backgroundStyles = isBusinessRule
+    ? 'bg-indigo-50 dark:bg-indigo-900/30 border-indigo-200 dark:border-indigo-800'
+    : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700';
+
   return (
-    <div className={`bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-sm transition-shadow duration-300 hover:shadow-md ${severityStyles[issue.severity]}`}>
+    <div className={`border rounded-lg shadow-sm transition-shadow duration-300 hover:shadow-md ${backgroundStyles} ${severityStyles[issue.severity]}`}>
       <button
         onClick={() => setIsExpanded(!isExpanded)}
         className="w-full text-left p-4 focus:outline-none focus:ring-2 focus:ring-brand-accent focus:ring-opacity-50 rounded-lg"
@@ -36,7 +42,10 @@ const IssueCard: React.FC<IssueCardProps> = ({ issue, isInitiallyExpanded = fals
       >
         <div className="flex justify-between items-start">
           <div className="flex-grow pr-4">
-            <h3 className="text-md font-bold text-brand-primary dark:text-brand-secondary">{issue.type}</h3>
+            <h3 className="flex items-center text-md font-bold text-brand-primary dark:text-brand-secondary">
+              {isBusinessRule && <GavelIcon className="w-4 h-4 mr-2 text-indigo-500 flex-shrink-0" />}
+              <span>{issue.type}</span>
+            </h3>
             <p className="text-sm text-slate-700 dark:text-slate-300 mt-1">{issue.description}</p>
           </div>
           <div className="flex flex-col items-end space-y-2 flex-shrink-0">

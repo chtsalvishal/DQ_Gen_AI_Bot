@@ -1,6 +1,6 @@
 import React from 'react';
 import { DataQualityInputs, TableInput } from '../types';
-import { SparklesIcon, PlusIcon, CodeIcon, UploadIcon } from './icons';
+import { SparklesIcon, PlusIcon, UploadIcon, GavelIcon, HistoryIcon } from './icons';
 import TableInputForm from './TableInputForm';
 import { parseSql } from '../services/sqlParser';
 
@@ -9,29 +9,30 @@ interface InputFormProps {
   isLoading: boolean;
 }
 
-const InputArea: React.FC<{
-  id: keyof DataQualityInputs;
-  label: string;
-  placeholder: string;
-  value: string;
-  onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
-  rows?: number;
-}> = ({ id, label, placeholder, value, onChange, rows = 3 }) => (
-  <div>
-    <label htmlFor={id} className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-      {label}
-    </label>
-    <textarea
-      id={id}
-      name={id}
-      rows={rows}
-      className="block w-full shadow-sm sm:text-sm border-slate-300 rounded-md dark:bg-slate-800 dark:border-slate-600 dark:placeholder-slate-400 dark:text-white focus:ring-brand-accent focus:border-brand-accent transition"
-      placeholder={placeholder}
-      value={value}
-      onChange={onChange}
-    />
-  </div>
+// A new reusable component for the global context cards
+const GlobalContextCard: React.FC<{
+  icon: React.ReactNode;
+  title: string;
+  subtitle: string;
+  children: React.ReactNode;
+  accentColorClass: string;
+}> = ({ icon, title, subtitle, children, accentColorClass }) => (
+    <div className={`relative border ${accentColorClass} rounded-lg shadow-sm p-4 space-y-2 bg-slate-50 dark:bg-slate-800/50`}>
+        <div className="flex items-start gap-3">
+            <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-opacity-10 text-opacity-80 ${accentColorClass.replace('border-', 'bg-').replace('dark:border-', 'dark:bg-')}`}>
+                {icon}
+            </div>
+            <div>
+                <h3 className="text-md font-semibold text-slate-800 dark:text-white">{title}</h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400">{subtitle}</p>
+            </div>
+        </div>
+        <div>
+            {children}
+        </div>
+    </div>
 );
+
 
 const InputForm: React.FC<InputFormProps> = ({ onAnalyze, isLoading }) => {
   const [inputs, setInputs] = React.useState<DataQualityInputs>({
@@ -248,45 +249,43 @@ CREATE TABLE customer_orders (
         <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Add tables manually or generate them from SQL and statistics.</p>
       </div>
 
-      <div className="space-y-4 border border-slate-300 dark:border-slate-700 rounded-lg p-4">
-        <h3 className="text-lg font-medium text-slate-800 dark:text-white">Import from SQL</h3>
-        <p className="text-sm text-slate-500 dark:text-slate-400 -mt-2">
-          Upload a .sql file to automatically generate table structures.
-        </p>
-        <div>
-          <label htmlFor="sql-upload" className="w-full cursor-pointer inline-flex justify-center items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-brand-accent hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-accent transition">
-            <UploadIcon className="w-5 h-5 mr-2 -ml-1" />
-            Upload SQL File
-          </label>
-          <input
-            id="sql-upload"
-            type="file"
-            accept=".sql,text/plain"
-            className="hidden"
-            onChange={handleSqlFileChange}
-          />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="space-y-2 border border-slate-300 dark:border-slate-700 rounded-lg p-3 text-center">
+            <h3 className="text-md font-medium text-slate-800 dark:text-white">Import from SQL</h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400">
+                Upload a .sql file to auto-populate tables.
+            </p>
+            <label htmlFor="sql-upload" className="w-full cursor-pointer inline-flex justify-center items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-brand-accent hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-accent transition">
+                <UploadIcon className="w-5 h-5 mr-2 -ml-1" />
+                Upload SQL File
+            </label>
+            <input
+                id="sql-upload"
+                type="file"
+                accept=".sql,text/plain"
+                className="hidden"
+                onChange={handleSqlFileChange}
+            />
         </div>
-      </div>
 
-      <div className="space-y-4 border border-slate-300 dark:border-slate-700 rounded-lg p-4">
-        <h3 className="text-lg font-medium text-slate-800 dark:text-white">Import Column Statistics</h3>
-        <p className="text-sm text-slate-500 dark:text-slate-400 -mt-2">
-          Upload a CSV file with statistics. Must include 'Table' and 'Column' headers.
-        </p>
-        <div>
-          <label htmlFor="stats-upload" className="w-full cursor-pointer inline-flex justify-center items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-brand-accent hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-accent transition">
-            <UploadIcon className="w-5 h-5 mr-2 -ml-1" />
-            Upload Statistics CSV
-          </label>
-          <input
-            id="stats-upload"
-            type="file"
-            accept=".csv,text/csv"
-            className="hidden"
-            onChange={handleFileChange}
-          />
+        <div className="space-y-2 border border-slate-300 dark:border-slate-700 rounded-lg p-3 text-center">
+            <h3 className="text-md font-medium text-slate-800 dark:text-white">Import Statistics</h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400">
+                Upload a CSV with column stats.
+            </p>
+            <label htmlFor="stats-upload" className="w-full cursor-pointer inline-flex justify-center items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-brand-accent hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-accent transition">
+                <UploadIcon className="w-5 h-5 mr-2 -ml-1" />
+                Upload Statistics CSV
+            </label>
+            <input
+                id="stats-upload"
+                type="file"
+                accept=".csv,text/csv"
+                className="hidden"
+                onChange={handleFileChange}
+            />
         </div>
-      </div>
+    </div>
 
       <div className="space-y-4">
         {inputs.tables.map((table, index) => (
@@ -309,22 +308,40 @@ CREATE TABLE customer_orders (
         Add Another Table
       </button>
       
-      <div className="border-t border-slate-200 dark:border-slate-700 pt-6 space-y-6">
-        <h3 className="text-lg font-medium text-slate-800 dark:text-white">Global Context</h3>
-        <InputArea
-          id="rules"
-          label="Global business rules (optional)"
-          placeholder="e.g., All ID columns must be universally unique"
-          value={inputs.rules}
-          onChange={handleGlobalChange}
-        />
-        <InputArea
-          id="history"
-          label="Historical anomalies (optional)"
-          placeholder="e.g., 'Last week, user_id had a 10% null spike'"
-          value={inputs.history}
-          onChange={handleGlobalChange}
-        />
+      <div className="border-t border-slate-200 dark:border-slate-700 pt-6 space-y-4">
+        <h3 className="text-lg font-medium text-slate-800 dark:text-white text-center">Global Context</h3>
+        <GlobalContextCard
+            icon={<GavelIcon className="w-5 h-5" />}
+            title="Global Business Rules"
+            subtitle="These rules apply to ALL tables in the analysis."
+            accentColorClass="border-indigo-300 dark:border-indigo-700 text-indigo-500"
+        >
+            <textarea
+                id="rules"
+                name="rules"
+                rows={3}
+                className="block w-full text-sm shadow-sm border-slate-300 rounded-md bg-white dark:bg-slate-900 dark:border-slate-600 dark:placeholder-slate-400 dark:text-white focus:ring-brand-accent focus:border-brand-accent transition"
+                placeholder="e.g., All ID columns must be universally unique"
+                value={inputs.rules}
+                onChange={handleGlobalChange}
+            />
+        </GlobalContextCard>
+        <GlobalContextCard
+            icon={<HistoryIcon className="w-5 h-5" />}
+            title="Historical Anomalies"
+            subtitle="Provide context on past issues (optional)."
+            accentColorClass="border-sky-300 dark:border-sky-700 text-sky-500"
+        >
+            <textarea
+                id="history"
+                name="history"
+                rows={3}
+                className="block w-full text-sm shadow-sm border-slate-300 rounded-md bg-white dark:bg-slate-900 dark:border-slate-600 dark:placeholder-slate-400 dark:text-white focus:ring-brand-accent focus:border-brand-accent transition"
+                placeholder="e.g., 'Last week, user_id had a 10% null spike'"
+                value={inputs.history}
+                onChange={handleGlobalChange}
+            />
+        </GlobalContextCard>
       </div>
 
       <button
@@ -334,7 +351,7 @@ CREATE TABLE customer_orders (
       >
         {isLoading ? (
           <>
-            <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w.org/2000/svg" fill="none" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
             </svg>

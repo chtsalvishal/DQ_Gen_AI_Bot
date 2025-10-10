@@ -213,6 +213,52 @@ export const analyzeDataQuality = async (inputs: DataQualityInputs): Promise<Gem
   return { issues_detected: allIssues };
 };
 
+export const generateSqlForIssues = async (tableName: string, issues: Issue[]): Promise<string> => {
+  // Filter out issues that are too generic to generate SQL for, like schema drift
+  const actionableIssues = issues.filter(issue => 
+    issue.type !== 'Schema Drift' && !issue.description.toLowerCase().includes('data type mismatch')
+  );
+
+  if (actionableIssues.length === 0) {
+    return `-- No actionable issues found that can be directly queried.
+-- Issues like schema drift or data type mismatches need to be addressed in the ETL process or table definition.`;
+  }
+
+  const issuesJson = JSON.stringify(actionableIssues.map(i => ({ 
+    type: i.type, 
+    description: i.description, 
+    column_name: i.column_name 
+  })), null, 2);
+
+  const prompt = `
+    You are an expert SQL developer. For the table named \`${tableName}\`, a data quality analysis found the following issues:
+
+    ${issuesJson}
+
+    Please write standard SQL queries to help a data engineer identify the exact rows that have these problems.
+    - For each issue, provide a commented header explaining what the query is for (e.g., -- Checks for: [Issue Description]).
+    - Then, provide a single, runnable SQL query to find the rows matching that issue. Use SELECT * FROM \`${tableName}\` WHERE ...
+    - Use standard SQL dialect that is generally compatible with systems like BigQuery, Snowflake, and PostgreSQL.
+    - If an issue is too abstract to write a precise query for, provide a best-effort query with a comment explaining any assumptions.
+    - Combine all queries into a single, well-formatted SQL script.
+  `;
+
+  try {
+    const response = await generateContentWithRetry(
+      'gemini-2.5-flash',
+      prompt,
+      {
+        temperature: 0,
+        seed: 42,
+      }
+    );
+    return response.text;
+  } catch (e) {
+    console.error(`Failed to generate SQL for table "${tableName}" after retries:`, e);
+    return `-- An error occurred while generating SQL queries. Please try again.`;
+  }
+};
+
 // FIX: Export `generateReportSummary` with the correct name to resolve the import error in `App.tsx`.
 export const generateReportSummary = async (issues: Issue[]): Promise<string> => {
   const prompt = `
