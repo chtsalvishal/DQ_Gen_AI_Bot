@@ -95,7 +95,7 @@
   </g>
 
   <!-- Gateway -->
-  <g transform="translate(265, 175)">
+  <g transform="translate(265, 170)">
     <circle cx="40" cy="40" r="40" class="gateway-box"/>
     <use xlink:href="#icon-gateway" class="icon icon-gateway" x="20" y="20" width="40" height="40"/>
     <text x="40" y="100" text-anchor="middle" class="box-subtitle diagram-font" style="font-size: 12px;">Gateway</text>
@@ -154,17 +154,17 @@
   </defs>
   
   <path d="M200 210 L 265 210" class="arrow-path" stroke-width="2" marker-end="url(#arrowhead)"/>
-  <text x="232.5" y="185" text-anchor="middle" class="arrow-label diagram-font" style="font-size: 12px; font-weight: 500;"><tspan x="232.5" dy="0em">Provides Data</tspan><tspan x="232.5" dy="1.2em">Context</tspan></text>
+  <text x="232.5" y="180" text-anchor="middle" class="arrow-label diagram-font" style="font-size: 12px; font-weight: 500;"><tspan x="232.5" dy="0em">Provides Data</tspan><tspan x="232.5" dy="1.2em">Context</tspan></text>
 
-  <path d="M345 215 L 410 215" class="arrow-path" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <path d="M345 210 L 410 210" class="arrow-path" stroke-width="2" marker-end="url(#arrowhead)"/>
   
-  <path d="M590 215 L 620 215" class="arrow-path" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <path d="M590 210 L 620 210" class="arrow-path" stroke-width="2" marker-end="url(#arrowhead)"/>
 
-  <path d="M800 215 L 840 215" class="arrow-path" stroke-width="2" marker-end="url(#arrowhead)"/>
-  <text x="820" y="200" text-anchor="middle" class="arrow-label diagram-font" style="font-size: 12px; font-weight: 500;">Secure API Call</text>
+  <path d="M800 210 L 840 210" class="arrow-path" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="820" y="195" text-anchor="middle" class="arrow-label diagram-font" style="font-size: 12px; font-weight: 500;">Secure API Call</text>
   
-  <path d="M1020 215 L 1120 215" class="arrow-path" stroke-width="2" marker-end="url(#arrowhead)"/>
-  <text x="1070" y="200" text-anchor="middle" class="arrow-label diagram-font" style="font-size: 12px; font-weight: 500;">JSON Response</text>
+  <path d="M1020 210 L 1120 210" class="arrow-path" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="1070" y="195" text-anchor="middle" class="arrow-label diagram-font" style="font-size: 12px; font-weight: 500;">JSON Response</text>
 
   <path d="M1300 210 h 15 v -85 h 15" class="arrow-path" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
   <path d="M1315 210 v 55 h 15" class="arrow-path" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
