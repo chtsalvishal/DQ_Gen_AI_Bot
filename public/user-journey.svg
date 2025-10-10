@@ -2,10 +2,20 @@
 <svg width="2000px" height="600px" viewBox="0 0 2000 600" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 
   <defs>
-    <symbol id="icon-context" viewBox="0 0 24 24"><path d="M4 7v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2H6c-1.1 0-2 .9-2 2z"></path><path d="M12 14l-4-3h8l-4 3z"></path></symbol>
+    <!-- Main Stage Icons -->
+    <symbol id="icon-context" viewBox="0 0 24 24"><path d="M20 17.58A5 5 0 0 0 18 8h-1.26A8 8 0 1 0 4 16.25" /><path d="M8 16.01A4.97 4.97 0 0 0 12 20a5 5 0 0 0 5-5" /><line x1="12" y1="12" x2="12" y2="20" /><polyline points="10 16 12 18 14 16" /></symbol>
     <symbol id="icon-analysis" viewBox="0 0 24 24"><path d="M12 2L9 9l-7 3 7 3 3 7 3-7 7-3-7-3-3-7z" /></symbol>
     <symbol id="icon-action" viewBox="0 0 24 24"><path d="M6 20v-4M12 20V10M18 20V4"></path></symbol>
     <symbol id="icon-goal" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></symbol>
+    <!-- Sub-step Icons -->
+    <symbol id="icon-manual" viewBox="0 0 24 24"><path d="M4 11a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3" /><path d="M8 14v.01" /><path d="M12 14v.01" /><path d="M16 14v.01" /><path d="M8 18v.01" /><path d="M12 18v.01" /><path d="M16 18v.01" /><path d="M4 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3H4V4z" /></symbol>
+    <symbol id="icon-upload" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="17 8 12 3 7 8" /><line x1="12" y1="3" x2="12" y2="15" /></symbol>
+    <symbol id="icon-trigger" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /><polygon points="10 8 16 12 10 16 10 8" /></symbol>
+    <symbol id="icon-receive" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /><polyline points="9 15 11 17 15 13" /></symbol>
+    <symbol id="icon-dashboard" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" /><rect x="14" y="3" width="7" height="5" /><rect x="14" y="12" width="7" height="9" /><rect x="3" y="16" width="7" height="5" /></symbol>
+    <symbol id="icon-chat" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></symbol>
+    <symbol id="icon-export" viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" /><polyline points="10 17 15 12 10 7" /><line x1="15" y1="12" x2="3" y2="12" /></symbol>
+    <symbol id="icon-integrity" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /><polyline points="9 12 11 14 15 10" /></symbol>
   </defs>
 
   <style>
@@ -13,28 +23,22 @@
     
     /* Light Mode */
     .stage-title, .detail-title { fill: #1e293b; }
-    .stage-subtitle, .detail-subtitle { fill: #475569; }
+    .stage-subtitle { fill: #475569; }
     .stage-box { fill: #f8fafc; stroke: #e2e8f0; }
-    .detail-box-context { background-color: #fffbeb; border: 1px solid #fcd34d; }
-    .detail-box-analysis { background-color: #fef2f2; border: 1px solid #fca5a5; }
-    .detail-box-action { background-color: #f0fdf4; border: 1px solid #86efac; }
-    .detail-box-goal { background-color: #eef2ff; border: 1px solid #a5b4fc; }
-    .arrow-path { stroke: #94a3b8; }
-    #arrowhead polygon { fill: #94a3b8; }
+    .arrow-path { stroke: #cbd5e1; }
+    #arrowhead polygon { fill: #cbd5e1; }
     .icon-main { stroke: #0ea5e9; }
+    .icon-sub { stroke: #475569; }
 
     /* Dark Mode */
     @media (prefers-color-scheme: dark) {
       .stage-title, .detail-title { fill: #f1f5f9; }
-      .stage-subtitle, .detail-subtitle { fill: #94a3b8; }
+      .stage-subtitle { fill: #94a3b8; }
       .stage-box { fill: #0f172a; stroke: #334155; }
-      .detail-box-context { background-color: #422006; border: 1px solid #fcd34d; }
-      .detail-box-analysis { background-color: #450a0a; border: 1px solid #fca5a5; }
-      .detail-box-action { background-color: #14532d; border: 1px solid #86efac; }
-      .detail-box-goal { background-color: #312e81; border: 1px solid #a5b4fc; }
-      .arrow-path { stroke: #64748b; }
-      #arrowhead polygon { fill: #64748b; }
+      .arrow-path { stroke: #475569; }
+      #arrowhead polygon { fill: #475569; }
       .icon-main { stroke: #38bdf8; }
+      .icon-sub { stroke: #94a3b8; }
     }
   </style>
 
@@ -49,29 +53,17 @@
     <rect class="stage-box" width="450" height="500" rx="12" ry="12"/>
     <use xlink:href="#icon-context" class="icon-main" stroke-width="1.5" fill="none" x="30" y="30" width="40" height="40"/>
     <text x="85" y="50" class="stage-title diagram-font" font-size="20" font-weight="bold">1. Provide Context</text>
-    <text x="85" y="75" class="stage-subtitle diagram-font" font-size="14">User provides schemas, statistics, and business rules.</text>
-
-    <foreignObject x="30" y="140" width="180" height="120">
-      <div xmlns="http://www.w3.org/1999/xhtml" class="detail-box-context diagram-font" style="border-radius: 8px; padding: 12px; height: 100%;">
-        <p class="detail-title" style="font-size: 14px; font-weight: bold; margin: 0 0 4px 0;">Provide Data Context</p>
-        <p class="detail-subtitle" style="font-size: 12px; line-height: 1.4; margin: 0;">User inputs metadata, statistics, and business rules.</p>
-      </div>
-    </foreignObject>
-    <foreignObject x="250" y="100" width="170" height="120">
-       <div xmlns="http://www.w3.org/1999/xhtml" class="detail-box-context diagram-font" style="border-radius: 8px; padding: 12px; height: 100%;">
-        <p class="detail-title" style="font-size: 14px; font-weight: bold; margin: 0 0 4px 0;">Manual Entry</p>
-        <p class="detail-subtitle" style="font-size: 12px; line-height: 1.4; margin: 0;">Type or paste details directly into the form.</p>
-      </div>
-    </foreignObject>
-    <foreignObject x="250" y="240" width="170" height="120">
-      <div xmlns="http://www.w3.org/1999/xhtml" class="detail-box-context diagram-font" style="border-radius: 8px; padding: 12px; height: 100%;">
-        <p class="detail-title" style="font-size: 14px; font-weight: bold; margin: 0 0 4px 0;">File Upload</p>
-        <p class="detail-subtitle" style="font-size: 12px; line-height: 1.4; margin: 0;">Import context via .sql and .csv files for efficiency.</p>
-      </div>
-    </foreignObject>
-
-    <path d="M210 200 C 230 180, 230 180, 249 160" class="arrow-path" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
-    <path d="M210 200 C 230 220, 230 220, 249 240" class="arrow-path" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+    <text x="85" y="75" class="stage-subtitle diagram-font" font-size="14">User provides schemas, statistics, and rules.</text>
+    
+    <g transform="translate(130, 180)">
+      <use xlink:href="#icon-manual" class="icon-sub" stroke-width="1.5" fill="none" width="40" height="40"/>
+      <text x="55" y="25" class="detail-title diagram-font" font-size="16" font-weight="500">Manual Entry</text>
+    </g>
+    <path d="M225 240 v 29" class="arrow-path" stroke-width="2" fill="none" marker-end="url(#arrowhead)" stroke-dasharray="4 4"/>
+    <g transform="translate(130, 280)">
+      <use xlink:href="#icon-upload" class="icon-sub" stroke-width="1.5" fill="none" width="40" height="40"/>
+      <text x="55" y="25" class="detail-title diagram-font" font-size="16" font-weight="500">File Upload (.sql, .csv)</text>
+    </g>
   </g>
 
   <!-- Arrow 1 -> 2 -->
@@ -82,29 +74,22 @@
     <rect class="stage-box" width="450" height="500" rx="12" ry="12"/>
     <use xlink:href="#icon-analysis" class="icon-main" stroke-width="1.5" fill="none" x="30" y="30" width="40" height="40"/>
     <text x="85" y="50" class="stage-title diagram-font" font-size="20" font-weight="bold">2. AI Analysis</text>
-    <text x="85" y="75" class="stage-subtitle diagram-font" font-size="14">The app constructs a rich prompt and queries the AI.</text>
+    <text x="85" y="75" class="stage-subtitle diagram-font" font-size="14">The app queries the AI and gets structured results.</text>
     
-    <foreignObject x="30" y="240" width="120" height="120">
-      <div xmlns="http://www.w3.org/1999/xhtml" class="detail-box-analysis diagram-font" style="border-radius: 8px; padding: 12px; height: 100%;">
-        <p class="detail-title" style="font-size: 14px; font-weight: bold; margin: 0 0 4px 0;">Trigger Analysis</p>
-        <p class="detail-subtitle" style="font-size: 12px; line-height: 1.4; margin: 0;">Click 'Analyze' to start the AI quality assessment.</p>
-      </div>
-    </foreignObject>
-    <foreignObject x="170" y="240" width="120" height="120">
-      <div xmlns="http://www.w3.org/1999/xhtml" class="detail-box-analysis diagram-font" style="border-radius: 8px; padding: 12px; height: 100%;">
-        <p class="detail-title" style="font-size: 14px; font-weight: bold; margin: 0 0 4px 0;">Gemini Processing</p>
-        <p class="detail-subtitle" style="font-size: 12px; line-height: 1.4; margin: 0;">The app sends a detailed, context-rich prompt for each table to the AI.</p>
-      </div>
-    </foreignObject>
-    <foreignObject x="310" y="240" width="120" height="120">
-       <div xmlns="http://www.w3.org/1999/xhtml" class="detail-box-analysis diagram-font" style="border-radius: 8px; padding: 12px; height: 100%;">
-        <p class="detail-title" style="font-size: 14px; font-weight: bold; margin: 0 0 4px 0;">Receive Results</p>
-        <p class="detail-subtitle" style="font-size: 12px; line-height: 1.4; margin: 0;">A structured JSON response is returned with all findings.</p>
-      </div>
-    </foreignObject>
-
-    <path d="M150 300 L 169 300" class="arrow-path" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
-    <path d="M290 300 L 309 300" class="arrow-path" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+    <g transform="translate(130, 130)">
+      <use xlink:href="#icon-trigger" class="icon-sub" stroke-width="1.5" fill="none" width="40" height="40"/>
+      <text x="55" y="25" class="detail-title diagram-font" font-size="16" font-weight="500">Trigger Analysis</text>
+    </g>
+    <path d="M225 190 v 29" class="arrow-path" stroke-width="2" fill="none" marker-end="url(#arrowhead)" stroke-dasharray="4 4"/>
+    <g transform="translate(130, 230)">
+      <use xlink:href="#icon-analysis" class="icon-sub" stroke-width="1.5" fill="none" width="40" height="40"/>
+      <text x="55" y="25" class="detail-title diagram-font" font-size="16" font-weight="500">Gemini Processing</text>
+    </g>
+    <path d="M225 290 v 29" class="arrow-path" stroke-width="2" fill="none" marker-end="url(#arrowhead)" stroke-dasharray="4 4"/>
+    <g transform="translate(130, 330)">
+      <use xlink:href="#icon-receive" class="icon-sub" stroke-width="1.5" fill="none" width="40" height="40"/>
+      <text x="55" y="25" class="detail-title diagram-font" font-size="16" font-weight="500">Receive Results (JSON)</text>
+    </g>
   </g>
 
   <!-- Arrow 2 -> 3 -->
@@ -114,30 +99,23 @@
   <g transform="translate(1010, 50)">
     <rect class="stage-box" width="450" height="500" rx="12" ry="12"/>
     <use xlink:href="#icon-action" class="icon-main" stroke-width="1.5" fill="none" x="30" y="30" width="40" height="40"/>
-    <text x="85" y="50" class="stage-title diagram-font" font-size="20" font-weight="bold">3. Explore &amp; Act</text>
-    <text x="85" y="75" class="stage-subtitle diagram-font" font-size="14">Visualize results, ask questions, and share findings.</text>
+    <text x="85" y="50" class="stage-title diagram-font" font-size="20" font-weight="bold">3. Explore & Act</text>
+    <text x="85" y="75" class="stage-subtitle diagram-font" font-size="14">Visualize, ask questions, and share findings.</text>
 
-    <foreignObject x="30" y="240" width="180" height="120">
-      <div xmlns="http://www.w3.org/1999/xhtml" class="detail-box-action diagram-font" style="border-radius: 8px; padding: 12px; height: 100%;">
-        <p class="detail-title" style="font-size: 14px; font-weight: bold; margin: 0 0 4px 0;">Explore Dashboard</p>
-        <p class="detail-subtitle" style="font-size: 12px; line-height: 1.4; margin: 0;">Visualize results, filter issues, and review table health scores.</p>
-      </div>
-    </foreignObject>
-    <foreignObject x="250" y="160" width="170" height="120">
-      <div xmlns="http://www.w3.org/1999/xhtml" class="detail-box-action diagram-font" style="border-radius: 8px; padding: 12px; height: 100%;">
-        <p class="detail-title" style="font-size: 14px; font-weight: bold; margin: 0 0 4px 0;">Conversational AI</p>
-        <p class="detail-subtitle" style="font-size: 12px; line-height: 1.4; margin: 0;">Ask follow-up questions to the integrated AI Assistant.</p>
-      </div>
-    </foreignObject>
-    <foreignObject x="250" y="320" width="170" height="120">
-       <div xmlns="http://www.w3.org/1999/xhtml" class="detail-box-action diagram-font" style="border-radius: 8px; padding: 12px; height: 100%;">
-        <p class="detail-title" style="font-size: 14px; font-weight: bold; margin: 0 0 4px 0;">Export &amp; Share</p>
-        <p class="detail-subtitle" style="font-size: 12px; line-height: 1.4; margin: 0;">Generate professional PDF or PowerPoint reports for stakeholders.</p>
-      </div>
-    </foreignObject>
-    
-    <path d="M210 300 C 230 280, 230 280, 249 260" class="arrow-path" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
-    <path d="M210 300 C 230 320, 230 320, 249 340" class="arrow-path" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+    <g transform="translate(130, 130)">
+      <use xlink:href="#icon-dashboard" class="icon-sub" stroke-width="1.5" fill="none" width="40" height="40"/>
+      <text x="55" y="25" class="detail-title diagram-font" font-size="16" font-weight="500">Explore Dashboard</text>
+    </g>
+    <path d="M225 190 v 29" class="arrow-path" stroke-width="2" fill="none" marker-end="url(#arrowhead)" stroke-dasharray="4 4"/>
+    <g transform="translate(130, 230)">
+      <use xlink:href="#icon-chat" class="icon-sub" stroke-width="1.5" fill="none" width="40" height="40"/>
+      <text x="55" y="25" class="detail-title diagram-font" font-size="16" font-weight="500">Conversational AI</text>
+    </g>
+    <path d="M225 290 v 29" class="arrow-path" stroke-width="2" fill="none" marker-end="url(#arrowhead)" stroke-dasharray="4 4"/>
+    <g transform="translate(130, 330)">
+      <use xlink:href="#icon-export" class="icon-sub" stroke-width="1.5" fill="none" width="40" height="40"/>
+      <text x="55" y="25" class="detail-title diagram-font" font-size="16" font-weight="500">Export & Share</text>
+    </g>
   </g>
 
   <!-- Arrow 3 -> 4 -->
@@ -148,13 +126,11 @@
     <rect class="stage-box" width="450" height="500" rx="12" ry="12"/>
     <use xlink:href="#icon-goal" class="icon-main" stroke-width="1.5" fill="none" x="30" y="30" width="40" height="40"/>
     <text x="85" y="50" class="stage-title diagram-font" font-size="20" font-weight="bold">4. Achieve Integrity</text>
-    <text x="85" y="75" class="stage-subtitle diagram-font" font-size="14">Gain insights to improve and maintain data quality.</text>
+    <text x="85" y="75" class="stage-subtitle diagram-font" font-size="14">Gain insights to improve and maintain quality.</text>
     
-    <foreignObject x="100" y="240" width="250" height="120">
-      <div xmlns="http://www.w3.org/1999/xhtml" class="detail-box-goal diagram-font" style="border-radius: 8px; padding: 12px; height: 100%;">
-        <p class="detail-title" style="font-size: 14px; font-weight: bold; margin: 0 0 4px 0;">Achieve Data Integrity</p>
-        <p class="detail-subtitle" style="font-size: 12px; line-height: 1.4; margin: 0;">User gains clear, actionable insights to improve and maintain data quality.</p>
-      </div>
-    </foreignObject>
+    <g transform="translate(130, 250)">
+      <use xlink:href="#icon-integrity" class="icon-sub" stroke-width="1.5" fill="none" width="40" height="40"/>
+      <text x="55" y="25" class="detail-title diagram-font" font-size="16" font-weight="500">Achieve Data Integrity</text>
+    </g>
   </g>
 </svg>
