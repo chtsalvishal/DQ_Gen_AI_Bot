@@ -48,9 +48,12 @@ export const generatePdfReport = async (issues: Issue[]): Promise<void> => {
       const pageCount = doc.internal.getNumberOfPages();
       for (let i = 1; i <= pageCount; i++) {
         doc.setPage(i);
-        doc.setFontSize(10);
-        doc.setTextColor(BRAND_COLORS.primary);
-        doc.text('Data Quality Analysis Report', 15, 12);
+        // Avoid adding header to the very first title page
+        if (i > 1) {
+            doc.setFontSize(10);
+            doc.setTextColor(BRAND_COLORS.primary);
+            doc.text('Data Quality Analysis Report', 15, 12);
+        }
 
         doc.setFontSize(8);
         doc.setTextColor(BRAND_COLORS.textLight);
@@ -196,19 +199,62 @@ export const generatePdfReport = async (issues: Issue[]): Promise<void> => {
     });
 
     // --- Render Table of Contents ---
-    doc.setPage(tocPage);
-    let tocYPos = 25;
-    doc.setFontSize(22);
-    doc.setTextColor(BRAND_COLORS.dark);
-    doc.setFont('helvetica', 'bold');
-    doc.text('Table of Contents', 15, tocYPos);
-    tocYPos += 15;
-
-    doc.setFont('helvetica', 'normal');
     const bottomMargin = 20;
 
+    // Pass 1: Calculate how many pages the TOC will need
+    let requiredTocPages = 1;
+    let yPos_calc = 25 + 15; // Initial yPos after header
     tocEntries.forEach(entry => {
-        if (tocYPos > pageHeight - bottomMargin) return; // Simple overflow protection
+        const requiredHeight = entry.level === 1 ? 8 : 6;
+        if (yPos_calc + requiredHeight > pageHeight - bottomMargin) {
+            requiredTocPages++;
+            yPos_calc = 25 + 15; // Reset for new page
+        }
+        yPos_calc += requiredHeight;
+    });
+
+    // Insert the required number of blank pages for the TOC
+    if (requiredTocPages > 1) {
+        for (let i = 1; i < requiredTocPages; i++) {
+            const newPageNum = tocPage + i;
+            
+            // Shift all subsequent content page numbers
+            tocEntries.forEach(entry => {
+                if (entry.page >= newPageNum) {
+                    entry.page++;
+                }
+            });
+
+            doc.addPage();
+            const lastPageNum = doc.internal.getNumberOfPages();
+            doc.movePage(lastPageNum, newPageNum);
+        }
+    }
+
+    // Pass 2: Render the TOC across the allocated pages
+    let tocYPos = 25;
+    let currentTocPageNum = tocPage;
+    doc.setPage(currentTocPageNum);
+
+    const renderTocHeader = (isContinued = false) => {
+        doc.setFontSize(22);
+        doc.setTextColor(BRAND_COLORS.dark);
+        doc.setFont('helvetica', 'bold');
+        const title = isContinued ? 'Table of Contents (continued)' : 'Table of Contents';
+        doc.text(title, 15, 25);
+        tocYPos = 25 + 15; // Reset yPos after header
+    };
+
+    renderTocHeader();
+    doc.setFont('helvetica', 'normal');
+
+    tocEntries.forEach(entry => {
+        const requiredHeight = entry.level === 1 ? 8 : 6;
+        if (tocYPos + requiredHeight > pageHeight - bottomMargin) {
+            currentTocPageNum++;
+            doc.setPage(currentTocPageNum);
+            renderTocHeader(true);
+        }
 
         const title = entry.title;
         const pageNumStr = entry.page.toString();
@@ -222,7 +268,6 @@ export const generatePdfReport = async (issues: Issue[]): Promise<void> => {
         const maxTitleWidth = effectiveWidth - indent - 20; 
         const truncatedTitle = doc.splitTextToSize(title, maxTitleWidth)[0];
 
-        // Add clickable link to the page
         (doc as any).textWithLink(truncatedTitle, xPos, tocYPos, { pageNumber: entry.page });
 
         const titleWidth = doc.getTextWidth(truncatedTitle);
@@ -240,7 +285,7 @@ export const generatePdfReport = async (issues: Issue[]): Promise<void> => {
         doc.setTextColor(BRAND_COLORS.dark);
         (doc as any).textWithLink(pageNumStr, pageWidth - rightMargin, tocYPos, { pageNumber: entry.page, align: 'right' });
 
-        tocYPos += entry.level === 1 ? 8 : 6;
+        tocYPos += requiredHeight;
     });
 
     addHeaderAndFooter();
