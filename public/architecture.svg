@@ -154,7 +154,7 @@
   </defs>
   
   <path d="M200 210 L 265 210" class="arrow-path" stroke-width="2" marker-end="url(#arrowhead)"/>
-  <text x="232.5" y="195" text-anchor="middle" class="arrow-label diagram-font" style="font-size: 12px; font-weight: 500;"><tspan x="232.5" dy="0em">Provides Data</tspan><tspan x="232.5" dy="1.2em">Context</tspan></text>
+  <text x="232.5" y="185" text-anchor="middle" class="arrow-label diagram-font" style="font-size: 12px; font-weight: 500;"><tspan x="232.5" dy="0em">Provides Data</tspan><tspan x="232.5" dy="1.2em">Context</tspan></text>
 
   <path d="M345 215 L 410 215" class="arrow-path" stroke-width="2" marker-end="url(#arrowhead)"/>
   
@@ -166,6 +166,6 @@
   <path d="M1020 215 L 1120 215" class="arrow-path" stroke-width="2" marker-end="url(#arrowhead)"/>
   <text x="1070" y="200" text-anchor="middle" class="arrow-label diagram-font" style="font-size: 12px; font-weight: 500;">JSON Response</text>
 
-  <path d="M1300 210 C 1320 210, 1320 125, 1330 125" class="arrow-path" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
-  <path d="M1300 210 C 1320 210, 1320 265, 1330 265" class="arrow-path" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+  <path d="M1300 210 h 15 v -85 h 15" class="arrow-path" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+  <path d="M1315 210 v 55 h 15" class="arrow-path" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
 </svg>
