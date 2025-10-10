@@ -1,8 +1,9 @@
 import React from 'react';
 import { DataQualityInputs, TableInput } from '../types';
-import { SparklesIcon, PlusIcon, UploadIcon, GavelIcon, HistoryIcon } from './icons';
+import { SparklesIcon, PlusIcon, UploadIcon, GavelIcon, HistoryIcon, ShieldCheckIcon } from './icons';
 import TableInputForm from './TableInputForm';
 import { parseSql } from '../services/sqlParser';
+import { sampleEcommerceData } from '../resources/sample-ecommerce-data';
 
 interface InputFormProps {
   onAnalyze: (inputs: DataQualityInputs) => void;
@@ -69,6 +70,17 @@ CREATE TABLE customer_orders (
     rules: '',
     history: '',
   });
+
+  const loadSampleData = () => {
+    const tablesWithIds = sampleEcommerceData.tables.map(table => ({
+      ...table,
+      id: crypto.randomUUID(),
+    }));
+    setInputs({
+      ...sampleEcommerceData,
+      tables: tablesWithIds,
+    });
+  };
 
   const handleTableChange = (id: string, updatedTable: Partial<TableInput>) => {
     setInputs((prev) => ({
@@ -246,7 +258,23 @@ CREATE TABLE customer_orders (
     <form onSubmit={handleSubmit} className="space-y-6 bg-white dark:bg-slate-900 p-6 rounded-lg shadow-lg border border-slate-200 dark:border-slate-800">
       <div className="text-center">
         <h2 className="text-xl font-semibold text-slate-800 dark:text-white">Provide Data Context</h2>
-        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Add tables manually or generate them from SQL and statistics.</p>
+        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Add tables manually, import files, or load our comprehensive sample dataset.</p>
+      </div>
+      
+      <div className="border border-dashed border-indigo-300 dark:border-indigo-700 rounded-lg p-4 text-center bg-indigo-50 dark:bg-indigo-900/20">
+          <ShieldCheckIcon className="mx-auto h-8 w-8 text-brand-accent" />
+          <h3 className="mt-2 text-md font-medium text-slate-800 dark:text-white">Explore More Features</h3>
+          <p className="mt-1 text-xs text-slate-500 dark:text-slate-400 max-w-sm mx-auto">
+              Load our sample e-commerce dataset to see the bot handle multiple tables, schema drift, and more complex issues.
+          </p>
+          <button
+              type="button"
+              onClick={loadSampleData}
+              className="mt-4 w-full sm:w-auto cursor-pointer inline-flex justify-center items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-brand-accent hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-accent transition"
+          >
+              <SparklesIcon className="w-5 h-5 mr-2 -ml-1" />
+              Load E-commerce Dataset
+          </button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

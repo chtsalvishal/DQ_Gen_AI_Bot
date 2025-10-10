@@ -13,77 +13,86 @@ import { normalizeIssueType } from '../services/issueNormalizer';
 const DashboardView = lazy(() => import('./DashboardView'));
 
 /**
- * A robust inline markdown parser that handles bold text (`**...**`).
- * It splits a line of text by the bold delimiter and wraps the appropriate segments in `<strong>` tags.
+ * A robust inline markdown parser that correctly handles bold (`**...**`), italic (`*...*`),
+ * and inline code (`...`) formats within a line of text.
  * @param text The plain text line which may contain markdown.
  * @returns A React fragment with the formatted text.
  */
-const renderInlineMarkdown = (text: string) => {
-  // Split by bold markdown (**...**), keeping the captured delimiters.
-  const parts = text.split(/(\*\*.*?\*\*)/g);
-  return (
-    <>
-      {parts.map((part, index) => {
+const parseInlineMarkdown = (text: string): React.ReactNode => {
+    // Regular expression to find all supported markdown tokens: bold, italic, and inline code.
+    // It is non-greedy (`.*?`) to correctly handle multiple tokens on the same line.
+    const tokenRegex = /(\*\*.*?\*\*|\*.*?\*|`.*?`)/g;
+    const parts = text.split(tokenRegex).filter(Boolean); // filter(Boolean) removes empty strings
+
+    return parts.map((part, index) => {
         if (part.startsWith('**') && part.endsWith('**')) {
-          // This is a bold part; remove the asterisks and wrap in <strong>.
-          return <strong key={index}>{part.slice(2, -2)}</strong>;
+            return <strong key={index}>{part.slice(2, -2)}</strong>;
         }
-        // This is a regular text part.
+        if (part.startsWith('*') && part.endsWith('*')) {
+            return <em key={index} className="italic">{part.slice(1, -1)}</em>;
+        }
+        if (part.startsWith('`') && part.endsWith('`')) {
+            return <code key={index} className="bg-slate-200 dark:bg-slate-700/80 text-rose-600 dark:text-rose-400 px-1 py-0.5 rounded text-sm font-mono">{part.slice(1, -1)}</code>;
+        }
         return part;
-      })}
-    </>
-  );
+    });
 };
 
+
 /**
- * A professional and robust markdown renderer component.
- * It correctly groups list items and applies a cleaner, more report-like style than the previous version.
+ * A reimagined, block-based markdown renderer.
+ * This component is more robust than the previous line-by-line parser. It handles block-level
+ * elements (headers, lists, paragraphs) and then applies inline formatting to their content.
+ * It correctly parses headers with or without a space (e.g., '####Title') and mixed inline elements.
  * @param text The raw markdown string from the AI model.
  * @returns A formatted React component.
  */
 const SimpleMarkdownRenderer: React.FC<{ text: string }> = ({ text }) => {
-  const elements: React.ReactNode[] = [];
-  const lines = text.split('\n');
-  let listItemsBuffer: string[] = [];
+    // 1. Split text into logical blocks based on one or more blank lines.
+    const blocks = text.split(/\n\s*\n/).filter(Boolean);
 
-  const flushListBuffer = () => {
-    if (listItemsBuffer.length > 0) {
-      elements.push(
-        <ul key={`ul-${elements.length}`} className="list-disc list-outside pl-6 my-3 space-y-1.5 text-slate-600 dark:text-slate-300">
-          {listItemsBuffer.map((item, i) => (
-            <li key={i}>{renderInlineMarkdown(item)}</li>
-          ))}
-        </ul>
-      );
-      listItemsBuffer = []; // Clear the buffer
-    }
-  };
+    const renderedBlocks = blocks.map((block, index) => {
+        const lines = block.split('\n');
+        const firstLine = lines[0].trim();
 
-  lines.forEach((line, index) => {
-    const trimmedLine = line.trim();
+        // 2a. Check for headers (handles optional space after #)
+        const headerMatch = firstLine.match(/^(#{1,6})\s*(.*)/);
+        if (headerMatch) {
+            const level = headerMatch[1].length;
+            const content = headerMatch[2];
+            // FIX: The variable holding a JSX tag name must start with a lowercase letter.
+            // Changed 'Tag' to 'tag' to avoid JSX interpreting it as a custom component.
+            const tag = `h${level}` as keyof JSX.IntrinsicElements;
+            const styles = [
+                "text-2xl font-extrabold mt-8 mb-4 pb-2 border-b border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white", // h1
+                "text-xl font-bold mt-6 mb-3 pb-2 border-b border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white", // h2
+                "text-lg font-semibold mt-5 mb-2 pb-1 border-b border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white", // h3
+                "text-md font-semibold mt-4 mb-1 text-slate-800 dark:text-white", // h4
+                "text-sm font-semibold mt-3 mb-1 text-slate-800 dark:text-white", // h5
+                "text-xs font-semibold mt-2 mb-1 text-slate-800 dark:text-white"  // h6
+            ];
+            return <tag key={index} className={styles[level - 1]}>{parseInlineMarkdown(content)}</tag>;
+        }
 
-    if (trimmedLine.startsWith('### ')) {
-      flushListBuffer();
-      elements.push(<h3 key={index} className="text-lg font-semibold mt-5 mb-2 pb-1 border-b border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white">{renderInlineMarkdown(trimmedLine.substring(4))}</h3>);
-    } else if (trimmedLine.startsWith('## ')) {
-      flushListBuffer();
-      elements.push(<h2 key={index} className="text-xl font-bold mt-6 mb-3 pb-2 border-b border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white">{renderInlineMarkdown(trimmedLine.substring(3))}</h2>);
-    } else if (trimmedLine.startsWith('# ')) {
-      flushListBuffer();
-      elements.push(<h1 key={index} className="text-2xl font-extrabold mt-8 mb-4 pb-2 border-b border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white">{renderInlineMarkdown(trimmedLine.substring(2))}</h1>);
-    } else if (trimmedLine.startsWith('* ') || trimmedLine.startsWith('- ')) {
-      listItemsBuffer.push(trimmedLine.substring(2));
-    } else if (trimmedLine !== '') {
-      flushListBuffer();
-      elements.push(<p key={index} className="my-3 leading-relaxed text-slate-700 dark:text-slate-300">{renderInlineMarkdown(trimmedLine)}</p>);
-    } else {
-      flushListBuffer();
-    }
-  });
+        // 2b. Check for lists (where every line in the block starts with * or -)
+        const isList = lines.every(line => line.trim().match(/^[*|-]\s/));
+        if (isList) {
+            return (
+                <ul key={index} className="list-disc list-outside pl-6 my-3 space-y-1.5 text-slate-600 dark:text-slate-300">
+                    {lines.map((line, liIndex) => {
+                        const content = line.trim().substring(2);
+                        return <li key={liIndex}>{parseInlineMarkdown(content)}</li>;
+                    })}
+                </ul>
+            );
+        }
 
-  flushListBuffer(); // Ensure any trailing list gets rendered
-
-  return <div className="font-sans">{elements}</div>;
+        // 2c. Default to paragraph
+        // Re-join lines in the block in case a paragraph had intentional line breaks.
+        return <p key={index} className="my-3 leading-relaxed text-slate-700 dark:text-slate-300">{parseInlineMarkdown(block)}</p>;
+    });
+    
+    return <div className="font-sans">{renderedBlocks}</div>;
 };
 
 
