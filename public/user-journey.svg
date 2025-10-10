@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="2400px" height="600px" viewBox="0 0 2400 600" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" />
+    </marker>
+  </defs>
+
+  <style>
+    .diagram-font { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji"; }
+    
+    /* Light Mode Styles */
+    .main-title, .group-title, .box-title { fill: #0f172a; }
+    .box-subtitle { fill: #475569; }
+    .group-box { fill: #f8fafc; stroke: #e2e8f0; }
+    .arrow-path { stroke: #94a3b8; fill: none; }
+    #arrowhead polygon { fill: #94a3b8; }
+    
+    .start-box { fill: #eff6ff; stroke: #60a5fa; }
+    .input-box { fill: #fefce8; stroke: #facc15; }
+    .analysis-box { fill: #fef2f2; stroke: #f87171; }
+    .insight-box { fill: #f0fdf4; stroke: #4ade80; }
+    .goal-box { fill: #eef2ff; stroke: #818cf8; }
+
+    /* Dark Mode Overrides */
+    @media (prefers-color-scheme: dark) {
+      .main-title, .group-title, .box-title { fill: #f1f5f9; }
+      .box-subtitle { fill: #94a3b8; }
+      .group-box { fill: #1e293b; stroke: #334155; }
+      
+      .start-box { fill: #1e3a8a; stroke: #60a5fa; }
+      .input-box { fill: #422006; stroke: #facc15; }
+      .analysis-box { fill: #450a0a; stroke: #f87171; }
+      .insight-box { fill: #14532d; stroke: #4ade80; }
+      .goal-box { fill: #312e81; stroke: #818cf8; }
+    }
+  </style>
+
+  <text x="1200" y="50" text-anchor="middle" class="main-title diagram-font" style="font-size: 24px; font-weight: bold;">User Journey</text>
+
+  <!-- Group Boxes -->
+  <rect x="20" y="120" width="250" height="250" rx="8" ry="8" class="group-box"/>
+  <text x="145" y="110" text-anchor="middle" class="group-title diagram-font" style="font-size: 16px; font-weight: bold;">1. Start</text>
+
+  <rect x="320" y="120" width="500" height="400" rx="8" ry="8" class="group-box"/>
+  <text x="570" y="110" text-anchor="middle" class="group-title diagram-font" style="font-size: 16px; font-weight: bold;">2. Input &amp; Context</text>
+  
+  <rect x="870" y="120" width="650" height="250" rx="8" ry="8" class="group-box"/>
+  <text x="1195" y="110" text-anchor="middle" class="group-title diagram-font" style="font-size: 16px; font-weight: bold;">3. AI Analysis</text>
+  
+  <rect x="1570" y="120" width="500" height="400" rx="8" ry="8" class="group-box"/>
+  <text x="1820" y="110" text-anchor="middle" class="group-title diagram-font" style="font-size: 16px; font-weight: bold;">4. Insight &amp; Action</text>
+
+  <rect x="2120" y="120" width="250" height="250" rx="8" ry="8" class="group-box"/>
+  <text x="2245" y="110" text-anchor="middle" class="group-title diagram-font" style="font-size: 16px; font-weight: bold;">5. Goal</text>
+
+  <!-- Component Boxes with Text -->
+  <!-- 1. Start -->
+  <g transform="translate(45, 170)">
+    <rect width="200" height="150" rx="8" ry="8" class="start-box"/>
+    <text x="100" y="30" text-anchor="middle" class="box-title diagram-font" style="font-size: 14px; font-weight: bold;">Initiate Session</text>
+    <text x="100" y="60" text-anchor="middle" class="box-subtitle diagram-font" style="font-size: 12px;">
+      <tspan x="100" dy="1.2em">User opens the</tspan>
+      <tspan x="100" dy="1.2em">Data Quality Bot</tspan>
+      <tspan x="100" dy="1.2em">application.</tspan>
+    </text>
+  </g>
+
+  <!-- 2. Input -->
+  <g transform="translate(345, 245)">
+    <rect width="200" height="150" rx="8" ry="8" class="input-box"/>
+    <text x="100" y="30" text-anchor="middle" class="box-title diagram-font" style="font-size: 14px; font-weight: bold;">Provide Data Context</text>
+    <text x="100" y="60" text-anchor="middle" class="box-subtitle diagram-font" style="font-size: 12px;">
+      <tspan x="100" dy="1.2em">User inputs metadata,</tspan>
+      <tspan x="100" dy="1.2em">statistics, and</tspan>
+      <tspan x="100" dy="1.2em">business rules.</tspan>
+    </text>
+  </g>
+  <g transform="translate(595, 145)">
+    <rect width="200" height="150" rx="8" ry="8" class="input-box"/>
+    <text x="100" y="30" text-anchor="middle" class="box-title diagram-font" style="font-size: 14px; font-weight: bold;">Manual Entry</text>
+    <text x="100" y="60" text-anchor="middle" class="box-subtitle diagram-font" style="font-size: 12px;">
+      <tspan x="100" dy="1.2em">Type or paste</tspan>
+      <tspan x="100" dy="1.2em">details directly</tspan>
+      <tspan x="100" dy="1.2em">into the form.</tspan>
+    </text>
+  </g>
+  <g transform="translate(595, 345)">
+    <rect width="200" height="150" rx="8" ry="8" class="input-box"/>
+    <text x="100" y="30" text-anchor="middle" class="box-title diagram-font" style="font-size: 14px; font-weight: bold;">File Upload</text>
+    <text x="100" y="60" text-anchor="middle" class="box-subtitle diagram-font" style="font-size: 12px;">
+      <tspan x="100" dy="1.2em">Import context via</tspan>
+      <tspan x="100" dy="1.2em">.sql and .csv files</tspan>
+      <tspan x="100" dy="1.2em">for efficiency.</tspan>
+    </text>
+  </g>
+
+  <!-- 3. Analysis -->
+  <g transform="translate(895, 170)">
+    <rect width="180" height="150" rx="8" ry="8" class="analysis-box"/>
+    <text x="90" y="30" text-anchor="middle" class="box-title diagram-font" style="font-size: 14px; font-weight: bold;">Trigger Analysis</text>
+    <text x="90" y="60" text-anchor="middle" class="box-subtitle diagram-font" style="font-size: 12px;">
+      <tspan x="90" dy="1.2em">Click 'Analyze'</tspan>
+      <tspan x="90" dy="1.2em">to start the AI</tspan>
+      <tspan x="90" dy="1.2em">quality assessment.</tspan>
+    </text>
+  </g>
+  <g transform="translate(1100, 170)">
+    <rect width="180" height="150" rx="8" ry="8" class="analysis-box"/>
+    <text x="90" y="30" text-anchor="middle" class="box-title diagram-font" style="font-size: 14px; font-weight: bold;">Gemini Processing</text>
+    <text x="90" y="60" text-anchor="middle" class="box-subtitle diagram-font" style="font-size: 12px;">
+      <tspan x="90" dy="1.2em">The app sends a detailed,</tspan>
+      <tspan x="90" dy="1.2em">context-rich prompt for</tspan>
+      <tspan x="90" dy="1.2em">each table to the AI.</tspan>
+    </text>
+  </g>
+  <g transform="translate(1305, 170)">
+    <rect width="180" height="150" rx="8" ry="8" class="analysis-box"/>
+    <text x="90" y="30" text-anchor="middle" class="box-title diagram-font" style="font-size: 14px; font-weight: bold;">Receive Results</text>
+    <text x="90" y="60" text-anchor="middle" class="box-subtitle diagram-font" style="font-size: 12px;">
+      <tspan x="90" dy="1.2em">A structured JSON</tspan>
+      <tspan x="90" dy="1.2em">response is returned</tspan>
+      <tspan x="90" dy="1.2em">with all findings.</tspan>
+    </text>
+  </g>
+
+  <!-- 4. Insight -->
+  <g transform="translate(1595, 245)">
+    <rect width="200" height="150" rx="8" ry="8" class="insight-box"/>
+    <text x="100" y="30" text-anchor="middle" class="box-title diagram-font" style="font-size: 14px; font-weight: bold;">Explore Dashboard</text>
+    <text x="100" y="60" text-anchor="middle" class="box-subtitle diagram-font" style="font-size: 12px;">
+      <tspan x="100" dy="1.2em">Visualize results, filter</tspan>
+      <tspan x="100" dy="1.2em">issues, and review</tspan>
+      <tspan x="100" dy="1.2em">table health scores.</tspan>
+    </text>
+  </g>
+  <g transform="translate(1845, 145)">
+    <rect width="200" height="150" rx="8" ry="8" class="insight-box"/>
+    <text x="100" y="30" text-anchor="middle" class="box-title diagram-font" style="font-size: 14px; font-weight: bold;">Conversational AI</text>
+    <text x="100" y="60" text-anchor="middle" class="box-subtitle diagram-font" style="font-size: 12px;">
+      <tspan x="100" dy="1.2em">Ask follow-up questions</tspan>
+      <tspan x="100" dy="1.2em">to the integrated</tspan>
+      <tspan x="100" dy="1.2em">AI Assistant.</tspan>
+    </text>
+  </g>
+  <g transform="translate(1845, 345)">
+    <rect width="200" height="150" rx="8" ry="8" class="insight-box"/>
+    <text x="100" y="30" text-anchor="middle" class="box-title diagram-font" style="font-size: 14px; font-weight: bold;">Export &amp; Share</text>
+    <text x="100" y="60" text-anchor="middle" class="box-subtitle diagram-font" style="font-size: 12px;">
+      <tspan x="100" dy="1.2em">Generate professional PDF</tspan>
+      <tspan x="100" dy="1.2em">or PowerPoint reports</tspan>
+      <tspan x="100" dy="1.2em">for stakeholders.</tspan>
+    </text>
+  </g>
+
+  <!-- 5. Goal -->
+  <g transform="translate(2145, 170)">
+    <rect width="200" height="150" rx="8" ry="8" class="goal-box"/>
+    <text x="100" y="30" text-anchor="middle" class="box-title diagram-font" style="font-size: 14px; font-weight: bold;">Achieve Data Integrity</text>
+    <text x="100" y="60" text-anchor="middle" class="box-subtitle diagram-font" style="font-size: 12px;">
+      <tspan x="100" dy="1.2em">User gains clear,</tspan>
+      <tspan x="100" dy="1.2em">actionable</tspan>
+      <tspan x="100" dy="1.2em">insights to improve and</tspan>
+      <tspan x="100" dy="1.2em">maintain data quality.</tspan>
+    </text>
+  </g>
+  
+  <!-- Arrows -->
+  <path d="M 245 245 H 334" class="arrow-path" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <path d="M 545 320 C 565,320 565,220 584,220" class="arrow-path" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <path d="M 545 320 C 565,320 565,420 584,420" class="arrow-path" stroke-width="2" marker-end="url(#arrowhead)"/>
+  
+  <path d="M 795 220 C 845,220 845,245 884,245" class="arrow-path" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <path d="M 795 420 C 845,420 845,245 884,245" class="arrow-path" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+  <path d="M 1075 245 H 1089" class="arrow-path" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <path d="M 1280 245 H 1294" class="arrow-path" stroke-width="2" marker-end="url(#arrowhead)"/>
+  
+  <path d="M 1485 245 H 1584" class="arrow-path" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+  <path d="M 1795 320 C 1815,320 1815,220 1834,220" class="arrow-path" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <path d="M 1795 320 C 1815,320 1815,420 1834,420" class="arrow-path" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+  <path d="M 2045 220 C 2095,220 2095,245 2134,245" class="arrow-path" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <path d="M 2045 420 C 2095,420 2095,245 2134,245" class="arrow-path" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+</svg>
