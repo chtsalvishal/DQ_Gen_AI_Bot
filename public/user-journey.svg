@@ -16,7 +16,7 @@
     <symbol id="icon-chat" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></symbol>
     <symbol id="icon-export" viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" /><polyline points="10 17 15 12 10 7" /><line x1="15" y1="12" x2="3" y2="12" /></symbol>
     <symbol id="icon-integrity" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /><polyline points="9 12 11 14 15 10" /></symbol>
-    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
+    <marker id="arrowhead" class="arrowhead-marker" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
       <polygon points="0 0, 10 3.5, 0 7" />
     </marker>
   </defs>
@@ -29,7 +29,7 @@
     .stage-subtitle { fill: #475569; }
     .stage-box { fill: #f8fafc; stroke: #e2e8f0; }
     .arrow-path { stroke: #cbd5e1; }
-    #arrowhead polygon { fill: #cbd5e1; }
+    .arrowhead-marker { fill: #cbd5e1; }
     .icon-main { stroke: #0ea5e9; }
     .icon-sub { stroke: #475569; }
 
@@ -39,7 +39,7 @@
       .stage-subtitle { fill: #94a3b8; }
       .stage-box { fill: #0f172a; stroke: #334155; }
       .arrow-path { stroke: #475569; }
-      #arrowhead polygon { fill: #475569; }
+      .arrowhead-marker { fill: #475569; }
       .icon-main { stroke: #38bdf8; }
       .icon-sub { stroke: #94a3b8; }
     }
@@ -48,17 +48,17 @@
   <!-- Stage 1: Context -->
   <g transform="translate(30, 50)">
     <rect class="stage-box" width="450" height="500" rx="12" ry="12"/>
-    <use xlink:href="#icon-context" class="icon-main" stroke-width="1.5" fill="none" x="30" y="30" width="40" height="40"/>
+    <use href="#icon-context" class="icon-main" stroke-width="1.5" fill="none" x="30" y="30" width="40" height="40"/>
     <text x="85" y="50" class="stage-title diagram-font" font-size="20" font-weight="bold">1. Provide Context</text>
     <text x="85" y="75" class="stage-subtitle diagram-font" font-size="14">User provides schemas, statistics, and rules.</text>
     
     <g transform="translate(130, 180)">
-      <use xlink:href="#icon-manual" class="icon-sub" stroke-width="1.5" fill="none" width="40" height="40"/>
+      <use href="#icon-manual" class="icon-sub" stroke-width="1.5" fill="none" width="40" height="40"/>
       <text x="55" y="25" class="detail-title diagram-font" font-size="16" font-weight="500">Manual Entry</text>
     </g>
-    <path d="M225 240 v 29" class="arrow-path" stroke-width="2" fill="none" marker-end="url(#arrowhead)" stroke-dasharray="4 4"/>
+    <path d="M225 240 v 29" class="arrow-path" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
     <g transform="translate(130, 280)">
-      <use xlink:href="#icon-upload" class="icon-sub" stroke-width="1.5" fill="none" width="40" height="40"/>
+      <use href="#icon-upload" class="icon-sub" stroke-width="1.5" fill="none" width="40" height="40"/>
       <text x="55" y="25" class="detail-title diagram-font" font-size="16" font-weight="500">File Upload (.sql, .csv)</text>
     </g>
   </g>
@@ -69,22 +69,22 @@
   <!-- Stage 2: Analysis -->
   <g transform="translate(520, 50)">
     <rect class="stage-box" width="450" height="500" rx="12" ry="12"/>
-    <use xlink:href="#icon-analysis" class="icon-main" stroke-width="1.5" fill="none" x="30" y="30" width="40" height="40"/>
+    <use href="#icon-analysis" class="icon-main" stroke-width="1.5" fill="none" x="30" y="30" width="40" height="40"/>
     <text x="85" y="50" class="stage-title diagram-font" font-size="20" font-weight="bold">2. AI Analysis</text>
     <text x="85" y="75" class="stage-subtitle diagram-font" font-size="14">The app queries the AI and gets structured results.</text>
     
     <g transform="translate(130, 130)">
-      <use xlink:href="#icon-trigger" class="icon-sub" stroke-width="1.5" fill="none" width="40" height="40"/>
+      <use href="#icon-trigger" class="icon-sub" stroke-width="1.5" fill="none" width="40" height="40"/>
       <text x="55" y="25" class="detail-title diagram-font" font-size="16" font-weight="500">Trigger Analysis</text>
     </g>
-    <path d="M225 190 v 29" class="arrow-path" stroke-width="2" fill="none" marker-end="url(#arrowhead)" stroke-dasharray="4 4"/>
+    <path d="M225 190 v 29" class="arrow-path" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
     <g transform="translate(130, 230)">
-      <use xlink:href="#icon-analysis" class="icon-sub" stroke-width="1.5" fill="none" width="40" height="40"/>
+      <use href="#icon-analysis" class="icon-sub" stroke-width="1.5" fill="none" width="40" height="40"/>
       <text x="55" y="25" class="detail-title diagram-font" font-size="16" font-weight="500">Gemini Processing</text>
     </g>
-    <path d="M225 290 v 29" class="arrow-path" stroke-width="2" fill="none" marker-end="url(#arrowhead)" stroke-dasharray="4 4"/>
+    <path d="M225 290 v 29" class="arrow-path" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
     <g transform="translate(130, 330)">
-      <use xlink:href="#icon-receive" class="icon-sub" stroke-width="1.5" fill="none" width="40" height="40"/>
+      <use href="#icon-receive" class="icon-sub" stroke-width="1.5" fill="none" width="40" height="40"/>
       <text x="55" y="25" class="detail-title diagram-font" font-size="16" font-weight="500">Receive Results (JSON)</text>
     </g>
   </g>
@@ -95,22 +95,22 @@
   <!-- Stage 3: Action -->
   <g transform="translate(1010, 50)">
     <rect class="stage-box" width="450" height="500" rx="12" ry="12"/>
-    <use xlink:href="#icon-action" class="icon-main" stroke-width="1.5" fill="none" x="30" y="30" width="40" height="40"/>
+    <use href="#icon-action" class="icon-main" stroke-width="1.5" fill="none" x="30" y="30" width="40" height="40"/>
     <text x="85" y="50" class="stage-title diagram-font" font-size="20" font-weight="bold">3. Explore & Act</text>
     <text x="85" y="75" class="stage-subtitle diagram-font" font-size="14">Visualize, ask questions, and share findings.</text>
 
     <g transform="translate(130, 130)">
-      <use xlink:href="#icon-dashboard" class="icon-sub" stroke-width="1.5" fill="none" width="40" height="40"/>
+      <use href="#icon-dashboard" class="icon-sub" stroke-width="1.5" fill="none" width="40" height="40"/>
       <text x="55" y="25" class="detail-title diagram-font" font-size="16" font-weight="500">Explore Dashboard</text>
     </g>
-    <path d="M225 190 v 29" class="arrow-path" stroke-width="2" fill="none" marker-end="url(#arrowhead)" stroke-dasharray="4 4"/>
+    <path d="M225 190 v 29" class="arrow-path" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
     <g transform="translate(130, 230)">
-      <use xlink:href="#icon-chat" class="icon-sub" stroke-width="1.5" fill="none" width="40" height="40"/>
+      <use href="#icon-chat" class="icon-sub" stroke-width="1.5" fill="none" width="40" height="40"/>
       <text x="55" y="25" class="detail-title diagram-font" font-size="16" font-weight="500">Conversational AI</text>
     </g>
-    <path d="M225 290 v 29" class="arrow-path" stroke-width="2" fill="none" marker-end="url(#arrowhead)" stroke-dasharray="4 4"/>
+    <path d="M225 290 v 29" class="arrow-path" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
     <g transform="translate(130, 330)">
-      <use xlink:href="#icon-export" class="icon-sub" stroke-width="1.5" fill="none" width="40" height="40"/>
+      <use href="#icon-export" class="icon-sub" stroke-width="1.5" fill="none" width="40" height="40"/>
       <text x="55" y="25" class="detail-title diagram-font" font-size="16" font-weight="500">Export & Share</text>
     </g>
   </g>
@@ -121,12 +121,12 @@
   <!-- Stage 4: Goal -->
   <g transform="translate(1500, 50)">
     <rect class="stage-box" width="450" height="500" rx="12" ry="12"/>
-    <use xlink:href="#icon-goal" class="icon-main" stroke-width="1.5" fill="none" x="30" y="30" width="40" height="40"/>
+    <use href="#icon-goal" class="icon-main" stroke-width="1.5" fill="none" x="30" y="30" width="40" height="40"/>
     <text x="85" y="50" class="stage-title diagram-font" font-size="20" font-weight="bold">4. Achieve Integrity</text>
     <text x="85" y="75" class="stage-subtitle diagram-font" font-size="14">Gain insights to improve and maintain quality.</text>
     
     <g transform="translate(130, 250)">
-      <use xlink:href="#icon-integrity" class="icon-sub" stroke-width="1.5" fill="none" width="40" height="40"/>
+      <use href="#icon-integrity" class="icon-sub" stroke-width="1.5" fill="none" width="40" height="40"/>
       <text x="55" y="25" class="detail-title diagram-font" font-size="16" font-weight="500">Achieve Data Integrity</text>
     </g>
   </g>
