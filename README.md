@@ -35,11 +35,15 @@ The Data Quality Bot is a versatile tool for anyone who relies on high-quality d
 
 ### Architecture Diagram
 
-<img src="./public/architecture.svg" alt="Architecture Diagram of the Data Quality Bot">
+<a href="./public/architecture.svg" target="_blank" rel="noopener noreferrer">
+  <img src="./public/architecture.svg" alt="Architecture Diagram of the Data Quality Bot">
+</a>
 
 ### User Journey
 
-<img src="./public/user-journey.svg" alt="User Journey Diagram">
+<a href="./public/user-journey.svg" target="_blank" rel="noopener noreferrer">
+  <img src="./public/user-journey.svg" alt="User Journey Diagram">
+</a>
 
 # Run and deploy your AI Studio app
 
