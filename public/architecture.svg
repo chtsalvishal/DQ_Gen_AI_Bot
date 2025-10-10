@@ -152,21 +152,21 @@
     </marker>
   </defs>
   
-  <path d="M200 210 L 265 210" class="arrow-path" stroke-width="2" marker-end="url(#arrowhead)"/>
-  <text x="232.5" y="175" text-anchor="middle" class="arrow-label diagram-font" style="font-size: 12px; font-weight: 500;"><tspan x="232.5" dy="0em">Provides Data</tspan><tspan x="232.5" dy="1.2em">Context</tspan></text>
+  <path d="M200 210 L 260 210" class="arrow-path" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="230" y="170" text-anchor="middle" class="arrow-label diagram-font" style="font-size: 12px; font-weight: 500;"><tspan x="230" dy="0em">Provides Data</tspan><tspan x="230" dy="1.2em">Context</tspan></text>
 
-  <path d="M345 210 L 410 210" class="arrow-path" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <path d="M345 210 L 405 210" class="arrow-path" stroke-width="2" marker-end="url(#arrowhead)"/>
   
-  <path d="M590 210 L 620 210" class="arrow-path" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <path d="M590 210 L 615 210" class="arrow-path" stroke-width="2" marker-end="url(#arrowhead)"/>
 
-  <path d="M800 210 L 840 210" class="arrow-path" stroke-width="2" marker-end="url(#arrowhead)"/>
-  <text x="820" y="190" text-anchor="middle" class="arrow-label diagram-font" style="font-size: 12px; font-weight: 500;">Secure API Call</text>
+  <path d="M800 210 L 835 210" class="arrow-path" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="817.5" y="190" text-anchor="middle" class="arrow-label diagram-font" style="font-size: 12px; font-weight: 500;">Secure API Call</text>
   
-  <path d="M1020 210 L 1120 210" class="arrow-path" stroke-width="2" marker-end="url(#arrowhead)"/>
-  <text x="1070" y="190" text-anchor="middle" class="arrow-label diagram-font" style="font-size: 12px; font-weight: 500;">JSON Response</text>
+  <path d="M1020 210 L 1115 210" class="arrow-path" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="1067.5" y="190" text-anchor="middle" class="arrow-label diagram-font" style="font-size: 12px; font-weight: 500;">JSON Response</text>
 
   <!-- Forked arrow from Dashboard -->
   <path d="M1300 210 h 15 M1315 125 v 140" class="arrow-path" stroke-width="2" fill="none"/>
-  <path d="M1315 125 h 15" class="arrow-path" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
-  <path d="M1315 265 h 15" class="arrow-path" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+  <path d="M1315 125 h 10" class="arrow-path" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+  <path d="M1315 265 h 10" class="arrow-path" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
 </svg>
