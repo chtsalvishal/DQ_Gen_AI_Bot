@@ -83,7 +83,7 @@
   </g>
 
   <!-- Arrow 1 -> 2 -->
-  <path d="M480 300 L 510 300" class="arrow-path" stroke-width="1" fill="none" marker-end="url(#arrowhead)"/>
+  <path d="M480 300 L 510 300" class="arrow-path" stroke-width="1" fill="none" marker-end="url(#arrowhead-small)"/>
 
   <!-- Stage 2: Analysis -->
   <g transform="translate(520, 50)">
@@ -109,7 +109,7 @@
   </g>
 
   <!-- Arrow 2 -> 3 -->
-  <path d="M970 300 L 1000 300" class="arrow-path" stroke-width="1" fill="none" marker-end="url(#arrowhead)"/>
+  <path d="M970 300 L 1000 300" class="arrow-path" stroke-width="1" fill="none" marker-end="url(#arrowhead-small)"/>
 
   <!-- Stage 3: Action -->
   <g transform="translate(1010, 50)">
@@ -135,7 +135,7 @@
   </g>
 
   <!-- Arrow 3 -> 4 -->
-  <path d="M1460 300 L 1490 300" class="arrow-path" stroke-width="1" fill="none" marker-end="url(#arrowhead)"/>
+  <path d="M1460 300 L 1490 300" class="arrow-path" stroke-width="1" fill="none" marker-end="url(#arrowhead-small)"/>
 
   <!-- Stage 4: Goal -->
   <g transform="translate(1500, 50)">
