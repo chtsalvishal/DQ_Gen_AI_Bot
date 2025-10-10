@@ -3,6 +3,7 @@ import { Issue } from '../types';
 import IssueGroupCard from './IssueGroupCard';
 import TableHealthCard from './TableHealthCard';
 import { getShortTableName } from './ResultsDisplay';
+import { normalizeIssueType } from '../services/issueNormalizer';
 
 const BusinessRulesViolations = lazy(() => import('./BusinessRulesViolations'));
 
@@ -38,7 +39,7 @@ const DashboardView: React.FC<DashboardViewProps> = ({ issues, onIssueTypeSelect
 
     const issuesByType = useMemo(() => {
         return hotspotIssues.reduce((acc, issue) => {
-            const type = issue.type || 'Uncategorized';
+            const type = normalizeIssueType(issue.type || 'Uncategorized');
             if (!acc[type]) {
                 acc[type] = [];
             }

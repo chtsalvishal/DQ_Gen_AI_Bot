@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { TableInput } from '../types';
 import { TrashIcon, ChevronDownIcon, ChartBarIcon, CodeIcon, GavelIcon, FileTextIcon } from './icons';
+import HighlightedTextarea from './HighlightedTextarea';
 
 interface TableInputFormProps {
   table: TableInput;
@@ -17,6 +18,73 @@ const TABS: { id: TabName; label: string; icon: React.ReactNode }[] = [
     { id: 'rules', label: 'Rules', icon: <GavelIcon className="w-4 h-4" /> },
     { id: 'samples', label: 'Samples', icon: <FileTextIcon className="w-4 h-4" /> },
 ];
+
+// Reusable highlighter for textareas where the first line is a header
+const headerHighlighter = (text: string) => {
+    if (!text) return null;
+    const lines = text.split('\n');
+    const header = lines[0];
+    const rest = lines.slice(1);
+    return (
+        <>
+            <span className="text-sky-500 dark:text-sky-400 font-semibold">{header}</span>
+            {rest.length > 0 && '\n'}
+            {rest.join('\n')}
+        </>
+    );
+};
+
+// Highlighter for the Schema textarea (highlights SQL comments)
+const schemaHighlighter = (text: string) => {
+    if (!text) return null;
+    return text.split('\n').map((line, i) => (
+        <React.Fragment key={i}>
+            {line.split(/(--.*)/g).map((part, j) => {
+                if (part.startsWith('--')) {
+                    // This is a comment, style it to indicate status
+                    return <span key={j} className="text-emerald-500 dark:text-emerald-400">{part}</span>;
+                }
+                // This is regular code, leave as is
+                return part;
+            })}
+            {'\n'}
+        </React.Fragment>
+    ));
+};
+
+// Highlighter for the Rules textarea (highlights keywords, operators, etc.)
+const rulesHighlighter = (text: string) => {
+    if (!text) return null;
+    const keywords = ['AND', 'OR', 'NOT', 'BETWEEN', 'LIKE', 'IN', 'IS', 'NULL'];
+    const operators = />=|<=|<>|!=|>|<|=/;
+
+    // Regex to capture all tokens of interest: keywords, operators, numbers, and strings
+    const tokenRegex = new RegExp(
+        `(\\b(?:${keywords.join('|')})\\b|${operators.source}|\\b\\d+(?:\\.\\d+)?\\b|'[^']*'|"[^"]*")`,
+        'gi'
+    );
+
+    return text.split('\n').map((line, i) => (
+        <React.Fragment key={i}>
+            {line.split(tokenRegex).map((part, j) => {
+                if (part && keywords.includes(part.toUpperCase())) {
+                    return <span key={j} className="text-indigo-500 dark:text-indigo-400 font-semibold">{part}</span>;
+                }
+                if (part && operators.test(part)) {
+                    return <span key={j} className="text-rose-500 dark:text-rose-400 font-semibold">{part}</span>;
+                }
+                if (part && /^\d+(\.\d+)?$/.test(part)) {
+                    return <span key={j} className="text-sky-500 dark:text-sky-400">{part}</span>;
+                }
+                if (part && ((part.startsWith("'") && part.endsWith("'")) || (part.startsWith('"') && part.endsWith('"')))) {
+                    return <span key={j} className="text-emerald-500 dark:text-emerald-400">{part}</span>;
+                }
+                return part;
+            })}
+            {'\n'}
+        </React.Fragment>
+    ));
+};
 
 const TabButton: React.FC<{
     isActive: boolean;
@@ -38,24 +106,6 @@ const TabButton: React.FC<{
     </button>
 );
 
-const InputArea: React.FC<{
-    id: keyof Omit<TableInput, 'id' | 'name'>;
-    tableId: string;
-    placeholder: string;
-    value: string;
-    onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
-}> = ({ id, tableId, placeholder, value, onChange }) => (
-    <textarea
-        id={`${id}-${tableId}`}
-        name={id}
-        rows={8}
-        className="block w-full text-sm shadow-sm border-slate-300 rounded-md bg-slate-50 dark:bg-slate-800 dark:border-slate-600 dark:placeholder-slate-400 dark:text-white focus:ring-brand-accent focus:border-brand-accent transition font-mono"
-        placeholder={placeholder}
-        value={value}
-        onChange={onChange}
-    />
-);
-
 const TableInputForm: React.FC<TableInputFormProps> = ({ table, index, onChange, onRemove }) => {
   const [isCollapsed, setIsCollapsed] = useState(index > 0);
   const [activeTab, setActiveTab] = useState<TabName>('stats');
@@ -66,6 +116,11 @@ const TableInputForm: React.FC<TableInputFormProps> = ({ table, index, onChange,
   };
   
   const hasContent = (key: TabName) => !!table[key]?.trim();
+
+  const commonTextareaProps = {
+      rows: 8,
+      onChange: handleChange,
+  };
 
   return (
     <div className="bg-white dark:bg-slate-800/50 rounded-lg shadow-md border border-slate-200 dark:border-slate-700">
@@ -127,10 +182,10 @@ const TableInputForm: React.FC<TableInputFormProps> = ({ table, index, onChange,
           </div>
 
           <div role="tabpanel">
-            {activeTab === 'stats' && <InputArea id="stats" tableId={table.id} placeholder="e.g., min, max, null %, distinct count" value={table.stats} onChange={handleChange} />}
-            {activeTab === 'schema' && <InputArea id="schema" tableId={table.id} placeholder="e.g., CREATE TABLE statements, or 'Columns: col1, col2'" value={table.schema} onChange={handleChange} />}
-            {activeTab === 'rules' && <InputArea id="rules" tableId={table.id} placeholder="e.g., price > 0 AND status = 'completed'" value={table.rules} onChange={handleChange} />}
-            {activeTab === 'samples' && <InputArea id="samples" tableId={table.id} placeholder="e.g., sample CSV rows, daily record counts" value={table.samples} onChange={handleChange} />}
+            {activeTab === 'stats' && <HighlightedTextarea {...commonTextareaProps} id={`stats-${table.id}`} name="stats" placeholder="Column, Null %, Distinct Count, Min, Max..." value={table.stats} highlighter={headerHighlighter} />}
+            {activeTab === 'schema' && <HighlightedTextarea {...commonTextareaProps} id={`schema-${table.id}`} name="schema" placeholder="-- Current Schema&#10;CREATE TABLE..." value={table.schema} highlighter={schemaHighlighter} />}
+            {activeTab === 'rules' && <HighlightedTextarea {...commonTextareaProps} id={`rules-${table.id}`} name="rules" placeholder="e.g., price > 0 AND status = 'completed'" value={table.rules} highlighter={rulesHighlighter} />}
+            {activeTab === 'samples' && <HighlightedTextarea {...commonTextareaProps} id={`samples-${table.id}`} name="samples" placeholder="e.g., sample CSV rows, daily record counts" value={table.samples} highlighter={headerHighlighter} />}
           </div>
         </div>
       )}

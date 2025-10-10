@@ -8,6 +8,7 @@ import { generatePdfReport, generatePptxReport, generateSummaryPdf } from '../se
 import AnalysisSidebar from './AnalysisSidebar';
 import { generateSqlForIssues } from '../services/geminiService';
 import SqlDisplayModal from './SqlDisplayModal';
+import { normalizeIssueType } from '../services/issueNormalizer';
 
 const DashboardView = lazy(() => import('./DashboardView'));
 
@@ -411,7 +412,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ isLoading, error, issue
 
         const filteredFlat = issues.filter(issue => {
             const severityMatch = activeSeverityFilter === 'All' || issue.severity === activeSeverityFilter;
-            const typeMatch = activeTypeFilter === 'All' || issue.type === activeTypeFilter;
+            const typeMatch = activeTypeFilter === 'All' || normalizeIssueType(issue.type) === activeTypeFilter;
             return severityMatch && typeMatch;
         });
 
@@ -449,6 +450,11 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ isLoading, error, issue
         setActiveSelection(fullTableName);
         setDisplayMode('list');
     };
+
+    const handleClearTypeFilter = () => {
+        setActiveTypeFilter('All');
+        setDisplayMode('dashboard');
+    };
     
     const renderMainContent = () => {
         if (displayMode === 'dashboard') {
@@ -477,7 +483,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ isLoading, error, issue
                         <p className="text-sky-800 dark:text-sky-200">
                             <span className="font-semibold">Filtering by issue type:</span> {activeTypeFilter}
                         </p>
-                        <button onClick={() => setActiveTypeFilter('All')} className="p-1 rounded-full hover:bg-sky-200 dark:hover:bg-sky-800 transition-colors">
+                        <button onClick={handleClearTypeFilter} className="p-1 rounded-full hover:bg-sky-200 dark:hover:bg-sky-800 transition-colors">
                             <XIcon className="w-4 h-4 text-sky-600 dark:text-sky-300"/>
                             <span className="sr-only">Clear issue type filter</span>
                         </button>
