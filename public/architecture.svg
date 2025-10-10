@@ -15,7 +15,7 @@
     <g>
         <line x1="250" y1="220" x2="360" y2="220" stroke="#718096" stroke-width="1.5"/>
         <path d="M 360 220 l -10 -5 v 10 z" fill="#718096"/>
-        <text x="305" y="208" text-anchor="middle" fill="#334155" font-size="12">
+        <text x="305" y="195" text-anchor="middle" fill="#334155" font-size="12">
             <tspan x="305">Provides</tspan>
             <tspan x="305" dy="1.2em">Data Context</tspan>
         </text>
