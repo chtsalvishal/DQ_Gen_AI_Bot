@@ -1,19 +1,26 @@
-import React, { useMemo, lazy, Suspense } from 'react';
-import { Issue } from '../types';
+import React, { useMemo, lazy } from 'react';
+import { Issue, RuleEffectiveness, RuleConflict, SchemaVisualizationData } from '../types';
 import IssueGroupCard from './IssueGroupCard';
 import TableHealthCard from './TableHealthCard';
 import { getShortTableName } from './ResultsDisplay';
 import { normalizeIssueType } from '../services/issueNormalizer';
 
-const BusinessRulesViolations = lazy(() => import('./BusinessRulesViolations'));
+const RulesAnalysisTabs = lazy(() => import('./RulesAnalysisTabs'));
+const SchemaVisualizer = lazy(() => import('./SchemaVisualizer'));
 
 interface DashboardViewProps {
     issues: Issue[];
     onIssueTypeSelect: (issueType: string) => void;
     onTableSelect: (tableName: string) => void;
+    ruleEffectiveness: RuleEffectiveness[] | null;
+    ruleConflicts: RuleConflict[] | null;
+    schemaVizData: SchemaVisualizationData | null;
 }
 
-const DashboardView: React.FC<DashboardViewProps> = ({ issues, onIssueTypeSelect, onTableSelect }) => {
+const DashboardView: React.FC<DashboardViewProps> = ({ 
+    issues, onIssueTypeSelect, onTableSelect, 
+    ruleEffectiveness, ruleConflicts, schemaVizData
+}) => {
     
     const { businessRuleIssues, hotspotIssues, issuesByTable } = useMemo(() => {
         const businessRuleIssues: Issue[] = [];
@@ -64,6 +71,11 @@ const DashboardView: React.FC<DashboardViewProps> = ({ issues, onIssueTypeSelect
 
     return (
         <div className="w-full space-y-8">
+            <SchemaVisualizer 
+                data={schemaVizData}
+                onTableSelect={onTableSelect}
+            />
+
             <div>
                 <h3 className="text-xl font-bold text-slate-800 dark:text-white mb-4">Table Health Overview</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
@@ -95,11 +107,11 @@ const DashboardView: React.FC<DashboardViewProps> = ({ issues, onIssueTypeSelect
                 </div>
             </div>
             
-            {businessRuleIssues.length > 0 && (
-                <Suspense fallback={<div className="text-center py-10">Loading Business Rules...</div>}>
-                    <BusinessRulesViolations issues={businessRuleIssues} />
-                </Suspense>
-            )}
+            <RulesAnalysisTabs
+                businessRuleIssues={businessRuleIssues}
+                ruleEffectivenessAnalysis={ruleEffectiveness}
+                ruleConflictAnalysis={ruleConflicts}
+            />
         </div>
     );
 };

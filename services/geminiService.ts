@@ -1,6 +1,5 @@
 import { GoogleGenAI, Type } from '@google/genai';
-// FIX: Correctly import existing types like `GeminiApiResponse` instead of the non-existent `DataQualityReport`.
-import { DataQualityInputs, GeminiApiResponse, Issue, TableInput } from '../types';
+import { DataQualityInputs, Issue, RuleConflict, RuleEffectiveness, SchemaVisualizationData, FullAnalysisResponse } from '../types';
 
 if (!process.env.API_KEY) {
   throw new Error("API_KEY environment variable is not set.");
@@ -8,17 +7,6 @@ if (!process.env.API_KEY) {
 
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
-/**
- * A helper function that wraps a Gemini API call with a retry mechanism,
- * featuring exponential backoff for handling 429 rate limit errors.
- * @param model The model to use for generation.
- * @param contents The prompt/contents for the model.
- * @param config The generation configuration.
- * @param retries The maximum number of retry attempts.
- * @param initialDelayMs The initial delay before the first retry.
- * @returns The API response on success.
- * @throws The last captured error if all retries fail.
- */
 const generateContentWithRetry = async (
   model: string,
   contents: string,
@@ -41,7 +29,6 @@ const generateContentWithRetry = async (
         await new Promise(resolve => setTimeout(resolve, delayMs));
         delayMs *= 2; // Exponential backoff
       } else {
-        // Not a rate limit error, re-throw immediately
         throw e;
       }
     }
@@ -49,172 +36,170 @@ const generateContentWithRetry = async (
   throw lastError;
 };
 
-// New function to build prompt for a single table
-const buildSingleTablePrompt = (table: TableInput, globalRules: string, history: string): string => {
-  const tablePrompt = `
+export const performFullAnalysis = async (inputs: DataQualityInputs): Promise<FullAnalysisResponse> => {
+  if (!inputs.tables || inputs.tables.length === 0) {
+    return { 
+        issues_detected: [], 
+        rule_analysis: [], 
+        rule_conflicts: [], 
+        schema_visualizations: { nodes: [], edges: [], ruleCoverage: [], hotspots: [] } 
+    };
+  }
+
+  const tableContext = inputs.tables.map(table => `
     --- TABLE: ${table.name || 'Unnamed Table'} ---
+    Schema:
+    ${table.schema || 'Not provided.'}
+    Statistics:
+    ${table.stats || 'Not provided.'}
+    Samples:
+    ${table.samples || 'Not provided.'}
+    Table-Specific Rules:
+    ${table.rules || 'Not provided.'}
+  `).join('\n\n');
 
-    1.  **Column-level statistics:**
-        \`\`\`
-        ${table.stats || 'Not provided.'}
-        \`\`\`
-
-    2.  **Schema definitions:**
-        \`\`\`
-        ${table.schema || 'Not provided.'}
-        \`\`\`
-
-    3.  **Sample data rows:**
-        \`\`\`
-        ${table.samples || 'Not provided.'}
-        \`\`\`
-
-    4.  **Business rules for this table:**
-        \`\`\`
-        ${table.rules || 'Not provided.'}
-        \`\`\`
+  const allRules = `
+    Global Rules: ${inputs.rules || 'None'}
+    ${inputs.tables.map(t => `Rules for ${t.name}: ${t.rules || 'None'}`).join('\n')}
   `;
 
-  return `
-    You are a world-class Data Quality Bot integrated into a data engineering pipeline. 
-    Your job is to analyze the following metadata and data profile report for a SINGLE TABLE to detect potential data quality issues, such as anomalies, null spikes, schema drift, or type mismatches.
-    
-    Analyze the following inputs to identify issues, rate their severity, suggest a cause, predict the impact, and recommend a solution.
-    For each identified issue, you MUST specify the 'table_name' as exactly "${table.name}". If an issue is specific to a single column, you MUST also provide the 'column_name'.
+  const schemaSummary = inputs.tables.map(table => {
+      const columns = (table.schema.match(/CREATE TABLE[\s\S]*?\(([\s\S]*?)\)/i) || ["", ""])[1]
+        .split('\n')
+        .map(line => line.trim().split(/\s+/)[0])
+        .filter(c => c && c !== 'PRIMARY' && c !== 'FOREIGN' && c !== 'UNIQUE')
+        .join(', ');
+      
+      return `Table: ${table.name}\nColumns: ${columns}`;
+    }).join('\n');
 
-    IMPORTANT: If an issue is a direct violation of one of the provided business rules (either from this table's "Business rules" section or the "Global business rules"), you MUST set the issue's 'type' to exactly "Business Rule Violation". For all other issues, use a descriptive type.
+  const prompt = `
+    You are a world-class Data Quality and Governance Bot. Your task is to perform a complete, multi-faceted analysis based on the provided database context.
+    You MUST perform all three of the following tasks and return a single, consolidated JSON object that adheres to the provided schema.
 
-    **Inputs for table "${table.name}":**
+    ---
+    ### DATABASE CONTEXT
+    ---
+    ${tableContext}
 
-    ${tablePrompt}
+    Global Business Rules:
+    ${inputs.rules || 'Not provided.'}
 
-    --- GLOBAL CONTEXT ---
+    Historical Context:
+    ${inputs.history || 'Not provided.'}
 
-    5.  **Global business rules (apply to this table):**
-        \`\`\`
-        ${globalRules || 'Not provided.'}
-        \`\`\`
+    ---
+    ### TASK 1: Data Quality Issue Detection
+    ---
+    **GOAL:** Analyze each table's context to identify data quality issues like anomalies, schema drift, etc.
+    **INSTRUCTIONS:**
+    - For each issue, you MUST specify 'table_name'.
+    - If an issue violates a business rule, its 'type' MUST be exactly "Business Rule Violation".
+    - The output for this task should populate the 'issues_detected' array in the final JSON.
 
-    6.  **Historical anomalies or quality incidents (optional context):**
-        \`\`\`
-        ${history || 'Not provided.'}
-        \`\`\`
+    ---
+    ### TASK 2: Meta-Analysis (Rules Engine)
+    ---
+    **GOAL:** Assess rule effectiveness and detect conflicts.
+    **INSTRUCTIONS:**
+    1.  **Rule Effectiveness:** Compare all business rules against the issues you detected in TASK 1. For each rule, determine its 'status' ('Triggered', 'Not Triggered', 'High Volume'), and provide an 'observation' and 'recommendation'. This populates the 'rule_analysis' array.
+    2.  **Rule Conflicts:** Analyze all business rules for contradictions or overlaps. For each conflict, detail the 'conflicting_rules', an 'explanation', and a 'recommendation'. This populates the 'rule_conflicts' array.
 
-    Respond with a structured JSON output that conforms to the provided schema. If no issues are found, return an empty "issues_detected" array.
-    `;
-};
+    ---
+    ### TASK 3: Schema Visualization Data Generation
+    ---
+    **GOAL:** Generate data for front-end visualizations.
+    **INSTRUCTIONS:**
+    1.  **Nodes & Edges:** Create a 'nodes' list for all tables. Infer relationships between tables (e.g., based on 'customer_id' columns) to create an 'edges' list.
+    2.  **Rule Coverage:** Calculate a 'coverage' score (0.0 to 1.0) for each table based on how many of its columns are governed by rules. This populates 'ruleCoverage'.
+    3.  **Anomaly Hotspots:** Count issue severities for each table and calculate a weighted 'score' (high*5 + medium*2 + low*1). This populates 'hotspots'.
+    - The output for this task should populate the 'schema_visualizations' object.
 
-const responseSchema = {
-  type: Type.OBJECT,
-  properties: {
-    issues_detected: {
-      type: Type.ARRAY,
-      description: 'A list of detected data quality issues.',
-      items: {
+    ---
+    **FINAL OUTPUT:**
+    Respond with a single, structured JSON output that conforms to the provided schema, containing the results of all three tasks.
+  `;
+
+  const responseSchema = {
+    type: Type.OBJECT,
+    properties: {
+      issues_detected: {
+        type: Type.ARRAY,
+        items: {
+          type: Type.OBJECT,
+          properties: {
+            table_name: { type: Type.STRING },
+            column_name: { type: Type.STRING },
+            type: { type: Type.STRING },
+            description: { type: Type.STRING },
+            severity: { type: Type.STRING },
+            possible_cause: { type: Type.STRING },
+            impact: { type: Type.STRING },
+            recommendation: { type: Type.STRING },
+          },
+          required: ['table_name', 'type', 'description', 'severity', 'possible_cause', 'impact', 'recommendation'],
+        },
+      },
+      rule_analysis: {
+        type: Type.ARRAY,
+        items: {
+          type: Type.OBJECT,
+          properties: {
+            rule_statement: { type: Type.STRING },
+            status: { type: Type.STRING },
+            observation: { type: Type.STRING },
+            recommendation: { type: Type.STRING },
+          },
+          required: ['rule_statement', 'status', 'observation', 'recommendation'],
+        },
+      },
+      rule_conflicts: {
+        type: Type.ARRAY,
+        items: {
+          type: Type.OBJECT,
+          properties: {
+            conflicting_rules: { type: Type.ARRAY, items: { type: Type.STRING } },
+            explanation: { type: Type.STRING },
+            recommendation: { type: Type.STRING },
+          },
+          required: ['conflicting_rules', 'explanation', 'recommendation'],
+        },
+      },
+      schema_visualizations: {
         type: Type.OBJECT,
         properties: {
-          table_name: {
-            type: Type.STRING,
-            description: 'The name of the table where the issue was found.',
-          },
-          column_name: {
-            type: Type.STRING,
-            description: 'The name of the column where the issue was found, if applicable.',
-          },
-          type: {
-            type: Type.STRING,
-            description: 'The type of issue, e.g., "Schema Drift", "Anomaly", "Business Rule Violation".',
-          },
-          description: {
-            type: Type.STRING,
-            description: 'A detailed description of the detected issue.',
-          },
-          severity: {
-            type: Type.STRING,
-            description: 'The severity rating: "Low", "Medium", or "High".',
-          },
-          possible_cause: {
-            type: Type.STRING,
-            description: 'A likely cause for the issue.',
-          },
-          impact: {
-            type: Type.STRING,
-            description: 'Potential impact on downstream processes.',
-          },
-          recommendation: {
-            type: Type.STRING,
-            description: 'Recommended steps for remediation.',
-          },
+          nodes: { type: Type.ARRAY, items: { type: Type.OBJECT, properties: { id: { type: Type.STRING }, label: { type: Type.STRING } } } },
+          edges: { type: Type.ARRAY, items: { type: Type.OBJECT, properties: { from: { type: Type.STRING }, to: { type: Type.STRING }, label: { type: Type.STRING } } } },
+          ruleCoverage: { type: Type.ARRAY, items: { type: Type.OBJECT, properties: { tableName: { type: Type.STRING }, coverage: { type: Type.NUMBER } } } },
+          hotspots: { type: Type.ARRAY, items: { type: Type.OBJECT, properties: { tableName: { type: Type.STRING }, highSeverityCount: { type: Type.INTEGER }, mediumSeverityCount: { type: Type.INTEGER }, lowSeverityCount: { type: Type.INTEGER }, score: { type: Type.NUMBER } } } },
         },
-        required: ['table_name', 'type', 'description', 'severity', 'possible_cause', 'impact', 'recommendation'],
+        required: ['nodes', 'edges', 'ruleCoverage', 'hotspots'],
       },
     },
-  },
-  required: ['issues_detected'],
-};
-
-// New helper function to analyze a single table
-const analyzeSingleTable = async (table: TableInput, globalRules: string, history: string): Promise<GeminiApiResponse> => {
-  const prompt = buildSingleTablePrompt(table, globalRules, history);
+    required: ['issues_detected', 'rule_analysis', 'rule_conflicts', 'schema_visualizations'],
+  };
 
   try {
     const response = await generateContentWithRetry(
       'gemini-2.5-flash',
       prompt,
       {
-        temperature: 0,
+        temperature: 0.1,
         seed: 42,
         responseMimeType: 'application/json',
         responseSchema: responseSchema,
       }
     );
-    
-    // FIX: Replaced unsafe property access on 'unknown' types with structured JSON parsing,
-    // which resolves errors like "Property 'missingValues' does not exist on type 'unknown'".
     const jsonText = response.text.trim();
-    const result = JSON.parse(jsonText) as GeminiApiResponse;
-    
-    // Defensive check: ensure the model has correctly set the table name on all issues.
-    result.issues_detected.forEach(issue => {
-      if (!issue.table_name) {
-        issue.table_name = table.name;
-      }
-    });
-
-    return result;
+    return JSON.parse(jsonText) as FullAnalysisResponse;
   } catch (e) {
-    console.error(`Error analyzing table "${table.name}" after all retries:`, e);
-    // Return an empty result for this table to not fail the entire batch
-    return { issues_detected: [] };
+    console.error("Failed to perform full analysis:", e);
+    throw new Error("The AI model failed to return a valid analysis. Please check the inputs and try again.");
   }
 };
 
-// FIX: Export `analyzeDataQuality` to resolve the import error in `App.tsx`.
-// The main function, now refactored to orchestrate parallel calls
-export const analyzeDataQuality = async (inputs: DataQualityInputs): Promise<GeminiApiResponse> => {
-  // If there are no tables, return immediately.
-  if (!inputs.tables || inputs.tables.length === 0) {
-    return { issues_detected: [] };
-  }
-
-  // Create an array of promises, one for each table analysis.
-  // This allows us to run the analyses in parallel, which is much faster.
-  const analysisPromises = inputs.tables.map(table =>
-    analyzeSingleTable(table, inputs.rules, inputs.history)
-  );
-  
-  // Wait for all analyses to complete. Promise.all executes them concurrently.
-  // The built-in retry logic in `analyzeSingleTable` will handle rate limiting.
-  const results = await Promise.all(analysisPromises);
-  
-  // Flatten the array of results (from each table) into a single list of issues.
-  const allIssues: Issue[] = results.flatMap(result => result.issues_detected);
-  
-  return { issues_detected: allIssues };
-};
 
 export const generateSqlForIssues = async (tableName: string, issues: Issue[]): Promise<string> => {
-  // Filter out issues that are too generic to generate SQL for, like schema drift
   const actionableIssues = issues.filter(issue => 
     issue.type !== 'Schema Drift' && !issue.description.toLowerCase().includes('data type mismatch')
   );
@@ -259,24 +244,49 @@ export const generateSqlForIssues = async (tableName: string, issues: Issue[]): 
   }
 };
 
-// FIX: Export `generateReportSummary` with the correct name to resolve the import error in `App.tsx`.
-export const generateReportSummary = async (issues: Issue[]): Promise<string> => {
-  const prompt = `
-    You are a senior data analyst. Based on the following JSON data quality report, generate a well-structured executive summary in markdown format. 
-    The summary should:
-    1.  Start with a high-level overview of the findings.
-    2.  Identify the most critical issues (prioritizing 'High' severity).
-    3.  Point out any recurring themes or patterns (e.g., specific tables with many issues, common issue types like 'Schema Drift').
-    4.  Conclude with a summary of the overall data health and a call to action.
-    
+export const generateReportSummary = async (
+  issues: Issue[], 
+  ruleEffectiveness: RuleEffectiveness[] | null, 
+  ruleConflicts: RuleConflict[] | null
+): Promise<string> => {
+  
+  let prompt = `
+    You are a senior data analyst. Based on the following JSON data quality reports, generate a comprehensive, well-structured executive summary in markdown format. 
+    Your report must synthesize insights from all the data sources provided below.
+
     Structure your response with clear headings (e.g., "### Key Findings"). Use bullet points for clarity.
     Your analysis must be based ONLY on the data provided.
 
-    **Data Quality Issues JSON:**
+    The report should contain the following sections in this order:
+    1.  **Executive Summary**: A high-level overview of the most critical findings from all analyses.
+    2.  **Key Data Quality Findings**: A summary of the most important issues detected in the data, prioritizing by severity.
+    3.  **Business Rule Performance**: An analysis of how the business rules performed. Mention which rules were effective (Triggered), which were not (Not Triggered), and any that had high violation volumes.
+    4.  **Rule Conflicts and Resolutions**: If there are any rule conflicts, describe them and summarize the recommendations for resolving them. If there are no conflicts, state that clearly.
+    5.  **Overall Recommendations**: A final, actionable call to action for the data team.
+
+    **Source 1: Data Quality Issues Detected**
     \`\`\`json
     ${JSON.stringify(issues, null, 2)}
     \`\`\`
   `;
+
+  if (ruleEffectiveness && ruleEffectiveness.length > 0) {
+    prompt += `
+    \n**Source 2: Rule Effectiveness Analysis**
+    \`\`\`json
+    ${JSON.stringify(ruleEffectiveness, null, 2)}
+    \`\`\`
+    `;
+  }
+
+  if (ruleConflicts && ruleConflicts.length > 0) {
+    prompt += `
+    \n**Source 3: Rule Conflict Analysis**
+    \`\`\`json
+    ${JSON.stringify(ruleConflicts, null, 2)}
+    \`\`\`
+    `;
+  }
 
   try {
       const response = await generateContentWithRetry(

@@ -1,4 +1,4 @@
-import { Issue } from '../types';
+import { Issue, RuleEffectiveness, RuleConflict } from '../types';
 
 // PptxGenJS is imported dynamically, so no global declaration is needed.
 
@@ -18,6 +18,12 @@ const SEVERITY_COLORS_HEX = {
   Low: '#10b981',     // emerald-500
 };
 
+const RULE_STATUS_COLORS_HEX = {
+    'Triggered': '#10b981',     // emerald-500
+    'High Volume': '#f59e0b',  // amber-500
+    'Not Triggered': '#64748b', // slate-500
+};
+
 const groupIssuesByTable = (issues: Issue[]): Record<string, Issue[]> => {
   return issues.reduce((acc, issue) => {
     const tableName = issue.table_name || 'General Issues';
@@ -32,7 +38,11 @@ const groupIssuesByTable = (issues: Issue[]): Record<string, Issue[]> => {
 
 // --- PDF EXPORT (Reimagined & Stabilized) ---
 
-export const generatePdfReport = async (issues: Issue[]): Promise<void> => {
+export const generatePdfReport = async (
+    issues: Issue[],
+    ruleEffectiveness: RuleEffectiveness[] | null,
+    ruleConflicts: RuleConflict[] | null
+): Promise<void> => {
   try {
     const { default: jsPDF } = await import('https://esm.sh/jspdf@2.5.1');
     const { default: autoTable } = await import('https://esm.sh/jspdf-autotable@3.8.2');
@@ -43,6 +53,7 @@ export const generatePdfReport = async (issues: Issue[]): Promise<void> => {
     const leftMargin = 15;
     const rightMargin = 15;
     const effectiveWidth = pageWidth - leftMargin - rightMargin;
+    let yPos = 25; // Define yPos at a higher scope
 
     const addHeaderAndFooter = () => {
       const pageCount = doc.internal.getNumberOfPages();
@@ -76,7 +87,7 @@ export const generatePdfReport = async (issues: Issue[]): Promise<void> => {
 
     // --- Page 2: Summary Page ---
     doc.addPage();
-    let yPos = 25;
+    yPos = 25;
     doc.setFontSize(22);
     doc.setTextColor(BRAND_COLORS.dark);
     doc.setFont('helvetica', 'bold');
@@ -88,7 +99,7 @@ export const generatePdfReport = async (issues: Issue[]): Promise<void> => {
       return acc;
     }, { High: 0, Medium: 0, Low: 0 } as Record<Issue['severity'], number>);
 
-    const autoTableOptions = {
+    autoTable(doc, {
       startY: yPos,
       head: [['Metric', 'Count']],
       body: [
@@ -101,9 +112,7 @@ export const generatePdfReport = async (issues: Issue[]): Promise<void> => {
       headStyles: { fillColor: BRAND_COLORS.primary },
       styles: { fontSize: 11 },
       margin: { left: 15, right: 15 },
-    };
-
-    autoTable(doc, autoTableOptions);
+    });
 
     // --- Page 3: Table of Contents Placeholder ---
     doc.addPage();
@@ -137,11 +146,9 @@ export const generatePdfReport = async (issues: Issue[]): Promise<void> => {
       issuesByTable[tableName].forEach(issue => {
         const contentStartX = 58;
         const contentWidth = pageWidth - contentStartX - rightMargin;
-        
         const descriptionLines = doc.splitTextToSize(issue.description, contentWidth);
         const causeLines = doc.splitTextToSize(issue.possible_cause, contentWidth);
         const recommendationLines = doc.splitTextToSize(issue.recommendation, contentWidth);
-        
         const lineHeight = 5;
         const sectionSpacing = 3;
         const headerHeight = 10;
@@ -197,6 +204,122 @@ export const generatePdfReport = async (issues: Issue[]): Promise<void> => {
         yPos += 8;
       });
     });
+
+    // --- Rule Effectiveness Section ---
+    if (ruleEffectiveness && ruleEffectiveness.length > 0) {
+        doc.addPage();
+        const effectivenessStartPage = doc.internal.getCurrentPageInfo().pageNumber;
+        tocEntries.push({ level: 1, title: 'Rule Effectiveness Analysis', page: effectivenessStartPage });
+        yPos = 25;
+        
+        doc.setFontSize(20);
+        doc.setTextColor(BRAND_COLORS.primary);
+        doc.setFont('helvetica', 'bold');
+        doc.text('Rule Effectiveness Analysis', leftMargin, yPos);
+        yPos += 12;
+
+        ruleEffectiveness.forEach(rule => {
+            const ruleLines = doc.splitTextToSize(`Rule: ${rule.rule_statement}`, effectiveWidth - 5);
+            const obsLines = doc.splitTextToSize(rule.observation, effectiveWidth - 25);
+            const recLines = doc.splitTextToSize(rule.recommendation, effectiveWidth - 25);
+            const requiredHeight = (ruleLines.length + obsLines.length + recLines.length) * 5 + 20;
+
+            if (yPos + requiredHeight > pageHeight - 20) {
+                doc.addPage();
+                yPos = 25;
+            }
+
+            doc.setFontSize(11);
+            doc.setFont('helvetica', 'bold');
+            doc.setTextColor(BRAND_COLORS.dark);
+            doc.text(ruleLines, leftMargin + 5, yPos);
+            yPos += ruleLines.length * 5 + 3;
+
+            const statusColor = RULE_STATUS_COLORS_HEX[rule.status];
+            doc.setFillColor(statusColor);
+            const statusText = rule.status.toUpperCase();
+            const textWidth = doc.getTextWidth(statusText) + 8;
+            doc.roundedRect(leftMargin + 5, yPos, textWidth, 6, 2, 2, 'F');
+            doc.setFontSize(9);
+            doc.setTextColor('#ffffff');
+            doc.text(statusText, leftMargin + 5 + textWidth / 2, yPos + 4, { align: 'center' });
+            yPos += 10;
+            
+            doc.setFontSize(10);
+            doc.setFont('helvetica', 'bold');
+            doc.setTextColor(BRAND_COLORS.textDark);
+            doc.text("Observation:", leftMargin + 10, yPos);
+            doc.setFont('helvetica', 'normal');
+            doc.text(obsLines, leftMargin + 15, yPos + 5);
+            yPos += obsLines.length * 5 + 5;
+
+            doc.setFont('helvetica', 'bold');
+            doc.text("Recommendation:", leftMargin + 10, yPos);
+            doc.setFont('helvetica', 'normal');
+            doc.text(recLines, leftMargin + 15, yPos + 5);
+            yPos += recLines.length * 5 + 8;
+
+            doc.setDrawColor('#e5e7eb');
+            doc.line(leftMargin, yPos, pageWidth - rightMargin, yPos);
+            yPos += 8;
+        });
+    }
+
+    // --- Rule Conflict Section ---
+    if (ruleConflicts) {
+        doc.addPage();
+        const conflictStartPage = doc.internal.getCurrentPageInfo().pageNumber;
+        tocEntries.push({ level: 1, title: 'Rule Conflict Analysis', page: conflictStartPage });
+        yPos = 25;
+
+        doc.setFontSize(20);
+        doc.setTextColor(BRAND_COLORS.primary);
+        doc.setFont('helvetica', 'bold');
+        doc.text('Rule Conflict Analysis', leftMargin, yPos);
+        yPos += 12;
+
+        if (ruleConflicts.length > 0) {
+            ruleConflicts.forEach(conflict => {
+                const rulesText = conflict.conflicting_rules.join('\n');
+                const rulesLines = doc.splitTextToSize(`Conflicting Rules:\n${rulesText}`, effectiveWidth - 5);
+                const expLines = doc.splitTextToSize(conflict.explanation, effectiveWidth - 25);
+                const recLines = doc.splitTextToSize(conflict.recommendation, effectiveWidth - 25);
+                const requiredHeight = (rulesLines.length + expLines.length + recLines.length) * 5 + 20;
+
+                if (yPos + requiredHeight > pageHeight - 20) {
+                    doc.addPage();
+                    yPos = 25;
+                }
+
+                doc.setFillColor('#FEFCE8'); // yellow-50
+                doc.setDrawColor('#FDE047'); // yellow-300
+                doc.roundedRect(leftMargin, yPos - 4, effectiveWidth, requiredHeight - 10, 3, 3, 'FD');
+
+                doc.setFontSize(11);
+                doc.setFont('helvetica', 'bold');
+                doc.setTextColor(BRAND_COLORS.dark);
+                doc.text(rulesLines, leftMargin + 5, yPos);
+                yPos += rulesLines.length * 5 + 5;
+
+                doc.setFontSize(10);
+                doc.setFont('helvetica', 'bold');
+                doc.text("Explanation:", leftMargin + 10, yPos);
+                doc.setFont('helvetica', 'normal');
+                doc.text(expLines, leftMargin + 15, yPos + 5);
+                yPos += expLines.length * 5 + 5;
+
+                doc.setFont('helvetica', 'bold');
+                doc.text("Recommendation:", leftMargin + 10, yPos);
+                doc.setFont('helvetica', 'normal');
+                doc.text(recLines, leftMargin + 15, yPos + 5);
+                yPos += recLines.length * 5 + 15;
+            });
+        } else {
+            doc.setFontSize(12);
+            doc.setTextColor(BRAND_COLORS.textDark);
+            doc.text("No rule conflicts were detected.", leftMargin, yPos);
+        }
+    }
 
     // --- Render Table of Contents ---
     const bottomMargin = 20;
@@ -299,7 +422,11 @@ export const generatePdfReport = async (issues: Issue[]): Promise<void> => {
 
 // --- POWERPOINT EXPORT (Reimagined & Stabilized with Dynamic Import) ---
 
-export const generatePptxReport = async (issues: Issue[]): Promise<void> => {
+export const generatePptxReport = async (
+    issues: Issue[],
+    ruleEffectiveness: RuleEffectiveness[] | null,
+    ruleConflicts: RuleConflict[] | null
+): Promise<void> => {
   try {
     // Dynamically import the library from a reliable ESM CDN.
     // This is far more robust than waiting for a global script to load.
@@ -325,6 +452,11 @@ export const generatePptxReport = async (issues: Issue[]): Promise<void> => {
     });
 
     const slideTitleStyle = { x: 0.5, y: 0.6, w: '90%', h: 0.75, fontSize: 32, fontFace: 'Arial', bold: true, color: BRAND_COLORS.primary.substring(1) };
+    const addContentBox = (slide: any, title: string, text: string, y: number, h: number = 1.2) => {
+        slide.addText(title, { x: 0.5, y: y, w: 4, h: 0.4, fontFace: 'Arial', bold: true, color: BRAND_COLORS.primary.substring(1), fontSize: 16 });
+        slide.addText(text, { x: 0.5, y: y + 0.4, w: '90%', h: h, fontFace: 'Arial', color: BRAND_COLORS.textDark.substring(1), fontSize: 14, fit: 'shrink' });
+    };
+
 
     // --- Slide 1: Title Slide ---
     const titleSlide = pptx.addSlide();
@@ -365,16 +497,51 @@ export const generatePptxReport = async (issues: Issue[]): Promise<void> => {
         issueSlide.addShape((pptx.shapes as any).RECTANGLE, { x: 11.5, y: 0.6, w: 1.5, h: 0.5, fill: { color: severityColor } });
         issueSlide.addText(issue.severity, { x: 11.5, y: 0.6, w: 1.5, h: 0.5, align: 'center', color: 'FFFFFF', bold: true, fontSize: 16 });
 
-        const addContentBox = (title: string, text: string, y: number) => {
-          issueSlide.addText(title, { x: 0.5, y: y, w: 4, h: 0.4, fontFace: 'Arial', bold: true, color: BRAND_COLORS.primary.substring(1), fontSize: 16 });
-          issueSlide.addText(text, { x: 0.5, y: y + 0.4, w: '90%', h: 1.2, fontFace: 'Arial', color: BRAND_COLORS.textDark.substring(1), fontSize: 14, fit: 'shrink' });
-        };
-
-        addContentBox('Description', issue.description, 1.5);
-        addContentBox('Potential Impact', issue.impact, 3.0);
-        addContentBox('Recommendation', issue.recommendation, 4.5);
+        addContentBox(issueSlide, 'Description', issue.description, 1.5);
+        addContentBox(issueSlide, 'Potential Impact', issue.impact, 3.0);
+        addContentBox(issueSlide, 'Recommendation', issue.recommendation, 4.5);
       });
     });
+
+    // --- Rule Effectiveness Slides ---
+    if (ruleEffectiveness && ruleEffectiveness.length > 0) {
+        const effectivenessDivider = pptx.addSlide({ masterName: 'MASTER_SLIDE' });
+        effectivenessDivider.addText('Rule Effectiveness Analysis', { x: 0, y: 0, w: '100%', h: '100%', align: 'center', valign: 'middle', fontSize: 40, bold: true, color: BRAND_COLORS.secondary.substring(1) });
+
+        ruleEffectiveness.forEach(rule => {
+            const slide = pptx.addSlide({ masterName: 'MASTER_SLIDE' });
+            slide.addText('Rule Performance', { ...slideTitleStyle, fontSize: 24, h: 0.5 });
+
+            const statusColor = RULE_STATUS_COLORS_HEX[rule.status].substring(1);
+            slide.addShape((pptx.shapes as any).RECTANGLE, { x: 10.8, y: 0.6, w: 2.2, h: 0.5, fill: { color: statusColor } });
+            slide.addText(rule.status, { x: 10.8, y: 0.6, w: 2.2, h: 0.5, align: 'center', color: 'FFFFFF', bold: true, fontSize: 16 });
+
+            addContentBox(slide, 'Rule Statement', rule.rule_statement, 1.5, 0.8);
+            addContentBox(slide, 'Observation', rule.observation, 2.8);
+            addContentBox(slide, 'Recommendation', rule.recommendation, 4.3);
+        });
+    }
+
+    // --- Rule Conflict Slides ---
+    if (ruleConflicts) {
+        const conflictDivider = pptx.addSlide({ masterName: 'MASTER_SLIDE' });
+        conflictDivider.addText('Rule Conflict Analysis', { x: 0, y: 0, w: '100%', h: '100%', align: 'center', valign: 'middle', fontSize: 40, bold: true, color: BRAND_COLORS.secondary.substring(1) });
+
+        if (ruleConflicts.length > 0) {
+            ruleConflicts.forEach(conflict => {
+                const slide = pptx.addSlide({ masterName: 'MASTER_SLIDE' });
+                slide.addText('Conflict Detected', { ...slideTitleStyle, color: 'E11D48', fontSize: 28 });
+                
+                addContentBox(slide, 'Conflicting Rules', conflict.conflicting_rules.join('\n\n'), 1.5, 1.5);
+                addContentBox(slide, 'Explanation', conflict.explanation, 3.3);
+                addContentBox(slide, 'Recommendation', conflict.recommendation, 4.8);
+            });
+        } else {
+            const noConflictSlide = pptx.addSlide({ masterName: 'MASTER_SLIDE' });
+            noConflictSlide.addText('No Rule Conflicts Detected', { x: 0, y: 0, w: '100%', h: '100%', align: 'center', valign: 'middle', fontSize: 36, bold: true, color: '10B981' });
+        }
+    }
+
 
     pptx.writeFile({ fileName: 'Data-Quality-Report.pptx' });
   } catch (error) {
