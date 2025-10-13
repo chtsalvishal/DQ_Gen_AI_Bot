@@ -276,12 +276,23 @@ const SchemaVisualizer: React.FC<SchemaVisualizerProps> = ({ data, onTableSelect
     const handleZoom = (factor: number, clientX?: number, clientY?: number) => {
         setTransform(prev => {
             const newScale = Math.max(0.1, Math.min(prev.scale * factor, 5));
-            if (!svgRef.current) return { ...prev, scale: newScale };
+            const svg = svgRef.current;
+            if (!svg) return { ...prev, scale: newScale };
             
-            const svgPoint = svgRef.current.createSVGPoint();
+            const svgPoint = svg.createSVGPoint();
             svgPoint.x = clientX ?? dimensions.width / 2;
             svgPoint.y = clientY ?? dimensions.height / 2;
-            const pointInSVG = svgPoint.matrixTransform(svgRef.current.getScreenCTM()?.inverse());
+            
+            // FIX: Add guards for CTM and its inverse to prevent runtime errors and satisfy TypeScript.
+            const ctm = svg.getScreenCTM();
+            if (!ctm) return { ...prev, scale: newScale };
+            
+            const invertedCtm = ctm.inverse();
+            if (!invertedCtm) return { ...prev, scale: newScale };
+    
+            // FIX: Cast pointInSVG to resolve 'property does not exist on type unknown' error.
+            // This is likely due to a DOM typing issue in the build environment.
+            const pointInSVG = svgPoint.matrixTransform(invertedCtm) as { x: number; y: number };
             
             const newX = pointInSVG.x - (pointInSVG.x - prev.x) * (newScale / prev.scale);
             const newY = pointInSVG.y - (pointInSVG.y - prev.y) * (newScale / prev.scale);

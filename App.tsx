@@ -1,6 +1,6 @@
 import React, { useState, lazy, Suspense } from 'react';
 import { analyzeDataQuality, generateReportSummary } from './services/geminiService';
-import { DataQualityInputs, Issue } from './types';
+import { DataQualityInputs, Issue, RuleConflict, RuleEffectiveness } from './types';
 import InputForm from './components/InputForm';
 import ResultsDisplay from './components/ResultsDisplay';
 import { GithubIcon, BotIcon, ChatIcon, PanelLeftCloseIcon, PanelRightOpenIcon } from './components/icons';
@@ -10,6 +10,8 @@ const ChatView = lazy(() => import('./components/ChatView'));
 const App: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [issues, setIssues] = useState<Issue[] | null>(null);
+  const [ruleEffectiveness, setRuleEffectiveness] = useState<RuleEffectiveness[] | null>(null);
+  const [ruleConflicts, setRuleConflicts] = useState<RuleConflict[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [report, setReport] = useState<string | null>(null);
   const [isReportLoading, setIsReportLoading] = useState<boolean>(false);
@@ -21,12 +23,16 @@ const App: React.FC = () => {
     setIsLoading(true);
     setError(null);
     setIssues(null);
+    setRuleEffectiveness(null);
+    setRuleConflicts(null);
     setReport(null);
     setIsChatOpen(false);
 
     try {
       const result = await analyzeDataQuality(inputs);
       setIssues(result.issues_detected);
+      setRuleEffectiveness(result.rule_effectiveness ?? []);
+      setRuleConflicts(result.rule_conflicts ?? []);
     } catch (err) {
       setError('An error occurred while analyzing the data. Please check your inputs and try again.');
       console.error(err);
@@ -40,7 +46,7 @@ const App: React.FC = () => {
     setIsReportLoading(true);
     setReport(null);
     try {
-      const summaryReport = await generateReportSummary(issues);
+      const summaryReport = await generateReportSummary(issues, ruleEffectiveness || [], ruleConflicts || []);
       setReport(summaryReport);
     } catch (reportError) {
       console.error("Failed to generate summary report:", reportError);
@@ -141,6 +147,8 @@ const App: React.FC = () => {
               isLoading={isLoading}
               error={error}
               issues={issues}
+              ruleEffectiveness={ruleEffectiveness}
+              ruleConflicts={ruleConflicts}
               report={report}
               isReportLoading={isReportLoading}
               onGenerateReport={handleGenerateReport}

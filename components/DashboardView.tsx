@@ -1,19 +1,21 @@
 import React, { useMemo, lazy, Suspense } from 'react';
-import { Issue } from '../types';
+import { Issue, RuleConflict, RuleEffectiveness } from '../types';
 import IssueGroupCard from './IssueGroupCard';
 import TableHealthCard from './TableHealthCard';
 import { getShortTableName } from './ResultsDisplay';
 import { normalizeIssueType } from '../services/issueNormalizer';
 
-const BusinessRulesViolations = lazy(() => import('./BusinessRulesViolations'));
+const BusinessRulesAnalysis = lazy(() => import('./BusinessRulesAnalysis'));
 
 interface DashboardViewProps {
     issues: Issue[];
+    ruleEffectiveness: RuleEffectiveness[];
+    ruleConflicts: RuleConflict[];
     onIssueTypeSelect: (issueType: string) => void;
     onTableSelect: (tableName: string) => void;
 }
 
-const DashboardView: React.FC<DashboardViewProps> = ({ issues, onIssueTypeSelect, onTableSelect }) => {
+const DashboardView: React.FC<DashboardViewProps> = ({ issues, ruleEffectiveness, ruleConflicts, onIssueTypeSelect, onTableSelect }) => {
     
     const { businessRuleIssues, hotspotIssues, issuesByTable } = useMemo(() => {
         const businessRuleIssues: Issue[] = [];
@@ -62,6 +64,8 @@ const DashboardView: React.FC<DashboardViewProps> = ({ issues, onIssueTypeSelect
 
     const sortedTableNames = Object.keys(issuesByTable).sort((a,b) => a.localeCompare(b));
 
+    const hasBusinessRuleContent = businessRuleIssues.length > 0 || ruleEffectiveness.length > 0 || ruleConflicts.length > 0;
+
     return (
         <div className="w-full space-y-8">
             <div>
@@ -95,9 +99,13 @@ const DashboardView: React.FC<DashboardViewProps> = ({ issues, onIssueTypeSelect
                 </div>
             </div>
             
-            {businessRuleIssues.length > 0 && (
-                <Suspense fallback={<div className="text-center py-10">Loading Business Rules...</div>}>
-                    <BusinessRulesViolations issues={businessRuleIssues} />
+            {hasBusinessRuleContent && (
+                <Suspense fallback={<div className="text-center py-10">Loading Business Rules Analysis...</div>}>
+                    <BusinessRulesAnalysis
+                        violations={businessRuleIssues}
+                        effectiveness={ruleEffectiveness}
+                        conflicts={ruleConflicts}
+                    />
                 </Suspense>
             )}
         </div>

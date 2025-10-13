@@ -1,8 +1,8 @@
 import React, { useState, useMemo, lazy, Suspense, useEffect, useRef, useCallback } from 'react';
-import { Issue } from '../types';
+import { Issue, RuleConflict, RuleEffectiveness } from '../types';
 import IssueCard from './IssueCard';
 import Loader from './Loader';
-import { ErrorIcon, CheckCircleIcon, ChevronDownIcon, ColumnIcon, ExportIcon, PresentationIcon, SparklesIcon, XIcon, CodeIcon } from './icons';
+import { ErrorIcon, CheckCircleIcon, ChevronDownIcon, ColumnIcon, ExportIcon, PresentationIcon, SparklesIcon, XIcon, CodeIcon, GavelIcon } from './icons';
 import SeverityBadge from './SeverityBadge';
 import { generatePdfReport, generatePptxReport, generateSummaryPdf } from '../services/exportService';
 import AnalysisSidebar from './AnalysisSidebar';
@@ -60,9 +60,7 @@ const SimpleMarkdownRenderer: React.FC<{ text: string }> = ({ text }) => {
         if (headerMatch) {
             const level = headerMatch[1].length;
             const content = headerMatch[2];
-            // FIX: The variable holding a JSX tag name must start with a lowercase letter.
-            // Changed 'Tag' to 'tag' to avoid JSX interpreting it as a custom component.
-            const tag = `h${level}` as keyof JSX.IntrinsicElements;
+            // FIX: Replaced dynamic tag creation with a switch statement to avoid `JSX` namespace errors.
             const styles = [
                 "text-2xl font-extrabold mt-8 mb-4 pb-2 border-b border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white", // h1
                 "text-xl font-bold mt-6 mb-3 pb-2 border-b border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white", // h2
@@ -71,7 +69,17 @@ const SimpleMarkdownRenderer: React.FC<{ text: string }> = ({ text }) => {
                 "text-sm font-semibold mt-3 mb-1 text-slate-800 dark:text-white", // h5
                 "text-xs font-semibold mt-2 mb-1 text-slate-800 dark:text-white"  // h6
             ];
-            return <tag key={index} className={styles[level - 1]}>{parseInlineMarkdown(content)}</tag>;
+            const className = styles[level - 1];
+            const children = parseInlineMarkdown(content);
+            switch (level) {
+                case 1: return <h1 key={index} className={className}>{children}</h1>;
+                case 2: return <h2 key={index} className={className}>{children}</h2>;
+                case 3: return <h3 key={index} className={className}>{children}</h3>;
+                case 4: return <h4 key={index} className={className}>{children}</h4>;
+                case 5: return <h5 key={index} className={className}>{children}</h5>;
+                case 6: return <h6 key={index} className={className}>{children}</h6>;
+                default: return <p key={index}>{children}</p>;
+            }
         }
 
         // 2b. Check for lists (where every line in the block starts with * or -)
@@ -336,12 +344,14 @@ interface ResultsDisplayProps {
   isLoading: boolean;
   error: string | null;
   issues: Issue[] | null;
+  ruleEffectiveness: RuleEffectiveness[] | null;
+  ruleConflicts: RuleConflict[] | null;
   report: string | null;
   isReportLoading: boolean;
   onGenerateReport: () => void;
 }
 
-const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ isLoading, error, issues, report, isReportLoading, onGenerateReport }) => {
+const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ isLoading, error, issues, ruleEffectiveness, ruleConflicts, report, isReportLoading, onGenerateReport }) => {
     const [activeSelection, setActiveSelection] = useState<'dashboard' | string>('dashboard');
     const [displayMode, setDisplayMode] = useState<'dashboard' | 'list'>('dashboard');
     const [activeSeverityFilter, setActiveSeverityFilter] = useState<Issue['severity'] | 'All'>('All');
@@ -471,6 +481,8 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ isLoading, error, issue
                 <Suspense fallback={<div className="text-center py-10">Loading Dashboard...</div>}>
                    <DashboardView
                        issues={filteredIssuesFlat}
+                       ruleEffectiveness={ruleEffectiveness || []}
+                       ruleConflicts={ruleConflicts || []}
                        onIssueTypeSelect={handleIssueTypeSelect}
                        onTableSelect={handleTableSelect}
                     />
