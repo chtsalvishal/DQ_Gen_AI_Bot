@@ -158,7 +158,7 @@ const Legend: React.FC<{ mode: ViewMode, isDarkMode: boolean }> = ({ mode, isDar
     }
 
     return (
-        <div className="absolute bottom-2 right-2 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm p-2 rounded-md shadow text-xs">
+        <div className="absolute bottom-2 right-2 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm p-2 rounded-md shadow text-xs pointer-events-none">
             <h4 className="font-bold mb-1 text-slate-700 dark:text-slate-200">{title}</h4>
             {items.map(item => (
                 <div key={item.label} className="flex items-center">
@@ -192,8 +192,11 @@ const SchemaVisualizer: React.FC<SchemaVisualizerProps> = ({ data, onTableSelect
     const containerRef = useRef<HTMLDivElement>(null);
     const [dimensions, setDimensions] = useState({ width: 0, height: 400 });
     const [isFullscreen, setIsFullscreen] = useState(false);
+    
     const [transform, setTransform] = useState({ scale: 1, x: 0, y: 0 });
-    const isPanning = useRef(false);
+    const [isDragging, setIsDragging] = useState(false);
+    const [startDrag, setStartDrag] = useState({ x: 0, y: 0 });
+    const svgRef = useRef<SVGSVGElement>(null);
 
     const [isDarkMode, setIsDarkMode] = useState(() => window.matchMedia('(prefers-color-scheme: dark)').matches);
     
@@ -236,6 +239,76 @@ const SchemaVisualizer: React.FC<SchemaVisualizerProps> = ({ data, onTableSelect
     const [nodePositions, isSimulating] = useForceDirectedLayout(data!, dimensions.width, dimensions.height);
     const [hoveredNode, setHoveredNode] = useState<string | null>(null);
 
+    // Use a ref to store the latest state for callbacks to prevent stale closures.
+    const latestState = useRef({ isSimulating, nodePositions, dimensions });
+    latestState.current = { isSimulating, nodePositions, dimensions };
+    
+    const handleFitToView = useCallback(() => {
+        // Read the latest state from the ref to ensure data is current.
+        const { isSimulating, nodePositions, dimensions } = latestState.current;
+        if (isSimulating || nodePositions.size === 0 || dimensions.width === 0 || dimensions.height === 0) return;
+        
+        const nodes = Array.from(nodePositions.values());
+        let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+        nodes.forEach(node => {
+            minX = Math.min(minX, node.x);
+            minY = Math.min(minY, node.y);
+            maxX = Math.max(maxX, node.x);
+            maxY = Math.max(maxY, node.y);
+        });
+
+        const nodesWidth = maxX - minX;
+        const nodesHeight = maxY - minY;
+        if (nodesWidth <= 0 || nodesHeight <= 0) return;
+
+        const padding = 80;
+        const scale = Math.min((dimensions.width - padding) / nodesWidth, (dimensions.height - padding) / nodesHeight, 1.5);
+        const x = (dimensions.width / 2) - ((minX + nodesWidth / 2) * scale);
+        const y = (dimensions.height / 2) - ((minY + nodesHeight / 2) * scale);
+        
+        setTransform({ scale, x, y });
+    }, []); // Empty dependency array makes this function stable.
+
+    useEffect(() => {
+        if (!isSimulating) handleFitToView();
+    }, [isSimulating, handleFitToView]);
+
+    const handleZoom = (factor: number, clientX?: number, clientY?: number) => {
+        setTransform(prev => {
+            const newScale = Math.max(0.1, Math.min(prev.scale * factor, 5));
+            if (!svgRef.current) return { ...prev, scale: newScale };
+            
+            const svgPoint = svgRef.current.createSVGPoint();
+            svgPoint.x = clientX ?? dimensions.width / 2;
+            svgPoint.y = clientY ?? dimensions.height / 2;
+            const pointInSVG = svgPoint.matrixTransform(svgRef.current.getScreenCTM()?.inverse());
+            
+            const newX = pointInSVG.x - (pointInSVG.x - prev.x) * (newScale / prev.scale);
+            const newY = pointInSVG.y - (pointInSVG.y - prev.y) * (newScale / prev.scale);
+            
+            return { scale: newScale, x: newX, y: newY };
+        });
+    };
+
+    const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+        if ((e.target as HTMLElement).closest('button')) return; // Ignore clicks on buttons
+        setIsDragging(true);
+        setStartDrag({ x: e.clientX - transform.x, y: e.clientY - transform.y });
+    };
+
+    const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+        if (isDragging) {
+            setTransform(prev => ({ ...prev, x: e.clientX - startDrag.x, y: e.clientY - startDrag.y }));
+        }
+    };
+
+    const handleMouseUp = () => setIsDragging(false);
+
+    const handleWheel = (e: React.WheelEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        handleZoom(e.deltaY < 0 ? 1.1 : 1 / 1.1, e.clientX, e.clientY);
+    };
+
     const highlightedNodes = useMemo(() => {
         if (!hoveredNode || !data) return null;
         const connected = new Set([hoveredNode]);
@@ -259,48 +332,6 @@ const SchemaVisualizer: React.FC<SchemaVisualizerProps> = ({ data, onTableSelect
         return map;
     }, [data, viewMode, isDarkMode]);
 
-    const handleWheel = (e: React.WheelEvent<SVGSVGElement>) => {
-        e.preventDefault();
-        const zoomSpeed = 0.1;
-        const newScale = Math.max(0.2, Math.min(3, transform.scale - e.deltaY * zoomSpeed * 0.1));
-        const rect = e.currentTarget.getBoundingClientRect();
-        const mouseX = e.clientX - rect.left;
-        const mouseY = e.clientY - rect.top;
-        const newX = mouseX - (mouseX - transform.x) * (newScale / transform.scale);
-        const newY = mouseY - (mouseY - transform.y) * (newScale / transform.scale);
-        setTransform({ scale: newScale, x: newX, y: newY });
-    };
-
-    const handleMouseDown = (e: React.MouseEvent<SVGSVGElement>) => {
-        isPanning.current = true;
-        e.currentTarget.style.cursor = 'grabbing';
-    };
-
-    const handleMouseMove = (e: React.MouseEvent<SVGSVGElement>) => {
-        if (isPanning.current) {
-            setTransform(prev => ({ ...prev, x: prev.x + e.movementX, y: prev.y + e.movementY }));
-        }
-    };
-
-    const handleMouseUp = (e: React.MouseEvent<SVGSVGElement>) => {
-        isPanning.current = false;
-        e.currentTarget.style.cursor = 'grab';
-    };
-
-    const handleZoomAction = (direction: 'in' | 'out' | 'reset') => {
-        if (direction === 'reset') {
-            setTransform({ scale: 1, x: 0, y: 0 });
-            return;
-        }
-        const zoomFactor = direction === 'in' ? 1.2 : 1 / 1.2;
-        const newScale = Math.max(0.2, Math.min(3, transform.scale * zoomFactor));
-        const centerX = dimensions.width / 2;
-        const centerY = dimensions.height / 2;
-        const newX = centerX - (centerX - transform.x) * (newScale / transform.scale);
-        const newY = centerY - (centerY - transform.y) * (newScale / transform.scale);
-        setTransform({ scale: newScale, x: newX, y: newY });
-    };
-
     if (!data || data.nodes.length === 0) return null;
 
     return (
@@ -318,6 +349,19 @@ const SchemaVisualizer: React.FC<SchemaVisualizerProps> = ({ data, onTableSelect
                     Smart Schema Visualizations
                 </h3>
                 <div className="flex items-center gap-4">
+                    <div className="hidden sm:flex items-center gap-1 p-1 bg-slate-200 dark:bg-slate-700 rounded-lg">
+                        <button onClick={() => handleZoom(1.2)} title="Zoom In" className="p-1.5 rounded-md hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors">
+                            <ZoomInIcon className="w-4 h-4 text-slate-600 dark:text-slate-300" />
+                        </button>
+                        <button onClick={() => handleZoom(1 / 1.2)} title="Zoom Out" className="p-1.5 rounded-md hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors">
+                            <ZoomOutIcon className="w-4 h-4 text-slate-600 dark:text-slate-300" />
+                        </button>
+                        <div className="w-px h-4 bg-slate-300 dark:bg-slate-600 mx-1"></div>
+                        <button onClick={handleFitToView} title="Fit to View" className="p-1.5 rounded-md hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors">
+                            <RefreshCwIcon className="w-4 h-4 text-slate-600 dark:text-slate-300" />
+                        </button>
+                    </div>
+
                     <div className="flex items-center gap-2 rounded-lg bg-slate-200 dark:bg-slate-700 p-1">
                         {(['relationships', 'coverage', 'hotspots'] as ViewMode[]).map(mode => (
                             <button key={mode} onClick={() => setViewMode(mode)} className={`px-2 py-1 text-xs font-medium rounded-md transition-colors ${viewMode === mode ? 'bg-white dark:bg-slate-800 text-brand-primary dark:text-white shadow' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-600'}`}>
@@ -335,16 +379,20 @@ const SchemaVisualizer: React.FC<SchemaVisualizerProps> = ({ data, onTableSelect
                     </button>
                 </div>
             </div>
-            <div className="relative flex-grow min-h-0 overflow-hidden">
+            <div 
+                className="relative flex-grow min-h-0 overflow-hidden"
+                onMouseDown={handleMouseDown}
+                onMouseMove={handleMouseMove}
+                onMouseUp={handleMouseUp}
+                onMouseLeave={handleMouseUp}
+                onWheel={handleWheel}
+                style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
+            >
                 <svg
+                    ref={svgRef}
                     width="100%"
                     height="100%"
-                    className="absolute inset-0 cursor-grab"
-                    onWheel={handleWheel}
-                    onMouseDown={handleMouseDown}
-                    onMouseMove={handleMouseMove}
-                    onMouseUp={handleMouseUp}
-                    onMouseLeave={handleMouseUp}
+                    className="absolute inset-0"
                 >
                     <defs>
                         <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
@@ -414,11 +462,6 @@ const SchemaVisualizer: React.FC<SchemaVisualizerProps> = ({ data, onTableSelect
                         })}
                     </g>
                 </svg>
-                <div className="absolute top-4 right-4 flex flex-col gap-1 p-1 bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-lg shadow-md border border-slate-200 dark:border-slate-700">
-                    <button onClick={() => handleZoomAction('in')} className="w-8 h-8 flex items-center justify-center rounded-md text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors" title="Zoom in"><ZoomInIcon className="w-5 h-5" /></button>
-                    <button onClick={() => handleZoomAction('out')} className="w-8 h-8 flex items-center justify-center rounded-md text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors" title="Zoom out"><ZoomOutIcon className="w-5 h-5" /></button>
-                    <button onClick={() => handleZoomAction('reset')} className="w-8 h-8 flex items-center justify-center rounded-md text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors" title="Reset view"><RefreshCwIcon className="w-5 h-5" /></button>
-                </div>
                 <Legend mode={viewMode} isDarkMode={isDarkMode} />
                 {isSimulating && <div className="absolute top-2 left-2 text-xs text-slate-400 animate-pulse">Optimizing layout...</div>}
             </div>

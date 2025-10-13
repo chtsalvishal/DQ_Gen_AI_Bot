@@ -1,6 +1,6 @@
 import React, { useState, lazy, Suspense } from 'react';
-import { performFullAnalysis, generateReportSummary } from './services/geminiService';
-import { DataQualityInputs, Issue, RuleEffectiveness, RuleConflict, SchemaVisualizationData } from './types';
+import { analyzeDataQuality, generateReportSummary } from './services/geminiService';
+import { DataQualityInputs, Issue } from './types';
 import InputForm from './components/InputForm';
 import ResultsDisplay from './components/ResultsDisplay';
 import { GithubIcon, BotIcon, ChatIcon, PanelLeftCloseIcon, PanelRightOpenIcon } from './components/icons';
@@ -13,11 +13,6 @@ const App: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [report, setReport] = useState<string | null>(null);
   const [isReportLoading, setIsReportLoading] = useState<boolean>(false);
-  
-  const [ruleEffectiveness, setRuleEffectiveness] = useState<RuleEffectiveness[] | null>(null);
-  const [ruleConflicts, setRuleConflicts] = useState<RuleConflict[] | null>(null);
-  const [schemaVizData, setSchemaVizData] = useState<SchemaVisualizationData | null>(null);
-
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isFormCollapsed, setIsFormCollapsed] = useState(false);
 
@@ -27,23 +22,13 @@ const App: React.FC = () => {
     setError(null);
     setIssues(null);
     setReport(null);
-    setRuleEffectiveness(null);
-    setRuleConflicts(null);
-    setSchemaVizData(null);
     setIsChatOpen(false);
 
     try {
-      // A single, optimized call to perform all backend analysis
-      const result = await performFullAnalysis(inputs);
-      
+      const result = await analyzeDataQuality(inputs);
       setIssues(result.issues_detected);
-      setRuleEffectiveness(result.rule_analysis);
-      setRuleConflicts(result.rule_conflicts);
-      setSchemaVizData(result.schema_visualizations);
-
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred.';
-      setError(`An error occurred while analyzing the data. ${errorMessage}`);
+      setError('An error occurred while analyzing the data. Please check your inputs and try again.');
       console.error(err);
     } finally {
       setIsLoading(false);
@@ -55,7 +40,7 @@ const App: React.FC = () => {
     setIsReportLoading(true);
     setReport(null);
     try {
-      const summaryReport = await generateReportSummary(issues, ruleEffectiveness, ruleConflicts);
+      const summaryReport = await generateReportSummary(issues);
       setReport(summaryReport);
     } catch (reportError) {
       console.error("Failed to generate summary report:", reportError);
@@ -159,9 +144,6 @@ const App: React.FC = () => {
               report={report}
               isReportLoading={isReportLoading}
               onGenerateReport={handleGenerateReport}
-              ruleEffectiveness={ruleEffectiveness}
-              ruleConflicts={ruleConflicts}
-              schemaVizData={schemaVizData}
             />
           </div>
         </main>

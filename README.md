@@ -9,8 +9,6 @@ This tool is designed to save time, improve data reliability, and foster a data-
 -   **Proactive Issue Detection**: Identify silent data corruption, schema drift, and anomalies *before* they impact downstream dashboards, machine learning models, or business decisions.
 -   **AI-Powered Deep Analysis**: Go beyond traditional, rigid data validation rules. The Gemini API understands the context of your data—its structure, statistics, and business logic—to uncover subtle, complex issues that are nearly impossible to find manually.
 -   **Drastic Efficiency Gains**: Automate the tedious, time-consuming process of manual data profiling and inspection. Free up your data teams to focus on generating value from data, not just cleaning it.
--   **Actionable Remediation**: Instantly generate SQL queries based on the detected issues. These ready-to-use scripts help engineers quickly locate and validate problematic records directly in their database, bridging the gap between detection and resolution.
--   **Rule Effectiveness Scoring**: Go beyond simple validation. The bot analyzes the performance of your business rules, flagging those that are never triggered (too broad) or that fire too often (too sensitive), and provides AI-powered suggestions to refine and optimize them for better data governance.
 -   **Improved Data Trust & Governance**: Build confidence across your organization with transparent, explainable data quality reports. The bot provides clear causes, impacts, and recommendations, making it easier to enforce data governance standards.
 -   **Enhanced Collaboration**: The interactive dashboard, conversational AI assistant, and exportable PDF/PowerPoint reports make it simple to share findings and collaborate on solutions between technical and business teams.
 -   **Context-Aware & Holistic**: By analyzing schemas, column statistics, sample data, and business rules together, the bot gains a holistic understanding of your data's intended state, leading to more accurate and relevant findings.
@@ -19,7 +17,7 @@ This tool is designed to save time, improve data reliability, and foster a data-
 
 The Data Quality Bot is a versatile tool for anyone who relies on high-quality data.
 
--   **Data Engineers**: Validate data integrity after ETL/ELT pipeline runs, detect unexpected changes from source systems, and ensure schema consistency across environments. Quickly generate validation SQL to debug failing records.
+-   **Data Engineers**: Validate data integrity after ETL/ELT pipeline runs, detect unexpected changes from source systems, and ensure schema consistency across environments.
 -   **Data Analysts & Scientists**: Ensure the reliability of datasets before performing exploratory analysis or training machine learning models. Reduce time spent on data cleaning and debugging.
 -   **Data Stewards & Governance Teams**: Monitor the health of critical data assets, enforce enterprise-wide quality standards, and create a centralized view of data quality issues.
 -   **Business Intelligence (BI) Developers**: Quickly troubleshoot inconsistencies in reports and dashboards by tracing them back to underlying data quality problems.
@@ -31,9 +29,7 @@ The Data Quality Bot is a versatile tool for anyone who relies on high-quality d
 3.  **Structured Results**: Gemini returns a structured JSON object containing a list of detected issues, each with a description, severity level (High, Medium, Low), possible cause, potential impact, and a recommended solution.
 4.  **Visualize & Explore**: The results are displayed in an interactive dashboard where users can filter issues by severity, view a health summary for each table, and drill down into specific problems grouped by table and column.
 5.  **Conversational Insights**: A built-in chat assistant allows users to ask follow-up questions about the results in natural language, making it easy to understand complex relationships and prioritize fixes.
-6.  **Generate Validation SQL**: For any table with detected issues, users can click a button to have the Gemini API generate a set of SQL queries. These queries are designed to run on the user's database to identify the specific rows that violate the detected data quality rules, making it easier to debug and fix the root cause.
-7.  **Analyze Rule Effectiveness**: The bot automatically assesses the performance of the business rules you provided against the detected violations, offering insights and recommendations to improve your data governance strategy.
-8.  **Export & Share**: Findings can be exported into professional, stakeholder-ready formats, including a detailed PDF report or a PowerPoint presentation.
+6.  **Export & Share**: Findings can be exported into professional, stakeholder-ready formats, including a detailed PDF report or a PowerPoint presentation.
 
 ## Architecture
 

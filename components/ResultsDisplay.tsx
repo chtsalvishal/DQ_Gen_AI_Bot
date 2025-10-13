@@ -1,5 +1,5 @@
 import React, { useState, useMemo, lazy, Suspense, useEffect, useRef, useCallback } from 'react';
-import { Issue, RuleEffectiveness, RuleConflict, SchemaVisualizationData } from '../types';
+import { Issue } from '../types';
 import IssueCard from './IssueCard';
 import Loader from './Loader';
 import { ErrorIcon, CheckCircleIcon, ChevronDownIcon, ColumnIcon, ExportIcon, PresentationIcon, SparklesIcon, XIcon, CodeIcon } from './icons';
@@ -60,10 +60,9 @@ const SimpleMarkdownRenderer: React.FC<{ text: string }> = ({ text }) => {
         if (headerMatch) {
             const level = headerMatch[1].length;
             const content = headerMatch[2];
-            // FIX: Using a capitalized variable for a dynamic HTML tag causes JSX compilation errors.
-            // Switched to React.createElement with a lowercase string variable for the tag name,
-            // which is the standard, type-safe way to handle this. This resolves all related type errors.
-            const tag = `h${level}`;
+            // FIX: The variable holding a JSX tag name must start with a lowercase letter.
+            // Changed 'Tag' to 'tag' to avoid JSX interpreting it as a custom component.
+            const tag = `h${level}` as keyof JSX.IntrinsicElements;
             const styles = [
                 "text-2xl font-extrabold mt-8 mb-4 pb-2 border-b border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white", // h1
                 "text-xl font-bold mt-6 mb-3 pb-2 border-b border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white", // h2
@@ -72,7 +71,7 @@ const SimpleMarkdownRenderer: React.FC<{ text: string }> = ({ text }) => {
                 "text-sm font-semibold mt-3 mb-1 text-slate-800 dark:text-white", // h5
                 "text-xs font-semibold mt-2 mb-1 text-slate-800 dark:text-white"  // h6
             ];
-            return React.createElement(tag, { key: index, className: styles[level - 1] }, parseInlineMarkdown(content));
+            return <tag key={index} className={styles[level - 1]}>{parseInlineMarkdown(content)}</tag>;
         }
 
         // 2b. Check for lists (where every line in the block starts with * or -)
@@ -340,15 +339,9 @@ interface ResultsDisplayProps {
   report: string | null;
   isReportLoading: boolean;
   onGenerateReport: () => void;
-  ruleEffectiveness: RuleEffectiveness[] | null;
-  ruleConflicts: RuleConflict[] | null;
-  schemaVizData: SchemaVisualizationData | null;
 }
 
-const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ 
-    isLoading, error, issues, report, isReportLoading, onGenerateReport, 
-    ruleEffectiveness, ruleConflicts, schemaVizData
-}) => {
+const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ isLoading, error, issues, report, isReportLoading, onGenerateReport }) => {
     const [activeSelection, setActiveSelection] = useState<'dashboard' | string>('dashboard');
     const [displayMode, setDisplayMode] = useState<'dashboard' | 'list'>('dashboard');
     const [activeSeverityFilter, setActiveSeverityFilter] = useState<Issue['severity'] | 'All'>('All');
@@ -480,9 +473,6 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
                        issues={filteredIssuesFlat}
                        onIssueTypeSelect={handleIssueTypeSelect}
                        onTableSelect={handleTableSelect}
-                       ruleEffectiveness={ruleEffectiveness}
-                       ruleConflicts={ruleConflicts}
-                       schemaVizData={schemaVizData}
                     />
                 </Suspense>
             );
@@ -547,11 +537,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
                     </div>
                     <div className="flex items-center gap-2 flex-wrap">
                          <button 
-                            onClick={() => {
-                                if (issues) {
-                                    generatePdfReport(issues, ruleEffectiveness, ruleConflicts);
-                                }
-                            }} 
+                            onClick={() => generatePdfReport(issues)} 
                             disabled={!issues || issues.length === 0}
                             className="inline-flex items-center gap-2 px-3 py-1.5 text-sm font-medium rounded-md border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                             aria-label="Export report to PDF"
@@ -560,11 +546,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
                             <span>Export PDF</span>
                         </button>
                         <button 
-                            onClick={() => {
-                                if (issues) {
-                                    generatePptxReport(issues, ruleEffectiveness, ruleConflicts);
-                                }
-                            }}
+                            onClick={() => generatePptxReport(issues)} 
                             disabled={!issues || issues.length === 0}
                             className="inline-flex items-center gap-2 px-3 py-1.5 text-sm font-medium rounded-md border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                             aria-label="Export report to slides"
