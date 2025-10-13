@@ -60,9 +60,9 @@ const SimpleMarkdownRenderer: React.FC<{ text: string }> = ({ text }) => {
         if (headerMatch) {
             const level = headerMatch[1].length;
             const content = headerMatch[2];
-            // FIX: The variable holding a JSX tag name must start with a lowercase letter.
-            // Changed 'Tag' to 'tag' to avoid JSX interpreting it as a custom component.
-            const tag = `h${level}` as keyof JSX.IntrinsicElements;
+            // FIX: In React, a variable used as a JSX tag must start with a capital letter
+            // to be dynamically rendered. 'tag' was renamed to 'Tag'.
+            const Tag = `h${level}` as keyof JSX.IntrinsicElements;
             const styles = [
                 "text-2xl font-extrabold mt-8 mb-4 pb-2 border-b border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white", // h1
                 "text-xl font-bold mt-6 mb-3 pb-2 border-b border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white", // h2
@@ -71,7 +71,7 @@ const SimpleMarkdownRenderer: React.FC<{ text: string }> = ({ text }) => {
                 "text-sm font-semibold mt-3 mb-1 text-slate-800 dark:text-white", // h5
                 "text-xs font-semibold mt-2 mb-1 text-slate-800 dark:text-white"  // h6
             ];
-            return <tag key={index} className={styles[level - 1]}>{parseInlineMarkdown(content)}</tag>;
+            return <Tag key={index} className={styles[level - 1]}>{parseInlineMarkdown(content)}</Tag>;
         }
 
         // 2b. Check for lists (where every line in the block starts with * or -)
