@@ -1,6 +1,6 @@
 import React, { useState, lazy, Suspense } from 'react';
-import { analyzeDataQuality, generateReportSummary } from './services/geminiService';
-import { DataQualityInputs, Issue, RuleConflict, RuleEffectiveness } from './types';
+import { analyzeDataQuality, generateReportSummary, mapGlobalRulesToTables } from './services/geminiService';
+import { DataQualityInputs, Issue, RuleConflict, RuleEffectiveness, SchemaVisualizationData } from './types';
 import InputForm from './components/InputForm';
 import ResultsDisplay from './components/ResultsDisplay';
 import { GithubIcon, BotIcon, ChatIcon, PanelLeftCloseIcon, PanelRightOpenIcon } from './components/icons';
@@ -12,6 +12,7 @@ const App: React.FC = () => {
   const [issues, setIssues] = useState<Issue[] | null>(null);
   const [ruleEffectiveness, setRuleEffectiveness] = useState<RuleEffectiveness[] | null>(null);
   const [ruleConflicts, setRuleConflicts] = useState<RuleConflict[] | null>(null);
+  const [schemaVisualizationData, setSchemaVisualizationData] = useState<SchemaVisualizationData | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [report, setReport] = useState<string | null>(null);
   const [isReportLoading, setIsReportLoading] = useState<boolean>(false);
@@ -25,14 +26,22 @@ const App: React.FC = () => {
     setIssues(null);
     setRuleEffectiveness(null);
     setRuleConflicts(null);
+    setSchemaVisualizationData(null);
     setReport(null);
     setIsChatOpen(false);
 
     try {
-      const result = await analyzeDataQuality(inputs);
-      setIssues(result.issues_detected);
-      setRuleEffectiveness(result.rule_effectiveness ?? []);
-      setRuleConflicts(result.rule_conflicts ?? []);
+      // Step 1: Pre-analysis to map global rules to specific tables for accuracy.
+      const ruleMap = await mapGlobalRulesToTables(inputs.tables, inputs.rules);
+
+      // Step 2: Run the main analysis with the intelligent rule map.
+      const result = await analyzeDataQuality(inputs, ruleMap);
+
+      setIssues(result.issues);
+      setRuleEffectiveness(result.ruleEffectiveness);
+      setRuleConflicts(result.ruleConflicts);
+      setSchemaVisualizationData(result.schemaVisualizationData);
+
     } catch (err) {
       setError('An error occurred while analyzing the data. Please check your inputs and try again.');
       console.error(err);
@@ -149,6 +158,7 @@ const App: React.FC = () => {
               issues={issues}
               ruleEffectiveness={ruleEffectiveness}
               ruleConflicts={ruleConflicts}
+              schemaVisualizationData={schemaVisualizationData}
               report={report}
               isReportLoading={isReportLoading}
               onGenerateReport={handleGenerateReport}

@@ -1,3 +1,5 @@
+// FIX: Removed self-import of TableInput which caused a declaration conflict.
+
 export interface TableInput {
   id: string;
   name: string;
@@ -44,7 +46,6 @@ export interface GeminiApiResponse {
   rule_conflicts?: RuleConflict[];
 }
 
-// FIX: Added missing schema visualization types
 export interface SchemaNode {
   id: string;
   label: string;
@@ -56,19 +57,16 @@ export interface SchemaEdge {
   label: string;
 }
 
-export interface RuleCoverage {
-  tableName: string;
-  coverage: number;
-}
-
 export interface Hotspot {
   tableName: string;
-  score: number;
+  score: number; // The weighted score of issues
 }
 
 export interface SchemaVisualizationData {
   nodes: SchemaNode[];
   edges: SchemaEdge[];
-  ruleCoverage: RuleCoverage[];
   hotspots: Hotspot[];
 }
+
+// A map where the key is a global rule and the value is an array of table names it applies to.
+export type GlobalRuleMap = Record<string, string[]>;

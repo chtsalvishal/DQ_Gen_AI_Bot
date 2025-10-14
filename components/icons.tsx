@@ -215,7 +215,6 @@ export const ShieldCheckIcon: React.FC<IconProps> = (props) => (
     </svg>
 );
 
-// FIX: Added missing icons for SchemaVisualizer
 export const NetworkIcon: React.FC<IconProps> = (props) => (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M12.75 19.5v-.75a7.5 7.5 0 00-7.5-7.5h-.75m0-3h.75a7.5 7.5 0 017.5 7.5v.75m0-3a7.5 7.5 0 00-7.5-7.5h-.75m9 15.75A7.5 7.5 0 0112 12m0 0h8.25m-8.25 0V3.75M12 12a7.5 7.5 0 017.5 7.5m0 0H6.375" />

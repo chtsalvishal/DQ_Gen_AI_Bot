@@ -1,14 +1,15 @@
 import React from 'react';
-import { Issue } from '../types';
+import { Issue, SchemaVisualizationData } from '../types';
 import { getShortTableName } from './ResultsDisplay';
-import { DashboardIcon, TableIcon, TotalIssuesIcon } from './icons';
+import { DashboardIcon, TableIcon, TotalIssuesIcon, NetworkIcon } from './icons';
 import SeverityBadge from './SeverityBadge';
 
 // Props for the sidebar
 interface AnalysisSidebarProps {
   issues: Issue[];
   issuesByTable: Record<string, Issue[]>;
-  activeSelection: string; // Can be 'dashboard' or a table name
+  schemaVisualizationData: SchemaVisualizationData | null;
+  activeSelection: string; // Can be 'dashboard', 'schema', or a table name
   onSelectionChange: (selection: string) => void;
   activeSeverityFilter: Issue['severity'] | 'All';
   onSeverityFilterChange: (severity: Issue['severity'] | 'All') => void;
@@ -49,6 +50,7 @@ const NavItem: React.FC<{
 const AnalysisSidebar: React.FC<AnalysisSidebarProps> = ({
   issues,
   issuesByTable,
+  schemaVisualizationData,
   activeSelection,
   onSelectionChange,
   activeSeverityFilter,
@@ -110,6 +112,14 @@ const AnalysisSidebar: React.FC<AnalysisSidebarProps> = ({
           isActive={activeSelection === 'dashboard'}
           onClick={() => onSelectionChange('dashboard')}
         />
+        {schemaVisualizationData && (
+             <NavItem
+                label="Visualizations"
+                icon={<NetworkIcon />}
+                isActive={activeSelection === 'schema'}
+                onClick={() => onSelectionChange('schema')}
+            />
+        )}
         <hr className="!my-3 border-slate-200 dark:border-slate-700" />
         <h3 className="px-3 pt-1 pb-2 text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Tables</h3>
         {tableNames.map(tableName => (

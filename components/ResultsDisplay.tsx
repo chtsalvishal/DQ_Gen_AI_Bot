@@ -1,5 +1,5 @@
 import React, { useState, useMemo, lazy, Suspense, useEffect, useRef, useCallback } from 'react';
-import { Issue, RuleConflict, RuleEffectiveness } from '../types';
+import { Issue, RuleConflict, RuleEffectiveness, SchemaVisualizationData } from '../types';
 import IssueCard from './IssueCard';
 import Loader from './Loader';
 import { ErrorIcon, CheckCircleIcon, ChevronDownIcon, ColumnIcon, ExportIcon, PresentationIcon, SparklesIcon, XIcon, CodeIcon, GavelIcon } from './icons';
@@ -11,6 +11,7 @@ import SqlDisplayModal from './SqlDisplayModal';
 import { normalizeIssueType } from '../services/issueNormalizer';
 
 const DashboardView = lazy(() => import('./DashboardView'));
+const SchemaVisualizer = lazy(() => import('./SchemaVisualizer'));
 
 /**
  * A robust inline markdown parser that correctly handles bold (`**...**`), italic (`*...*`),
@@ -60,7 +61,6 @@ const SimpleMarkdownRenderer: React.FC<{ text: string }> = ({ text }) => {
         if (headerMatch) {
             const level = headerMatch[1].length;
             const content = headerMatch[2];
-            // FIX: Replaced dynamic tag creation with a switch statement to avoid `JSX` namespace errors.
             const styles = [
                 "text-2xl font-extrabold mt-8 mb-4 pb-2 border-b border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white", // h1
                 "text-xl font-bold mt-6 mb-3 pb-2 border-b border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white", // h2
@@ -71,15 +71,11 @@ const SimpleMarkdownRenderer: React.FC<{ text: string }> = ({ text }) => {
             ];
             const className = styles[level - 1];
             const children = parseInlineMarkdown(content);
-            switch (level) {
-                case 1: return <h1 key={index} className={className}>{children}</h1>;
-                case 2: return <h2 key={index} className={className}>{children}</h2>;
-                case 3: return <h3 key={index} className={className}>{children}</h3>;
-                case 4: return <h4 key={index} className={className}>{children}</h4>;
-                case 5: return <h5 key={index} className={className}>{children}</h5>;
-                case 6: return <h6 key={index} className={className}>{children}</h6>;
-                default: return <p key={index}>{children}</p>;
-            }
+            // FIX: Use React.createElement to correctly render a dynamic HTML tag. JSX with a capitalized variable
+            // like <Tag> is treated as a component, which was causing a type error because `Tag` is a string.
+            // The type cast was changed to `keyof React.ReactHTML` to resolve the "Cannot find namespace 'JSX'" error.
+            const Tag = `h${level}` as keyof React.ReactHTML;
+            return React.createElement(Tag, { key: index, className: className }, children);
         }
 
         // 2b. Check for lists (where every line in the block starts with * or -)
@@ -339,6 +335,7 @@ const AIReportSection: React.FC<{
   );
 };
 
+type ViewMode = 'relationships' | 'hotspots';
 
 interface ResultsDisplayProps {
   isLoading: boolean;
@@ -346,16 +343,19 @@ interface ResultsDisplayProps {
   issues: Issue[] | null;
   ruleEffectiveness: RuleEffectiveness[] | null;
   ruleConflicts: RuleConflict[] | null;
+  schemaVisualizationData: SchemaVisualizationData | null;
   report: string | null;
   isReportLoading: boolean;
   onGenerateReport: () => void;
 }
 
-const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ isLoading, error, issues, ruleEffectiveness, ruleConflicts, report, isReportLoading, onGenerateReport }) => {
-    const [activeSelection, setActiveSelection] = useState<'dashboard' | string>('dashboard');
-    const [displayMode, setDisplayMode] = useState<'dashboard' | 'list'>('dashboard');
+const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ isLoading, error, issues, ruleEffectiveness, ruleConflicts, schemaVisualizationData, report, isReportLoading, onGenerateReport }) => {
+    const [activeSelection, setActiveSelection] = useState<'dashboard' | 'schema' | string>('dashboard');
+    const [displayMode, setDisplayMode] = useState<'dashboard' | 'list' | 'schema'>('dashboard');
     const [activeSeverityFilter, setActiveSeverityFilter] = useState<Issue['severity'] | 'All'>('All');
     const [activeTypeFilter, setActiveTypeFilter] = useState<string | 'All'>('All');
+    const [viewOrigin, setViewOrigin] = useState<ViewMode | null>(null);
+    const [schemaViewMode, setSchemaViewMode] = useState<ViewMode>('relationships');
     const [isSqlModalOpen, setIsSqlModalOpen] = useState(false);
     const [sqlState, setSqlState] = useState<{ isLoading: boolean; content: string | null; forTable: string | null }>({
       isLoading: false,
@@ -423,6 +423,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ isLoading, error, issue
             setDisplayMode('dashboard');
             setActiveSeverityFilter('All');
             setActiveTypeFilter('All');
+            setViewOrigin(null);
         }
     }, [issues]);
 
@@ -448,34 +449,63 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ isLoading, error, issue
     }, [issues, activeSeverityFilter, activeTypeFilter]);
 
 
-    const handleSidebarSelection = (selection: 'dashboard' | string) => {
+    const handleSidebarSelection = (selection: 'dashboard' | 'schema' | string) => {
+        setViewOrigin(null);
         setActiveSelection(selection);
         setActiveTypeFilter('All');
         if (selection === 'dashboard') {
             setDisplayMode('dashboard');
+        } else if (selection === 'schema') {
+            setSchemaViewMode('relationships'); // Default to relationships view
+            setDisplayMode('schema');
         } else {
             setDisplayMode('list');
         }
     };
 
     const handleIssueTypeSelect = (issueType: string) => {
+      setViewOrigin(null);
       setActiveSelection('dashboard');
       setDisplayMode('list');
       setActiveTypeFilter(issueType);
     };
 
-    const handleTableSelect = (tableName: string) => {
-        const fullTableName = Object.keys(issuesByTable).find(key => getShortTableName(key) === tableName) || tableName;
+    const handleTableSelect = (tableName: string, fromView: ViewMode) => {
+        setViewOrigin(fromView);
+        const fullTableName = Object.keys(issuesByTable).find(key => getShortTableName(key) === tableName) || Object.keys(issuesByTable).find(key => key === tableName) || tableName;
         setActiveSelection(fullTableName);
         setDisplayMode('list');
     };
 
-    const handleClearTypeFilter = () => {
+    const handleClearFilter = () => {
         setActiveTypeFilter('All');
         setDisplayMode('dashboard');
+        setViewOrigin(null);
+    };
+
+    const handleReturnToSchema = () => {
+        if (viewOrigin) {
+            setSchemaViewMode(viewOrigin);
+        }
+        setViewOrigin(null);
+        setActiveSelection('schema');
+        setDisplayMode('schema');
     };
     
     const renderMainContent = () => {
+        if (displayMode === 'schema') {
+            return (
+                 <Suspense fallback={<div className="text-center py-10">Loading Visualizer...</div>}>
+                    <SchemaVisualizer 
+                        data={schemaVisualizationData} 
+                        onTableSelect={handleTableSelect}
+                        viewMode={schemaViewMode}
+                        setViewMode={setSchemaViewMode}
+                    />
+                </Suspense>
+            );
+        }
+
         if (displayMode === 'dashboard') {
             return (
                 <Suspense fallback={<div className="text-center py-10">Loading Dashboard...</div>}>
@@ -484,7 +514,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ isLoading, error, issue
                        ruleEffectiveness={ruleEffectiveness || []}
                        ruleConflicts={ruleConflicts || []}
                        onIssueTypeSelect={handleIssueTypeSelect}
-                       onTableSelect={handleTableSelect}
+                       onTableSelect={(tableName) => handleTableSelect(tableName, 'relationships')}
                     />
                 </Suspense>
             );
@@ -492,10 +522,28 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ isLoading, error, issue
 
         // LIST VIEW
         let tablesToRender = filteredIssuesByTable;
-        if (activeSelection !== 'dashboard') {
+        if (activeSelection !== 'dashboard' && activeSelection !== 'schema') {
             tablesToRender = { [activeSelection]: filteredIssuesByTable[activeSelection] || [] };
         }
         const tableNames = Object.keys(tablesToRender);
+
+        const bannerConfig = {
+            hotspots: {
+                bg: 'bg-rose-50 dark:bg-rose-900/20',
+                text: 'text-rose-800 dark:text-rose-200',
+                button: 'text-rose-700 dark:text-rose-200 hover:bg-rose-100 dark:hover:bg-rose-800/50',
+                title: 'Viewing Hotspot:',
+                returnText: 'Back to Hotspots',
+            },
+            relationships: {
+                bg: 'bg-sky-50 dark:bg-sky-900/20',
+                text: 'text-sky-800 dark:text-sky-200',
+                button: 'text-sky-700 dark:text-sky-200 hover:bg-sky-100 dark:hover:bg-sky-800/50',
+                title: 'Viewing Table:',
+                returnText: 'Back to Relationships',
+            }
+        };
+        const currentBanner = viewOrigin ? bannerConfig[viewOrigin] : null;
 
         return (
             <div className="space-y-6">
@@ -504,9 +552,20 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ isLoading, error, issue
                         <p className="text-sky-800 dark:text-sky-200">
                             <span className="font-semibold">Filtering by issue type:</span> {activeTypeFilter}
                         </p>
-                        <button onClick={handleClearTypeFilter} className="p-1 rounded-full hover:bg-sky-200 dark:hover:bg-sky-800 transition-colors">
+                        <button onClick={handleClearFilter} className="p-1 rounded-full hover:bg-sky-200 dark:hover:bg-sky-800 transition-colors">
                             <XIcon className="w-4 h-4 text-sky-600 dark:text-sky-300"/>
                             <span className="sr-only">Clear issue type filter</span>
+                        </button>
+                    </div>
+                )}
+                {currentBanner && activeSelection !== 'dashboard' && (
+                     <div className={`p-2.5 rounded-lg flex justify-between items-center text-sm ${currentBanner.bg}`}>
+                        <p className={currentBanner.text}>
+                            <span className="font-semibold">{currentBanner.title}</span> {getShortTableName(activeSelection)}
+                        </p>
+                        <button onClick={handleReturnToSchema} className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-md transition-colors ${currentBanner.button}`}>
+                            <span>{currentBanner.returnText}</span>
+                            <XIcon className="w-4 h-4"/>
                         </button>
                     </div>
                 )}
@@ -575,6 +634,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ isLoading, error, issue
                         <AnalysisSidebar
                             issues={issues}
                             issuesByTable={issuesByTable}
+                            schemaVisualizationData={schemaVisualizationData}
                             activeSelection={activeSelection}
                             onSelectionChange={handleSidebarSelection}
                             activeSeverityFilter={activeSeverityFilter}

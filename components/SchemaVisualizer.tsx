@@ -1,14 +1,25 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
-import { SchemaVisualizationData, SchemaNode } from '../types';
+import { SchemaVisualizationData, SchemaNode, SchemaEdge } from '../types';
 import { NetworkIcon, MaximizeIcon, MinimizeIcon, ZoomInIcon, ZoomOutIcon, RefreshCwIcon } from './icons';
 
-type ViewMode = 'relationships' | 'coverage' | 'hotspots';
+type ViewMode = 'relationships' | 'hotspots';
+type HoverItem = { type: 'node'; id: string } | { type: 'edge'; index: number };
 
 interface NodePosition extends SchemaNode {
     x: number;
     y: number;
-    vx: number;
-    vy: number;
+}
+
+interface ProcessedEdge extends SchemaEdge {
+    d: string;
+    textTransform: string;
+    textAnchor: 'middle' | 'start' | 'end';
+}
+
+interface TooltipData {
+    content: string;
+    x: number;
+    y: number;
 }
 
 const LIGHT_HEATMAP_COLORS = ['#a7f3d0', '#fde047', '#fca5a5', '#ef4444'];
@@ -25,111 +36,91 @@ const getHeatmapColor = (score: number, isDarkMode: boolean): string => {
     return colors[3];
 };
 
+const Tooltip: React.FC<{ data: TooltipData | null }> = ({ data }) => {
+    if (!data) return null;
+    return (
+        <div 
+            className="absolute p-2 text-xs font-semibold text-white bg-slate-800/90 dark:bg-black/80 rounded-md shadow-lg pointer-events-none"
+            style={{ top: data.y, left: data.x, transform: 'translate(10px, 10px)' }}
+        >
+            {data.content}
+        </div>
+    );
+};
 
-const useForceDirectedLayout = (data: SchemaVisualizationData, width: number, height: number): [Map<string, NodePosition>, boolean] => {
+const useStaticDiamondLayout = (data: SchemaVisualizationData | null, width: number, height: number): [Map<string, NodePosition>, boolean] => {
     const [nodePositions, setNodePositions] = useState<Map<string, NodePosition>>(new Map());
-    const [isSimulating, setIsSimulating] = useState(true);
-    const simulationRef = useRef<number | null>(null);
+    const [isLayingOut, setIsLayingOut] = useState(true);
 
     useEffect(() => {
-        if (!data || data.nodes.length === 0 || width === 0) {
-            setIsSimulating(false);
+        if (!data || data.nodes.length === 0 || width === 0 || height === 0) {
+            setIsLayingOut(false);
             return;
         }
 
-        setIsSimulating(true);
-        const initialNodes = new Map<string, NodePosition>();
+        setIsLayingOut(true);
+        const newPositions = new Map<string, NodePosition>();
+        const nodes = data.nodes.slice().sort((a, b) => a.id.localeCompare(b.id));
+        const numNodes = nodes.length;
+
+        const centerX = width / 2;
+        const centerY = height / 2;
         
-        const numNodes = data.nodes.length;
-        const radius = Math.min(width, height) / 3;
-        data.nodes.forEach((node, i) => {
-            const angle = (i / numNodes) * 2 * Math.PI;
-            initialNodes.set(node.id, {
+        const horizontalRadius = Math.max(1, width / 2 - 100);
+        const verticalRadius = Math.max(1, height / 2 - 60);
+
+        if (numNodes === 1) {
+             const node = nodes[0];
+             newPositions.set(node.id, {
                 ...node,
-                x: width / 2 + radius * Math.cos(angle),
-                y: height / 2 + radius * Math.sin(angle),
-                vx: 0,
-                vy: 0,
+                x: centerX,
+                y: centerY,
             });
-        });
-
-        setNodePositions(initialNodes);
-
-        const nodes = Array.from(initialNodes.values());
-        const edges = data.edges;
-
-        const simulationStep = () => {
-            let totalKineticEnergy = 0;
-
-            nodes.forEach(nodeA => {
-                nodeA.vx += (width / 2 - nodeA.x) * 0.003;
-
-                nodes.forEach(nodeB => {
-                    if (nodeA.id === nodeB.id) return;
-                    const dx = nodeB.x - nodeA.x;
-                    const dy = nodeB.y - nodeA.y;
-                    let distance = Math.sqrt(dx * dx + dy * dy);
-                    if (distance < 1) distance = 1;
-                    const force = -40000 / (distance * distance); 
-                    nodeA.vx += (dx / distance) * force;
-                    nodeA.vy += (dy / distance) * force;
+        } else {
+            const nodesPerSide = Math.ceil(numNodes / 4);
+            const lerp = (a: number, b: number, t: number) => a * (1 - t) + b * t;
+    
+            nodes.forEach((node, i) => {
+                const side = Math.floor(i / nodesPerSide);
+                const positionOnSide = i % nodesPerSide;
+                const t = nodesPerSide > 1 ? (positionOnSide + 1) / (nodesPerSide + 1) : 0.5;
+    
+                let x = 0, y = 0;
+    
+                switch (side) {
+                    case 0: // Top-to-Right
+                        x = lerp(centerX, centerX + horizontalRadius, t);
+                        y = lerp(centerY - verticalRadius, centerY, t);
+                        break;
+                    case 1: // Right-to-Bottom
+                        x = lerp(centerX + horizontalRadius, centerX, t);
+                        y = lerp(centerY, centerY + verticalRadius, t);
+                        break;
+                    case 2: // Bottom-to-Left
+                        x = lerp(centerX, centerX - horizontalRadius, t);
+                        y = lerp(centerY + verticalRadius, centerY, t);
+                        break;
+                    case 3: // Left-to-Top
+                    default:
+                        x = lerp(centerX - horizontalRadius, centerX, t);
+                        y = lerp(centerY, centerY - verticalRadius, t);
+                        break;
+                }
+    
+                newPositions.set(node.id, {
+                    ...node,
+                    x,
+                    y,
                 });
             });
+        }
 
-            edges.forEach(edge => {
-                const nodeA = initialNodes.get(edge.from);
-                const nodeB = initialNodes.get(edge.to);
-                if (!nodeA || !nodeB) return;
+        setNodePositions(newPositions);
+        setIsLayingOut(false);
 
-                const dx = nodeB.x - nodeA.x;
-                const dy = nodeB.y - nodeA.y;
-                let distance = Math.sqrt(dx * dx + dy * dy);
-                if (distance < 1) distance = 1;
-                const displacement = distance - 250; 
-                const force = 0.05 * displacement;
-
-                const fx = (dx / distance) * force;
-                const fy = (dy / distance) * force;
-
-                nodeA.vx += fx;
-                nodeA.vy += fy;
-                nodeB.vx -= fx;
-                nodeB.vy -= fy;
-            });
-
-            nodes.forEach(node => {
-                // Heavily increased damping (lower multiplier) to eliminate bouncing.
-                node.vx *= 0.5;
-                node.vy *= 0.5;
-
-                node.x += node.vx;
-                node.y += node.vy;
-
-                node.x = Math.max(80, Math.min(width - 80, node.x));
-                node.y = Math.max(40, Math.min(height - 40, node.y));
-                
-                totalKineticEnergy += 0.5 * (node.vx * node.vx + node.vy * node.vy);
-            });
-
-            setNodePositions(new Map(initialNodes));
-
-            if (totalKineticEnergy > 0.01) {
-                simulationRef.current = requestAnimationFrame(simulationStep);
-            } else {
-                 setIsSimulating(false);
-            }
-        };
-
-        simulationRef.current = requestAnimationFrame(simulationStep);
-
-        return () => {
-            if (simulationRef.current) {
-                cancelAnimationFrame(simulationRef.current);
-            }
-        };
     }, [data, width, height]);
-    
-    return [nodePositions, isSimulating];
+
+    return [nodePositions, isLayingOut];
 };
 
 const Legend: React.FC<{ mode: ViewMode, isDarkMode: boolean }> = ({ mode, isDarkMode }) => {
@@ -139,15 +130,7 @@ const Legend: React.FC<{ mode: ViewMode, isDarkMode: boolean }> = ({ mode, isDar
     let items = [];
     const colors = isDarkMode ? DARK_HEATMAP_COLORS : LIGHT_HEATMAP_COLORS;
 
-    if (mode === 'coverage') {
-        title = 'Rule Coverage';
-        items = [
-            { color: colors[0], label: 'Low (<25%)' },
-            { color: colors[1], label: 'Medium (25-50%)' },
-            { color: colors[2], label: 'Good (50-75%)' },
-            { color: colors[3], label: 'Excellent (>75%)' },
-        ];
-    } else if (mode === 'hotspots') {
+    if (mode === 'hotspots') {
         title = 'Anomaly Hotspot';
         items = [
             { color: colors[0], label: 'Low' },
@@ -184,11 +167,12 @@ function debounce<F extends (...args: any[]) => void>(func: F, delay: number): (
 
 interface SchemaVisualizerProps {
     data: SchemaVisualizationData | null;
-    onTableSelect: (tableName: string) => void;
+    onTableSelect: (tableName: string, fromView: ViewMode) => void;
+    viewMode: ViewMode;
+    setViewMode: (mode: ViewMode) => void;
 }
 
-const SchemaVisualizer: React.FC<SchemaVisualizerProps> = ({ data, onTableSelect }) => {
-    const [viewMode, setViewMode] = useState<ViewMode>('relationships');
+const SchemaVisualizer: React.FC<SchemaVisualizerProps> = ({ data, onTableSelect, viewMode, setViewMode }) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const [dimensions, setDimensions] = useState({ width: 0, height: 400 });
     const [isFullscreen, setIsFullscreen] = useState(false);
@@ -204,8 +188,7 @@ const SchemaVisualizer: React.FC<SchemaVisualizerProps> = ({ data, onTableSelect
         if (!data?.nodes) return 450;
         const nodeCount = data.nodes.length;
         if (nodeCount <= 5) return 450;
-        // Add 30px for each node above 5, but cap the total height at 800px.
-        const extraHeight = Math.min((nodeCount - 5) * 30, 350); // 450 + 350 = 800
+        const extraHeight = Math.min((nodeCount - 5) * 30, 350);
         return 450 + extraHeight;
     }, [data?.nodes]);
 
@@ -236,19 +219,18 @@ const SchemaVisualizer: React.FC<SchemaVisualizerProps> = ({ data, onTableSelect
         return () => { if (currentRef) observer.unobserve(currentRef); };
     }, []);
 
-    const [nodePositions, isSimulating] = useForceDirectedLayout(data!, dimensions.width, dimensions.height);
-    const [hoveredNode, setHoveredNode] = useState<string | null>(null);
+    const [nodePositions, isLayingOut] = useStaticDiamondLayout(data, dimensions.width, dimensions.height);
+    const [hoveredItem, setHoveredItem] = useState<HoverItem | null>(null);
+    const [tooltip, setTooltip] = useState<TooltipData | null>(null);
 
-    // Use a ref to store the latest state for callbacks to prevent stale closures.
-    const latestState = useRef({ isSimulating, nodePositions, dimensions });
-    latestState.current = { isSimulating, nodePositions, dimensions };
+    const latestState = useRef({ isLayingOut, nodePositions, dimensions });
+    latestState.current = { isLayingOut, nodePositions, dimensions };
     
     const handleFitToView = useCallback(() => {
-        // Read the latest state from the ref to ensure data is current.
-        const { isSimulating, nodePositions, dimensions } = latestState.current;
-        if (isSimulating || nodePositions.size === 0 || dimensions.width === 0 || dimensions.height === 0) return;
+        const { isLayingOut, nodePositions, dimensions } = latestState.current;
+        if (isLayingOut || nodePositions.size === 0 || dimensions.width === 0 || dimensions.height === 0) return;
         
-        const nodes = Array.from(nodePositions.values());
+        const nodes = Array.from(nodePositions.values()) as NodePosition[];
         let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
         nodes.forEach(node => {
             minX = Math.min(minX, node.x);
@@ -257,21 +239,27 @@ const SchemaVisualizer: React.FC<SchemaVisualizerProps> = ({ data, onTableSelect
             maxY = Math.max(maxY, node.y);
         });
 
+        if (nodes.length === 1) {
+            const node = nodes[0];
+            setTransform({ scale: 1.2, x: dimensions.width / 2 - node.x * 1.2, y: dimensions.height / 2 - node.y * 1.2 });
+            return;
+        }
+
         const nodesWidth = maxX - minX;
         const nodesHeight = maxY - minY;
         if (nodesWidth <= 0 || nodesHeight <= 0) return;
 
-        const padding = 80;
+        const padding = 120;
         const scale = Math.min((dimensions.width - padding) / nodesWidth, (dimensions.height - padding) / nodesHeight, 1.5);
         const x = (dimensions.width / 2) - ((minX + nodesWidth / 2) * scale);
         const y = (dimensions.height / 2) - ((minY + nodesHeight / 2) * scale);
         
         setTransform({ scale, x, y });
-    }, []); // Empty dependency array makes this function stable.
+    }, []);
 
     useEffect(() => {
-        if (!isSimulating) handleFitToView();
-    }, [isSimulating, handleFitToView]);
+        if (!isLayingOut) handleFitToView();
+    }, [isLayingOut, handleFitToView]);
 
     const handleZoom = (factor: number, clientX?: number, clientY?: number) => {
         setTransform(prev => {
@@ -283,16 +271,12 @@ const SchemaVisualizer: React.FC<SchemaVisualizerProps> = ({ data, onTableSelect
             svgPoint.x = clientX ?? dimensions.width / 2;
             svgPoint.y = clientY ?? dimensions.height / 2;
             
-            // FIX: Add guards for CTM and its inverse to prevent runtime errors and satisfy TypeScript.
             const ctm = svg.getScreenCTM();
             if (!ctm) return { ...prev, scale: newScale };
             
-            const invertedCtm = ctm.inverse();
-            if (!invertedCtm) return { ...prev, scale: newScale };
-    
-            // FIX: Cast pointInSVG to resolve 'property does not exist on type unknown' error.
-            // This is likely due to a DOM typing issue in the build environment.
-            const pointInSVG = svgPoint.matrixTransform(invertedCtm) as { x: number; y: number };
+            // FIX: The `matrixTransform` method can return a generic object type.
+            // By adding an explicit type assertion, we ensure that `pointInSVG.x` and `pointInSVG.y` can be accessed without compile-time errors.
+            const pointInSVG = svgPoint.matrixTransform(ctm.inverse()) as DOMPoint;
             
             const newX = pointInSVG.x - (pointInSVG.x - prev.x) * (newScale / prev.scale);
             const newY = pointInSVG.y - (pointInSVG.y - prev.y) * (newScale / prev.scale);
@@ -302,7 +286,7 @@ const SchemaVisualizer: React.FC<SchemaVisualizerProps> = ({ data, onTableSelect
     };
 
     const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
-        if ((e.target as HTMLElement).closest('button')) return; // Ignore clicks on buttons
+        if ((e.target as HTMLElement).closest('button, a, .node-group')) return;
         setIsDragging(true);
         setStartDrag({ x: e.clientX - transform.x, y: e.clientY - transform.y });
     };
@@ -312,7 +296,7 @@ const SchemaVisualizer: React.FC<SchemaVisualizerProps> = ({ data, onTableSelect
             setTransform(prev => ({ ...prev, x: e.clientX - startDrag.x, y: e.clientY - startDrag.y }));
         }
     };
-
+    
     const handleMouseUp = () => setIsDragging(false);
 
     const handleWheel = (e: React.WheelEvent<HTMLDivElement>) => {
@@ -320,29 +304,110 @@ const SchemaVisualizer: React.FC<SchemaVisualizerProps> = ({ data, onTableSelect
         handleZoom(e.deltaY < 0 ? 1.1 : 1 / 1.1, e.clientX, e.clientY);
     };
 
-    const highlightedNodes = useMemo(() => {
-        if (!hoveredNode || !data) return null;
-        const connected = new Set([hoveredNode]);
+    const processedEdges = useMemo((): ProcessedEdge[] => {
+        if (!data?.edges || nodePositions.size === 0) return [];
+    
+        const edgeCounts: Record<string, number> = {};
         data.edges.forEach(edge => {
-            if (edge.from === hoveredNode) connected.add(edge.to);
-            if (edge.to === hoveredNode) connected.add(edge.from);
+            const key = [edge.from, edge.to].sort().join('--');
+            edgeCounts[key] = (edgeCounts[key] || 0) + 1;
         });
-        return connected;
-    }, [hoveredNode, data]);
+    
+        const edgeIndices: Record<string, number> = {};
+    
+        return data.edges.map(edge => {
+            const fromNode = nodePositions.get(edge.from);
+            const toNode = nodePositions.get(edge.to);
+            if (!fromNode || !toNode) return { ...edge, d: '', textTransform: '', textAnchor: 'middle' };
+    
+            const key = [edge.from, edge.to].sort().join('--');
+            const total = edgeCounts[key];
+            const index = edgeIndices[key] = (edgeIndices[key] || 0) + 1;
+            
+            const dx = toNode.x - fromNode.x;
+            const dy = toNode.y - fromNode.y;
+
+            let d = `M ${fromNode.x} ${fromNode.y} L ${toNode.x} ${toNode.y}`;
+            let textTransform = `translate(${(fromNode.x + toNode.x) / 2}, ${(fromNode.y + toNode.y) / 2})`;
+            let textAnchor: 'middle' | 'start' | 'end' = 'middle';
+    
+            if (total > 1) {
+                const dr = Math.sqrt(dx * dx + dy * dy);
+                const midX = (fromNode.x + toNode.x) / 2;
+                const midY = (fromNode.y + toNode.y) / 2;
+                
+                const normX = -dy / dr;
+                const normY = dx / dr;
+                
+                const curveFactor = 25;
+                const curveOffset = (index - (total + 1) / 2) * curveFactor;
+    
+                const controlX = midX + curveOffset * normX;
+                const controlY = midY + curveOffset * normY;
+    
+                d = `M ${fromNode.x},${fromNode.y} Q ${controlX},${controlY} ${toNode.x},${toNode.y}`;
+                textTransform = `translate(${controlX}, ${controlY})`;
+            }
+
+            const angle = Math.atan2(dy, dx) * (180 / Math.PI);
+            if (angle > 90 || angle < -90) {
+                textTransform += ` rotate(180)`;
+                textAnchor = 'middle';
+            }
+            
+            return { ...edge, d, textTransform, textAnchor };
+        });
+    }, [data, nodePositions]);
+
+    const { highlightedNodes, highlightedEdges } = useMemo(() => {
+        const nodes = new Set<string>();
+        const edges = new Set<number>();
+        if (!hoveredItem || !data) return { highlightedNodes: nodes, highlightedEdges: edges };
+
+        if (hoveredItem.type === 'node') {
+            nodes.add(hoveredItem.id);
+            data.edges.forEach((edge, index) => {
+                if (edge.from === hoveredItem.id) {
+                    nodes.add(edge.to);
+                    edges.add(index);
+                }
+                if (edge.to === hoveredItem.id) {
+                    nodes.add(edge.from);
+                    edges.add(index);
+                }
+            });
+        } else if (hoveredItem.type === 'edge') {
+            const edge = data.edges[hoveredItem.index];
+            if (edge) {
+                nodes.add(edge.from);
+                nodes.add(edge.to);
+                edges.add(hoveredItem.index);
+            }
+        }
+        return { highlightedNodes: nodes, highlightedEdges: edges };
+    }, [hoveredItem, data]);
 
     const heatmapData = useMemo(() => {
         if (!data) return new Map();
         const map = new Map<string, string>();
-        if (viewMode === 'coverage') {
-            const maxCoverage = Math.max(1, ...data.ruleCoverage.map(r => r.coverage));
-            data.ruleCoverage.forEach(r => map.set(r.tableName, getHeatmapColor(r.coverage / maxCoverage, isDarkMode)));
-        } else if (viewMode === 'hotspots') {
+        if (viewMode === 'hotspots') {
             const maxScore = Math.max(1, ...data.hotspots.map(h => h.score));
             data.hotspots.forEach(h => map.set(h.tableName, getHeatmapColor(h.score / maxScore, isDarkMode)));
         }
         return map;
     }, [data, viewMode, isDarkMode]);
-
+    
+    const handleEdgeMouseMove = (e: React.MouseEvent, edge: SchemaEdge) => {
+        const containerBounds = containerRef.current?.getBoundingClientRect();
+        if (containerBounds) {
+            setTooltip({
+                content: edge.label,
+                x: e.clientX - containerBounds.left,
+                y: e.clientY - containerBounds.top
+            });
+        }
+    };
+    
     if (!data || data.nodes.length === 0) return null;
 
     return (
@@ -374,7 +439,7 @@ const SchemaVisualizer: React.FC<SchemaVisualizerProps> = ({ data, onTableSelect
                     </div>
 
                     <div className="flex items-center gap-2 rounded-lg bg-slate-200 dark:bg-slate-700 p-1">
-                        {(['relationships', 'coverage', 'hotspots'] as ViewMode[]).map(mode => (
+                        {(['relationships', 'hotspots'] as ViewMode[]).map(mode => (
                             <button key={mode} onClick={() => setViewMode(mode)} className={`px-2 py-1 text-xs font-medium rounded-md transition-colors ${viewMode === mode ? 'bg-white dark:bg-slate-800 text-brand-primary dark:text-white shadow' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-600'}`}>
                                 {mode.charAt(0).toUpperCase() + mode.slice(1)}
                             </button>
@@ -405,52 +470,48 @@ const SchemaVisualizer: React.FC<SchemaVisualizerProps> = ({ data, onTableSelect
                     height="100%"
                     className="absolute inset-0"
                 >
-                    <defs>
-                        <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-                            <path d="M 0 0 L 10 5 L 0 10 z" />
-                        </marker>
-                    </defs>
                     <g transform={`translate(${transform.x}, ${transform.y}) scale(${transform.scale})`}>
-                        {data.edges.map((edge, i) => {
-                            const fromNode = nodePositions.get(edge.from);
-                            const toNode = nodePositions.get(edge.to);
-                            if (!fromNode || !toNode) return null;
+                        {processedEdges.map((edge, i) => {
+                            const isHighlighted = highlightedEdges.has(i);
+                            const isDimmed = hoveredItem ? !isHighlighted && !(hoveredItem.type === 'node' && (hoveredItem.id === edge.from || hoveredItem.id === edge.to)) : false;
                             
-                            const isHighlightedEdge = highlightedNodes ? highlightedNodes.has(edge.from) && highlightedNodes.has(edge.to) : false;
-                            const isDimmed = hoveredNode ? !isHighlightedEdge : false;
-
-                            const edgeOpacity = isDimmed ? 0.1 : (isHighlightedEdge ? 1 : 0.4);
-                            const edgeStrokeWidth = isHighlightedEdge ? 2 : 1.5;
+                            const edgeOpacity = isDimmed ? 0.1 : (isHighlighted ? 1 : 0.6);
+                            const edgeStrokeWidth = isHighlighted ? 2.5 : 1.5;
 
                             return (
-                                <g key={i} style={{ opacity: edgeOpacity, transition: 'opacity 0.3s ease-in-out' }}>
-                                    <line 
-                                        x1={fromNode.x} y1={fromNode.y} x2={toNode.x} y2={toNode.y} 
-                                        className={`stroke-current ${isHighlightedEdge ? 'text-brand-accent' : 'text-slate-400 dark:text-slate-500'}`} 
+                                <g key={i} className="edge-group" style={{ opacity: edgeOpacity, transition: 'opacity 0.2s ease-in-out' }}>
+                                    <path 
+                                        d={edge.d}
+                                        className={`stroke-current fill-none ${isHighlighted ? 'text-brand-accent' : 'text-slate-400 dark:text-slate-500'}`}
                                         strokeWidth={edgeStrokeWidth}
-                                        markerEnd="url(#arrow)"
-                                        style={{ transition: 'stroke-width 0.2s' }}
+                                        style={{ transition: 'stroke-width 0.2s, stroke 0.2s' }}
+                                    />
+                                    <path d={edge.d} stroke="transparent" strokeWidth="15" fill="none"
+                                        onMouseEnter={() => setHoveredItem({ type: 'edge', index: i })}
+                                        onMouseMove={(e) => handleEdgeMouseMove(e, edge)}
+                                        onMouseLeave={() => { setHoveredItem(null); setTooltip(null); }}
                                     />
                                     <text 
-                                        x={(fromNode.x + toNode.x) / 2} y={(fromNode.y + toNode.y) / 2 - 5} 
-                                        className="text-[10px] fill-current text-brand-accent font-semibold" 
-                                        textAnchor="middle" 
-                                        style={{ opacity: isHighlightedEdge ? 1 : 0, transition: 'opacity 0.3s ease-in-out' }}
+                                        className="text-[10px] fill-current text-brand-accent font-semibold pointer-events-none"
+                                        textAnchor={edge.textAnchor}
+                                        dy="-4"
+                                        style={{ opacity: isHighlighted ? 1 : 0, transition: 'opacity 0.2s ease-in-out' }}
                                     >
-                                        {edge.label}
+                                        <textPath href={`#edge-path-${i}`} startOffset="50%">{edge.label}</textPath>
                                     </text>
+                                    <path id={`edge-path-${i}`} d={edge.d} className="hidden" />
                                 </g>
                             );
                         })}
                         {Array.from(nodePositions.values()).map(node => {
-                            const isHovered = hoveredNode === node.id;
-                            const isNeighbor = highlightedNodes ? highlightedNodes.has(node.id) && !isHovered : false;
-                            const isDimmed = hoveredNode ? !(isHovered || isNeighbor) : false;
+                            const isHovered = hoveredItem?.type === 'node' && hoveredItem.id === node.id;
+                            const isHighlighted = highlightedNodes.has(node.id);
+                            const isDimmed = hoveredItem ? !isHighlighted : false;
 
                             const nodeStyle: React.CSSProperties = {
-                                opacity: isDimmed ? 0.2 : 1,
+                                opacity: isDimmed ? 0.25 : 1,
                                 filter: isHovered ? `drop-shadow(0 0 8px ${isDarkMode ? '#818cf8' : '#6366f1'})` : 'none',
-                                transition: 'opacity 0.3s ease-in-out, filter 0.3s ease-in-out',
+                                transition: 'opacity 0.2s ease-in-out, filter 0.2s ease-in-out',
                             };
 
                             const fill = viewMode === 'relationships' 
@@ -459,22 +520,30 @@ const SchemaVisualizer: React.FC<SchemaVisualizerProps> = ({ data, onTableSelect
 
                             const rectStyle: React.CSSProperties = {
                                 fill,
-                                stroke: isHovered || isNeighbor ? (isDarkMode ? '#818cf8' : '#6366f1') : (isDarkMode ? '#475569' : '#cbd5e1'),
-                                strokeWidth: isHovered ? 2.5 : isNeighbor ? 2 : 1.5,
+                                stroke: isHighlighted ? (isDarkMode ? '#818cf8' : '#6366f1') : (isDarkMode ? '#475569' : '#cbd5e1'),
+                                strokeWidth: isHighlighted ? 2.5 : 1.5,
                                 transition: 'fill 0.2s, stroke 0.2s, stroke-width 0.2s',
                             };
                             
                             return (
-                                <g key={node.id} transform={`translate(${node.x}, ${node.y})`} className="cursor-pointer" onClick={() => onTableSelect(node.label)} onMouseEnter={() => setHoveredNode(node.id)} onMouseLeave={() => setHoveredNode(null)} style={nodeStyle}>
+                                <g 
+                                    key={node.id} 
+                                    transform={`translate(${node.x}, ${node.y})`} 
+                                    className="node-group cursor-pointer" 
+                                    onClick={() => onTableSelect(node.label, viewMode)} 
+                                    onMouseEnter={() => setHoveredItem({ type: 'node', id: node.id })} 
+                                    onMouseLeave={() => setHoveredItem(null)} 
+                                    style={nodeStyle}
+                                >
                                     <rect x="-55" y="-20" width="110" height="40" rx="8" className={`stroke-current`} style={rectStyle} />
-                                    <text className="text-sm font-semibold fill-current text-slate-700 dark:text-slate-200" textAnchor="middle" dy=".3em">{node.label}</text>
+                                    <text className="text-sm font-semibold fill-current text-slate-700 dark:text-slate-200 pointer-events-none" textAnchor="middle" dy=".3em">{node.label}</text>
                                 </g>
                             );
                         })}
                     </g>
                 </svg>
+                <Tooltip data={tooltip} />
                 <Legend mode={viewMode} isDarkMode={isDarkMode} />
-                {isSimulating && <div className="absolute top-2 left-2 text-xs text-slate-400 animate-pulse">Optimizing layout...</div>}
             </div>
         </div>
     );

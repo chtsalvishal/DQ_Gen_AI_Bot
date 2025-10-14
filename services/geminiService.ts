@@ -1,5 +1,5 @@
 import { GoogleGenAI, Type } from '@google/genai';
-import { DataQualityInputs, GeminiApiResponse, Issue, RuleConflict, RuleEffectiveness, TableInput } from '../types';
+import { DataQualityInputs, GeminiApiResponse, GlobalRuleMap, Issue, RuleConflict, RuleEffectiveness, SchemaVisualizationData, TableInput } from '../types';
 
 if (!process.env.API_KEY) {
   throw new Error("API_KEY environment variable is not set.");
@@ -7,26 +7,34 @@ if (!process.env.API_KEY) {
 
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
+// This interface represents the complete, aggregated result after all parallel analyses are done.
+export interface AggregatedAnalysisResult {
+  issues: Issue[];
+  ruleEffectiveness: RuleEffectiveness[];
+  ruleConflicts: RuleConflict[];
+  schemaVisualizationData: SchemaVisualizationData | null;
+}
+
+// This interface represents the data returned from the analysis of a SINGLE table.
+interface SingleTableAnalysisResult extends GeminiApiResponse {
+  inferred_relationships?: { to_table: string; on_column: string }[];
+  hotspot_score?: number;
+}
+
+
 /**
  * A helper function that wraps a Gemini API call with a retry mechanism,
  * featuring exponential backoff for handling 429 rate limit errors.
- * @param model The model to use for generation.
- * @param contents The prompt/contents for the model.
- * @param config The generation configuration.
- * @param retries The maximum number of retry attempts.
- * @param initialDelayMs The initial delay before the first retry.
- * @returns The API response on success.
- * @throws The last captured error if all retries fail.
  */
 const generateContentWithRetry = async (
   model: string,
   contents: string,
   config: any,
   retries = 3,
-  initialDelayMs = 4000
+  initialDelayMs = 2000 // Reduced initial delay for parallel calls
 ): Promise<any> => {
   let lastError: any = null;
-  let delayMs = initialDelayMs;
+  let delayMs = initialDelayMs + Math.random() * 1000; // Add jitter
 
   for (let i = 0; i < retries; i++) {
     try {
@@ -48,156 +56,203 @@ const generateContentWithRetry = async (
   throw lastError;
 };
 
-// New function to build prompt for a single table
-const buildSingleTablePrompt = (table: TableInput, globalRules: string, history: string): string => {
-  const tablePrompt = `
-    --- TABLE: ${table.name || 'Unnamed Table'} ---
+export const mapGlobalRulesToTables = async (tables: TableInput[], globalRules: string): Promise<GlobalRuleMap> => {
+  if (!globalRules || globalRules.trim() === '' || tables.length === 0) {
+    return {};
+  }
+  const tableSchemas = tables.map(t => `
+    --- TABLE: ${t.name} ---
+    SCHEMA:
+    ${t.schema}
+  `).join('\n\n');
 
-    1.  **Column-level statistics:**
-        \`\`\`
-        ${table.stats || 'Not provided.'}
-        \`\`\`
+  const prompt = `
+    You are an expert data architect. Your task is to map global business rules to the specific tables they apply to.
+    Analyze the provided table schemas and the list of global business rules.
+    Based on the column names and context in each schema, determine which tables each rule is relevant for.
 
-    2.  **Schema definitions:**
-        \`\`\`
-        ${table.schema || 'Not provided.'}
-        \`\`\`
+    Return a JSON array of objects. Each object must have two keys: "rule" (the string of the global rule) and "tables" (an array of table names that the rule applies to).
+    If a rule does not apply to any of the tables, do not include it in the output array.
 
-    3.  **Sample data rows:**
-        \`\`\`
-        ${table.samples || 'Not provided.'}
-        \`\`\`
+    --- TABLE SCHEMAS ---
+    ${tableSchemas}
 
-    4.  **Business rules for this table:**
-        \`\`\`
-        ${table.rules || 'Not provided.'}
-        \`\`\`
+    --- GLOBAL BUSINESS RULES ---
+    ${globalRules}
   `;
+  
+  try {
+    const response = await generateContentWithRetry(
+      'gemini-2.5-flash',
+      prompt,
+      {
+        temperature: 0,
+        responseMimeType: 'application/json',
+        responseSchema: {
+          type: Type.ARRAY,
+          description: "A list of rule-to-table mappings.",
+          items: {
+            type: Type.OBJECT,
+            properties: {
+              rule: {
+                type: Type.STRING,
+                description: "The global business rule."
+              },
+              tables: {
+                type: Type.ARRAY,
+                description: "A list of table names this rule applies to.",
+                items: {
+                  type: Type.STRING,
+                }
+              }
+            },
+            required: ['rule', 'tables']
+          }
+        },
+      }
+    );
+    const jsonText = response.text.trim();
+    const resultArray: { rule: string; tables: string[] }[] = JSON.parse(jsonText);
+    
+    // Transform the array of objects back into the GlobalRuleMap format.
+    const ruleMap: GlobalRuleMap = {};
+    for (const item of resultArray) {
+      if (item.rule && item.tables) {
+        ruleMap[item.rule] = item.tables;
+      }
+    }
+    return ruleMap;
 
+  } catch(e) {
+    console.error("Failed to map global rules to tables:", e);
+    // FIX: Add detailed error object to the log for better debugging.
+    if (e instanceof Error && (e as any).response) {
+      console.error('API Error Response:', (e as any).response.data);
+    }
+    return {}; // Return empty map on failure
+  }
+}
+
+const buildSingleTablePrompt = (table: TableInput, allTableNames: string[], applicableRules: string, history: string): string => {
   return `
     You are a world-class Data Quality Bot integrated into a data engineering pipeline. 
-    Your job is to analyze the following metadata and data profile report for a SINGLE TABLE to detect potential data quality issues, such as anomalies, null spikes, schema drift, or type mismatches.
+    Your job is to analyze the following metadata and data profile report for a SINGLE TABLE named "${table.name}".
     
-    Analyze the following inputs to identify issues, rate their severity, suggest a cause, predict the impact, and recommend a solution.
-    For each identified issue, you MUST specify the 'table_name' as exactly "${table.name}". If an issue is specific to a single column, you MUST also provide the 'column_name'.
+    You must perform a comprehensive analysis and return a single, structured JSON object containing:
+    1.  **Data Quality Issues**: Detect potential issues like anomalies, null spikes, schema drift, or type mismatches.
+    2.  **Rule Effectiveness**: Evaluate EACH of the provided business rules below, which have been determined to apply to this table. Determine if each rule is 'Effective', 'Never Triggered', or 'Overly Broad'.
+    3.  **Rule Conflicts**: Identify any logical contradictions between the provided rules.
+    4.  **Relationship Inference**: Based on column names (like 'customer_id', 'order_id'), infer relationships to OTHER tables. The only valid target tables are: [${allTableNames.filter(t => t !== table.name).join(', ')}].
+    5.  **Hotspot Score**: Calculate a data quality "hotspot score" by summing points for each issue: High=3, Medium=2, Low=1.
 
-    IMPORTANT: If an issue is a direct violation of one of the provided business rules (either from this table's "Business rules" section or the "Global business rules"), you MUST set the issue's 'type' to exactly "Business Rule Violation". For all other issues, use a descriptive type.
+    IMPORTANT CONSTRAINTS:
+    - For each identified issue, you MUST specify the 'table_name' as exactly "${table.name}".
+    - If an issue violates a business rule, its 'type' MUST be exactly "Business Rule Violation".
+    - Your entire response MUST be a single JSON object conforming to the provided schema. If a section has no findings, return an empty array or 0.
 
-    In addition to detecting data quality issues, you MUST also perform two more analyses:
-    1.  **Rule Effectiveness Analysis**: Based on the provided data samples and statistics, evaluate each business rule (both table-specific and global).
-        - If a rule seems to be correctly identifying issues or is well-formulated based on the data, mark its status as "Effective".
-        - If a rule has no violations in the sample data and the statistics do not suggest any violations, mark its status as "Never Triggered".
-        - If a rule is too generic and seems to be violated by a large percentage of the sample data (e.g., > 50%), mark its status as "Overly Broad".
-    2.  **Rule Conflict Analysis**: Check for logical contradictions between table-specific rules and global rules, or among the rules themselves.
-        - For example, "customer_age must be > 18" conflicts with "customer_age must be < 16".
+    --- INPUTS FOR TABLE: ${table.name} ---
 
-    **Inputs for table "${table.name}":**
+    **Table Schema:**
+    \`\`\`
+    ${table.schema || 'Not provided.'}
+    \`\`\`
 
-    ${tablePrompt}
+    **Column Statistics:**
+    \`\`\`
+    ${table.stats || 'Not provided.'}
+    \`\`\`
+
+    **Applicable Business Rules for this Table:**
+    \`\`\`
+    ${applicableRules || 'Not provided.'}
+    \`\`\`
+
+    **Sample Data:**
+    \`\`\`
+    ${table.samples || 'Not provided.'}
+    \`\`\`
 
     --- GLOBAL CONTEXT ---
 
-    5.  **Global business rules (apply to this table):**
-        \`\`\`
-        ${globalRules || 'Not provided.'}
-        \`\`\`
-
-    6.  **Historical anomalies or quality incidents (optional context):**
-        \`\`\`
-        ${history || 'Not provided.'}
-        \`\`\`
-
-    Respond with a structured JSON output that conforms to the provided schema. If no issues, effectiveness concerns, or conflicts are found, return empty arrays for the corresponding fields.
-    `;
+    **Historical Context:**
+    \`\`\`
+    ${history || 'Not provided.'}
+    \`\`\`
+  `;
 };
 
-const responseSchema = {
-  type: Type.OBJECT,
-  properties: {
-    issues_detected: {
-      type: Type.ARRAY,
-      description: 'A list of detected data quality issues.',
-      items: {
-        type: Type.OBJECT,
-        properties: {
-          table_name: {
-            type: Type.STRING,
-            description: 'The name of the table where the issue was found.',
-          },
-          column_name: {
-            type: Type.STRING,
-            description: 'The name of the column where the issue was found, if applicable.',
-          },
-          type: {
-            type: Type.STRING,
-            description: 'The type of issue, e.g., "Schema Drift", "Anomaly", "Business Rule Violation".',
-          },
-          description: {
-            type: Type.STRING,
-            description: 'A detailed description of the detected issue.',
-          },
-          severity: {
-            type: Type.STRING,
-            description: 'The severity rating: "Low", "Medium", or "High".',
-          },
-          possible_cause: {
-            type: Type.STRING,
-            description: 'A likely cause for the issue.',
-          },
-          impact: {
-            type: Type.STRING,
-            description: 'Potential impact on downstream processes.',
-          },
-          recommendation: {
-            type: Type.STRING,
-            description: 'Recommended steps for remediation.',
-          },
-        },
-        required: ['table_name', 'type', 'description', 'severity', 'possible_cause', 'impact', 'recommendation'],
-      },
-    },
-    rule_effectiveness: {
-      type: Type.ARRAY,
-      description: 'An analysis of how effective the provided business rules are.',
-      items: {
-        type: Type.OBJECT,
-        properties: {
-          rule: { type: Type.STRING, description: 'The business rule being analyzed.' },
-          table_name: { type: Type.STRING, description: 'The table the rule applies to. Can be "Global".' },
-          status: { type: Type.STRING, description: 'Evaluation of the rule: "Effective", "Never Triggered", or "Overly Broad".' },
-          reasoning: { type: Type.STRING, description: 'The reasoning behind the status evaluation.' },
-        },
-        required: ['rule', 'table_name', 'status', 'reasoning'],
-      },
-    },
-    rule_conflicts: {
-      type: Type.ARRAY,
-      description: 'A list of identified conflicts between business rules.',
-      items: {
-        type: Type.OBJECT,
-        properties: {
-          conflicting_rules: {
+const singleTableResponseSchema = {
+    type: Type.OBJECT,
+    properties: {
+        issues_detected: {
             type: Type.ARRAY,
-            items: { type: Type.STRING },
-            description: 'The specific rules that are in conflict.',
-          },
-          table_name: {
-            type: Type.STRING,
-            description: 'The table where the conflict applies. Can be "Global" if it is a cross-table or global rule conflict.',
-          },
-          description: { type: Type.STRING, description: 'A description of why the rules conflict.' },
-          recommendation: { type: Type.STRING, description: 'How to resolve the conflict.' },
+            description: 'A list of detected data quality issues for this table.',
+            items: {
+                type: Type.OBJECT,
+                properties: {
+                    table_name: { type: Type.STRING },
+                    column_name: { type: Type.STRING },
+                    type: { type: Type.STRING },
+                    description: { type: Type.STRING },
+                    severity: { type: Type.STRING, enum: ['Low', 'Medium', 'High'] },
+                    possible_cause: { type: Type.STRING },
+                    impact: { type: Type.STRING },
+                    recommendation: { type: Type.STRING },
+                },
+                required: ['table_name', 'type', 'description', 'severity', 'possible_cause', 'impact', 'recommendation'],
+            },
         },
-        required: ['conflicting_rules', 'description', 'recommendation'],
-      },
+        rule_effectiveness: {
+            type: Type.ARRAY,
+            description: 'Analysis of business rule effectiveness for this table.',
+            items: {
+                type: Type.OBJECT,
+                properties: {
+                    rule: { type: Type.STRING },
+                    table_name: { type: Type.STRING },
+                    status: { type: Type.STRING, enum: ['Effective', 'Never Triggered', 'Overly Broad'] },
+                    reasoning: { type: Type.STRING },
+                },
+                required: ['rule', 'table_name', 'status', 'reasoning'],
+            },
+        },
+        rule_conflicts: {
+            type: Type.ARRAY,
+            description: 'Identified conflicts between business rules relevant to this table.',
+            items: {
+                type: Type.OBJECT,
+                properties: {
+                    conflicting_rules: { type: Type.ARRAY, items: { type: Type.STRING } },
+                    table_name: { type: Type.STRING },
+                    description: { type: Type.STRING },
+                    recommendation: { type: Type.STRING },
+                },
+                required: ['conflicting_rules', 'description', 'recommendation'],
+            },
+        },
+        inferred_relationships: {
+            type: Type.ARRAY,
+            description: "Relationships from this table to other tables.",
+            items: {
+                type: Type.OBJECT,
+                properties: {
+                    to_table: { type: Type.STRING, description: "The target table name." },
+                    on_column: { type: Type.STRING, description: "The column name implying the relationship, e.g., 'customer_id'." }
+                },
+                required: ['to_table', 'on_column']
+            }
+        },
+        hotspot_score: {
+            type: Type.INTEGER,
+            description: "The calculated hotspot score based on issue severity."
+        }
     },
-  },
-  required: ['issues_detected'],
+    required: ['issues_detected', 'rule_effectiveness', 'rule_conflicts', 'inferred_relationships', 'hotspot_score'],
 };
 
-// New helper function to analyze a single table
-const analyzeSingleTable = async (table: TableInput, globalRules: string, history: string): Promise<GeminiApiResponse> => {
-  const prompt = buildSingleTablePrompt(table, globalRules, history);
+
+const analyzeSingleTable = async (table: TableInput, allTableNames: string[], applicableRules: string, history: string): Promise<[string, SingleTableAnalysisResult]> => {
+  const prompt = buildSingleTablePrompt(table, allTableNames, applicableRules, history);
 
   try {
     const response = await generateContentWithRetry(
@@ -207,55 +262,109 @@ const analyzeSingleTable = async (table: TableInput, globalRules: string, histor
         temperature: 0,
         seed: 42,
         responseMimeType: 'application/json',
-        responseSchema: responseSchema,
+        responseSchema: singleTableResponseSchema,
       }
     );
     
     const jsonText = response.text.trim();
-    const result = JSON.parse(jsonText) as GeminiApiResponse;
+    // A simple guard to catch non-JSON responses before parsing
+    if (!jsonText.startsWith('{') || !jsonText.endsWith('}')) {
+        throw new Error("Invalid JSON response received from API.");
+    }
+
+    const result = JSON.parse(jsonText) as SingleTableAnalysisResult;
     
     // Defensive check: ensure the model has correctly set the table name on all issues.
     if (result.issues_detected) {
-      result.issues_detected.forEach(issue => {
-        if (!issue.table_name) {
-          issue.table_name = table.name;
-        }
-      });
+      result.issues_detected.forEach(issue => { issue.table_name = table.name; });
     }
 
-    return result;
+    return [table.name, result];
   } catch (e) {
     console.error(`Error analyzing table "${table.name}" after all retries:`, e);
-    // Return an empty result for this table to not fail the entire batch
-    return { issues_detected: [] };
+    // Return a minimal result for this table to not fail the entire batch
+    const errorResult: SingleTableAnalysisResult = {
+      issues_detected: [{
+        table_name: table.name,
+        type: 'Analysis Error',
+        description: `Failed to analyze this table. Error: ${e instanceof Error ? e.message : String(e)}`,
+        severity: 'High',
+        possible_cause: 'API error or malformed response.',
+        impact: 'No data quality insights are available for this table.',
+        recommendation: 'Check the browser console for details and try the analysis again.'
+      }],
+      rule_effectiveness: [],
+      rule_conflicts: []
+    };
+    return [table.name, errorResult];
   }
 };
 
-export const analyzeDataQuality = async (inputs: DataQualityInputs): Promise<GeminiApiResponse> => {
+
+export const analyzeDataQuality = async (inputs: DataQualityInputs, ruleMap: GlobalRuleMap): Promise<AggregatedAnalysisResult> => {
   if (!inputs.tables || inputs.tables.length === 0) {
-    return { issues_detected: [] };
+    return { issues: [], ruleEffectiveness: [], ruleConflicts: [], schemaVisualizationData: null };
   }
 
-  const analysisPromises = inputs.tables.map(table =>
-    analyzeSingleTable(table, inputs.rules, inputs.history)
-  );
+  const allTableNames = inputs.tables.map(t => t.name);
+
+  const analysisPromises = inputs.tables.map(table => {
+    const relevantGlobalRules = Object.entries(ruleMap)
+      .filter(([, tables]) => tables.includes(table.name))
+      .map(([rule]) => rule)
+      .join('\n');
+    
+    const allApplicableRules = [table.rules, relevantGlobalRules].filter(Boolean).join('\n');
+    
+    return analyzeSingleTable(table, allTableNames, allApplicableRules, inputs.history);
+  });
   
-  const results = await Promise.all(analysisPromises);
+  // Await all parallel analyses
+  const resultsByTable = new Map(await Promise.all(analysisPromises));
   
-  // Flatten the array of results (from each table) into a single list of issues.
-  const allIssues: Issue[] = results.flatMap(result => result.issues_detected || []);
-  const allEffectiveness: RuleEffectiveness[] = results.flatMap(result => result.rule_effectiveness || []);
-  const allConflicts: RuleConflict[] = results.flatMap(result => result.rule_conflicts || []);
+  // Aggregate results
+  const allIssues: Issue[] = [];
+  const allEffectiveness: RuleEffectiveness[] = [];
+  const allConflicts: RuleConflict[] = [];
+  const vizData: SchemaVisualizationData = {
+    nodes: [],
+    edges: [],
+    hotspots: [],
+  };
+  
+  for (const table of inputs.tables) {
+    const result = resultsByTable.get(table.name);
+    if (!result) continue;
+
+    allIssues.push(...(result.issues_detected || []));
+    allEffectiveness.push(...(result.rule_effectiveness || []));
+    allConflicts.push(...(result.rule_conflicts || []));
+
+    // Build visualization data
+    vizData.nodes.push({ id: table.name, label: table.name });
+    
+    if (result.inferred_relationships) {
+        result.inferred_relationships.forEach(rel => {
+            // Ensure the target table exists before creating an edge
+            if(allTableNames.includes(rel.to_table)) {
+                vizData.edges.push({ from: table.name, to: rel.to_table, label: rel.on_column });
+            }
+        });
+    }
+    if (result.hotspot_score !== undefined) {
+        vizData.hotspots.push({ tableName: table.name, score: result.hotspot_score });
+    }
+  }
   
   return { 
-    issues_detected: allIssues,
-    rule_effectiveness: allEffectiveness,
-    rule_conflicts: allConflicts
+    issues: allIssues,
+    ruleEffectiveness: allEffectiveness,
+    ruleConflicts: allConflicts,
+    schemaVisualizationData: vizData.nodes.length > 0 ? vizData : null 
   };
 };
 
 export const generateSqlForIssues = async (tableName: string, issues: Issue[]): Promise<string> => {
-  // Filter out issues that are too generic to generate SQL for, like schema drift
   const actionableIssues = issues.filter(issue => 
     issue.type !== 'Schema Drift' && !issue.description.toLowerCase().includes('data type mismatch')
   );
@@ -288,10 +397,7 @@ export const generateSqlForIssues = async (tableName: string, issues: Issue[]): 
     const response = await generateContentWithRetry(
       'gemini-2.5-flash',
       prompt,
-      {
-        temperature: 0,
-        seed: 42,
-      }
+      { temperature: 0, seed: 42 }
     );
     return response.text;
   } catch (e) {
@@ -340,9 +446,7 @@ export const generateReportSummary = async (issues: Issue[], ruleEffectiveness: 
       const response = await generateContentWithRetry(
         'gemini-2.5-flash',
         prompt,
-        {
-          temperature: 0.2,
-        }
+        { temperature: 0.2 }
       );
       return response.text;
   } catch (e) {
