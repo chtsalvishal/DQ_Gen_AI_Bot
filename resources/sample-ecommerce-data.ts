@@ -71,6 +71,32 @@ CREATE TABLE sales.orders (
 customer_id must exist in the dbo.customers table.`,
     },
     {
+      name: 'sales.order_items',
+      stats: `Column, Null %, Distinct Count, Min, Max
+order_item_id, 0%, 15000, 1, 15000
+order_id, 0%, 9950, 8001, 8005
+product_id, 0%, 950, 100, 104
+quantity, 0%, 25, 1, 10
+price_per_unit, 0%, 800, 0.00, 1999.99`,
+      schema: `CREATE TABLE sales.order_items (
+  order_item_id INT PRIMARY KEY,
+  order_id INT, -- Foreign key to sales.orders
+  product_id INT, -- Foreign key to inventory.products
+  quantity INT,
+  price_per_unit DECIMAL(10, 2)
+);`,
+      samples: `order_item_id,order_id,product_id,quantity,price_per_unit
+1,8001,100,1,1200.00
+2,8001,101,2,25.00
+3,8002,103,1,80.00
+4,8003,104,1,45.00
+5,8004,101,5,25.00`,
+      rules: `quantity must be > 0.
+price_per_unit must be >= 0.
+order_id must exist in the sales.orders table.
+product_id must exist in the inventory.products table.`,
+    },
+    {
       name: 'inventory.products',
       stats: `Column, Null %, Distinct Count, Min, Max
 product_id, 0%, 1000, 1, 1000
@@ -88,11 +114,11 @@ price, 0.5%, 800, 0.00, 1999.99`,
   stock_quantity INT
 );`,
       samples: `product_id,sku,product_name,category,price
-P100,SKU-A1,Laptop,Electronics,1200.00
-P101,SKU-B2,Mouse,electronics,25.00
-P102,SKU-C3,Keyboard,NULL,75.00
-P103,SKU-D4,Webcam,Electronics,80.00
-P104,SKU-B2,Gaming Mouse,Electronics,45.00`,
+100,SKU-A1,Laptop,Electronics,1200.00
+101,SKU-B2,Mouse,electronics,25.00
+102,SKU-C3,Keyboard,NULL,75.00
+103,SKU-D4,Webcam,Electronics,80.00
+104,SKU-B2,Gaming Mouse,Electronics,45.00`,
       rules: `sku must be unique.
 category should be one of: Electronics, Books, Clothing, Home Goods.
 Every product must have a product_description.`,
