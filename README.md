@@ -1,6 +1,6 @@
 # Data Quality Bot
 
-An intelligent bot that analyzes data metadata and profile reports to detect potential data quality issues like anomalies, schema drift, and type mismatches, providing actionable recommendations.
+An intelligent bot that analyzes data metadata and profile reports to detect potential data quality issues. It identifies anomalies, schema drift, and type mismatches, evaluates business rule effectiveness, and visualizes schema relationships and issue hotspots to provide actionable recommendations.
 
 ## Key Features & Benefits
 
@@ -8,6 +8,8 @@ This tool is designed to save time, improve data reliability, and foster a data-
 
 -   **Proactive Issue Detection**: Identify silent data corruption, schema drift, and anomalies *before* they impact downstream dashboards, machine learning models, or business decisions.
 -   **AI-Powered Deep Analysis**: Go beyond traditional, rigid data validation rules. The Gemini API understands the context of your data—its structure, statistics, and business logic—to uncover subtle, complex issues that are nearly impossible to find manually.
+-   **Advanced Business Rule Intelligence**: Don't just check for violations. The bot analyzes the *effectiveness* of your business rules (are they too broad? never triggered?) and detects logical *conflicts* between them, helping you refine your data governance logic.
+-   **Smart Schema Visualization**: Instantly understand your data landscape. The bot automatically generates an interactive relationship diagram showing how your tables connect. Switch to the **anomaly heatmap** to immediately identify which tables are the biggest "hotspots" for data quality issues.
 -   **Drastic Efficiency Gains**: Automate the tedious, time-consuming process of manual data profiling and inspection. Free up your data teams to focus on generating value from data, not just cleaning it.
 -   **Improved Data Trust & Governance**: Build confidence across your organization with transparent, explainable data quality reports. The bot provides clear causes, impacts, and recommendations, making it easier to enforce data governance standards.
 -   **Enhanced Collaboration**: The interactive dashboard, conversational AI assistant, and exportable PDF/PowerPoint reports make it simple to share findings and collaborate on solutions between technical and business teams.
@@ -26,8 +28,8 @@ The Data Quality Bot is a versatile tool for anyone who relies on high-quality d
 
 1.  **Provide Context**: Users input data context for one or more database tables. This includes table schemas, column-level statistics (e.g., null percentages, distinct counts), sample data rows, and business rules. Input can be provided manually or streamlined by uploading SQL files for schemas and CSV files for statistics.
 2.  **AI-Powered Analysis**: The application constructs a detailed, context-rich prompt for each table and sends it to the `gemini-2.5-flash` model. The model is instructed to act as an expert data quality analyst, identifying issues based on the provided information.
-3.  **Structured Results**: Gemini returns a structured JSON object containing a list of detected issues, each with a description, severity level (High, Medium, Low), possible cause, potential impact, and a recommended solution.
-4.  **Visualize & Explore**: The results are displayed in an interactive dashboard where users can filter issues by severity, view a health summary for each table, and drill down into specific problems grouped by table and column.
+3.  **Structured Results**: Gemini returns a structured JSON object containing a list of detected issues, an analysis of **business rule effectiveness and conflicts**, and data for **schema visualization**, including inferred table relationships and issue hotspots.
+4.  **Visualize & Explore**: The results are displayed in an interactive dashboard. **Visualize your data structure with an interactive schema relationship diagram, or switch to an anomaly heatmap to see which tables have the most critical issues.** Users can filter all findings by severity, view a health summary for each table, and drill down into specific problems.
 5.  **Conversational Insights**: A built-in chat assistant allows users to ask follow-up questions about the results in natural language, making it easy to understand complex relationships and prioritize fixes.
 6.  **Export & Share**: Findings can be exported into professional, stakeholder-ready formats, including a detailed PDF report or a PowerPoint presentation.
 
