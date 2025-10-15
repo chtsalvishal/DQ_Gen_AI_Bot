@@ -2,6 +2,17 @@
 
 An intelligent bot that analyzes data metadata and profile reports to detect potential data quality issues. It identifies anomalies, schema drift, and type mismatches, evaluates business rule effectiveness, and visualizes schema relationships and issue hotspots to provide actionable recommendations.
 
+## Problem Statement
+
+In any data-driven organization, there's a persistent and challenging gap between high-level business requirements and their technical implementation in databases. Business stakeholders define rules in plain language— "A customer's age must be valid," "Every order must have a shipping address," or "Product SKUs should be unique." However, translating these concepts into concrete database schemas, constraints, and ETL logic is fraught with ambiguity:
+
+*   **Vague Definitions**: What constitutes a "valid" age? Does it just mean `> 0`, or is there an upper limit? What specific format should a "shipping address" follow, especially for international customers?
+*   **Implementation Gaps**: A developer might implement `UNIQUE` on a SKU column, but what happens when a data entry error introduces a duplicate with a slight variation? The database constraint might not catch it, but the business logic is violated.
+*   **Evolving Logic**: Business rules change. A promotional campaign might temporarily allow negative order totals for refunds, which could conflict with a database `CHECK` constraint.
+*   **Silent Failures**: The most dangerous issues are the ones that don't cause system crashes. A gradual increase in `NULL` values, a shift in the statistical distribution of a key metric, or inconsistent data formats might go unnoticed for weeks, silently corrupting downstream analytics, dashboards, and machine learning models.
+
+This translation gap creates a breeding ground for silent data quality issues. Identifying these problems requires a deep, contextual understanding that bridges the business and technical worlds—an understanding that traditional validation tools, which often rely on rigid, predefined rules, struggle to achieve. Data teams are left with the time-consuming, manual task of data archaeology, trying to reconcile what the data *is* with what it *should be*.
+
 ## Key Features & Benefits
 
 This tool is designed to save time, improve data reliability, and foster a data-driven culture by making data quality analysis accessible and insightful.
