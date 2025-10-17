@@ -113,12 +113,14 @@ const AnalysisSidebar: React.FC<AnalysisSidebarProps> = ({
           onClick={() => onSelectionChange('dashboard')}
         />
         {schemaVisualizationData && (
-             <NavItem
-                label="Visualizations"
-                icon={<NetworkIcon />}
-                isActive={activeSelection === 'schema'}
-                onClick={() => onSelectionChange('schema')}
-            />
+             <div id="tour-step-analysis-viz-nav">
+                <NavItem
+                    label="Visualizations"
+                    icon={<NetworkIcon />}
+                    isActive={activeSelection === 'schema'}
+                    onClick={() => onSelectionChange('schema')}
+                />
+             </div>
         )}
         <hr className="!my-3 border-slate-200 dark:border-slate-700" />
         <h3 className="px-3 pt-1 pb-2 text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Tables</h3>

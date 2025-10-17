@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { XIcon } from './icons';
+import { Issue, SchemaVisualizationData, RuleEffectiveness, RuleConflict } from '../types';
 
 interface TourStep {
   selector: string;
@@ -8,66 +9,173 @@ interface TourStep {
   placement?: 'top' | 'bottom' | 'left' | 'right';
 }
 
-const TOUR_STEPS: TourStep[] = [
+const FORM_TOUR_STEPS: TourStep[] = [
     {
         selector: '#tour-step-1',
         title: 'Quick Start',
-        content: 'The easiest way to see the bot in action is to load our sample e-commerce dataset. Click here to begin!',
+        content: 'The easiest way to see the bot in action is to load our **sample e-commerce dataset**. Click here to begin!',
         placement: 'bottom',
     },
     {
         selector: '#tour-step-sql-upload',
         title: 'Import from SQL',
-        content: 'Alternatively, you can automatically populate tables, schemas, and rules by uploading a .sql file containing CREATE TABLE statements.',
+        content: 'Alternatively, you can automatically populate **tables, schemas, and rules** by uploading a **.sql file** containing CREATE TABLE statements.',
         placement: 'bottom',
     },
     {
         selector: '#tour-step-csv-upload',
         title: 'Import Column Statistics',
-        content: 'You can also upload a single CSV file containing column statistics for all your tables. The bot will automatically distribute the stats to the correct tables.',
+        content: 'You can also upload a single **CSV file** containing column statistics for all your tables. The bot will automatically distribute the stats to the correct tables.',
         placement: 'bottom',
     },
     {
         selector: '#tour-step-2',
         title: 'Provide Table Context',
-        content: 'This is where you provide the details for each table. You can edit the name, schema, statistics, and business rules manually.',
+        content: 'This is where you provide the details for each table. You can edit the **name, schema, statistics, and business rules** manually.',
         placement: 'right',
     },
     {
         selector: '#tour-step-3',
         title: 'Add More Tables',
-        content: 'You can analyze multiple tables at once. Click here to add another table form to your analysis.',
+        content: 'You can analyze multiple tables at once. Click here to **add another table** form to your analysis.',
         placement: 'top',
     },
     {
         selector: '#tour-step-4',
         title: 'Set Global Rules',
-        content: 'Define business rules here that should apply to ALL tables in your analysis.',
+        content: "Define **business rules** here that should apply to ALL tables in your analysis.",
         placement: 'top',
     },
     {
         selector: '#tour-step-5',
         title: 'Start Analysis',
-        content: "Once you're ready, click this button to let the AI analyze your data quality. The results will appear on the right.",
+        content: "Once you're ready, click this button to let the AI **analyze your data quality**. The results will appear on the right.",
         placement: 'top',
     },
+];
+
+const ANALYSIS_TOUR_STEPS: TourStep[] = [
+    {
+        selector: '#tour-step-analysis-sidebar',
+        title: 'Navigate Your Report',
+        content: "This sidebar is your control center. It shows a **summary** of findings, allows you to **filter by severity**, and helps you navigate between different views.",
+        placement: 'right',
+    },
+    {
+        selector: '#tour-step-analysis-ai-report',
+        title: 'AI-Generated Summary',
+        content: "Start with the AI's **executive summary** of all findings. You can generate it if you haven't already, and **export it to PDF** for sharing.",
+        placement: 'bottom',
+    },
+    {
+        selector: '#tour-step-table-health',
+        title: 'Table Health Overview',
+        content: "Quickly assess the health of each table. The **donut chart** shows the severity breakdown of issues. **Click any card** to drill down into that table's specific problems.",
+        placement: 'bottom',
+    },
+    {
+        selector: '#tour-step-issue-hotspots',
+        title: 'Discover Issue Hotspots',
+        content: "Identify the most common types of issues across all your tables. This helps you find **systemic problems**. Click a card to see all issues of that type.",
+        placement: 'bottom',
+    },
+    {
+        selector: '#tour-step-biz-rules',
+        title: 'Analyze Business Rules',
+        content: "This section details business rule **violations**, analyzes how effective your rules are (**effectiveness**), and detects any logical **conflicts** between them.",
+        placement: 'bottom',
+    },
+    {
+        selector: '#tour-step-analysis-viz-nav',
+        title: 'Visualize Relationships',
+        content: "Click here for an **interactive diagram** of your table relationships and an **anomaly heatmap** to see which tables are most problematic.",
+        placement: 'right',
+    },
+    {
+        selector: '#tour-step-ask-ai',
+        title: 'Ask Follow-up Questions',
+        content: "Have more questions? Click here to open a **chat with an AI assistant** that can help you dig deeper into your specific results.",
+        placement: 'bottom',
+    }
 ];
 
 interface TourOverlayProps {
   isOpen: boolean;
   onClose: () => void;
+  issues: Issue[] | null;
+  schemaVisualizationData: SchemaVisualizationData | null;
+  ruleEffectiveness: RuleEffectiveness[] | null;
+  ruleConflicts: RuleConflict[] | null;
 }
 
-const TourOverlay: React.FC<TourOverlayProps> = ({ isOpen, onClose }) => {
+const findElementWithRetry = (selector: string, retries = 5, delay = 100): Promise<HTMLElement | null> => {
+    return new Promise((resolve) => {
+        let attempts = 0;
+        const interval = setInterval(() => {
+            const element = document.querySelector<HTMLElement>(selector);
+            if (element || attempts >= retries) {
+                clearInterval(interval);
+                resolve(element);
+            }
+            attempts++;
+        }, delay);
+    });
+};
+
+const HighlightedContent: React.FC<{ text: string }> = ({ text }) => {
+    const parts = text.split(/(\*\*.*?\*\*)/g).filter(Boolean);
+    return (
+      <>
+        {parts.map((part, index) => {
+          if (part.startsWith('**') && part.endsWith('**')) {
+            return (
+              <strong key={index} className="text-brand-secondary font-bold">
+                {part.slice(2, -2)}
+              </strong>
+            );
+          }
+          return part;
+        })}
+      </>
+    );
+};
+
+const TourOverlay: React.FC<TourOverlayProps> = ({ isOpen, onClose, issues, schemaVisualizationData, ruleEffectiveness, ruleConflicts }) => {
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [highlightBox, setHighlightBox] = useState<DOMRect | null>(null);
-  const [windowSize, setWindowSize] = useState({ width: window.innerWidth, height: window.innerHeight });
+  
+  const tourSteps = useMemo(() => {
+    if (issues && issues.length > 0) {
+      let steps = [...ANALYSIS_TOUR_STEPS];
+      
+      if (!schemaVisualizationData) {
+        steps = steps.filter(step => step.selector !== '#tour-step-analysis-viz-nav');
+      }
 
-  const currentStep = TOUR_STEPS[currentStepIndex];
+      const businessRuleViolations = issues.filter(i => i.type === 'Business Rule Violation');
+      const hasBusinessRuleContent = businessRuleViolations.length > 0 || (ruleEffectiveness && ruleEffectiveness.length > 0) || (ruleConflicts && ruleConflicts.length > 0);
+      if (!hasBusinessRuleContent) {
+        steps = steps.filter(step => step.selector !== '#tour-step-biz-rules');
+      }
+      
+      return steps;
+    }
+    return FORM_TOUR_STEPS;
+  }, [issues, schemaVisualizationData, ruleEffectiveness, ruleConflicts]);
+
+  const currentStep = tourSteps[currentStepIndex];
+
+  const updateHighlightBox = () => {
+    if (currentStep) {
+        const targetElement = document.querySelector<HTMLElement>(currentStep.selector);
+        if (targetElement) {
+            setHighlightBox(targetElement.getBoundingClientRect());
+        }
+    }
+  };
 
   useEffect(() => {
     if (!isOpen) {
-      // Use a timeout to allow the exit animation to complete before resetting state
       setTimeout(() => {
         setCurrentStepIndex(0);
         setHighlightBox(null);
@@ -75,40 +183,51 @@ const TourOverlay: React.FC<TourOverlayProps> = ({ isOpen, onClose }) => {
       return;
     }
 
-    const targetElement = document.querySelector<HTMLElement>(currentStep.selector);
-    if (targetElement) {
-      // Ensure element is not collapsed by an accordion
-      if (targetElement.id === 'tour-step-2' && targetElement.clientHeight === 0) {
-        (targetElement.querySelector('button[aria-expanded="false"]') as HTMLElement)?.click();
-      }
-      
-      targetElement.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
-      
-      const updatePosition = () => {
-        setHighlightBox(targetElement.getBoundingClientRect());
-      };
-      
-      const timer = setTimeout(updatePosition, 300); // Delay to allow for animations
-      return () => clearTimeout(timer);
-    } else {
-      handleNext();
-    }
-  }, [isOpen, currentStepIndex]);
+    if (!currentStep) return;
 
-  useEffect(() => {
-    const handleResize = () => {
-      setWindowSize({ width: window.innerWidth, height: window.innerHeight });
-      const targetElement = document.querySelector(currentStep.selector);
+    let isCancelled = false;
+
+    const positionTour = async () => {
+      const targetElement = await findElementWithRetry(currentStep.selector);
+      if (isCancelled) return;
+
       if (targetElement) {
-        setHighlightBox(targetElement.getBoundingClientRect());
+        if (targetElement.id === 'tour-step-2' && targetElement.clientHeight === 0) {
+            (targetElement.querySelector('button[aria-expanded="false"]') as HTMLElement)?.click();
+        }
+        targetElement.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
+        
+        const timer = setTimeout(() => {
+          if (!isCancelled) {
+            setHighlightBox(targetElement.getBoundingClientRect());
+          }
+        }, 350);
+      } else {
+        console.warn(`Tour step element not found: ${currentStep.selector}. Skipping.`);
+        handleNext();
       }
     };
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, [currentStep]);
+
+    positionTour();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [isOpen, currentStepIndex, tourSteps]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    window.addEventListener('resize', updateHighlightBox);
+    window.addEventListener('scroll', updateHighlightBox);
+    return () => {
+        window.removeEventListener('resize', updateHighlightBox);
+        window.removeEventListener('scroll', updateHighlightBox);
+    };
+  }, [isOpen, currentStep]);
 
   const handleNext = () => {
-    if (currentStepIndex < TOUR_STEPS.length - 1) {
+    setHighlightBox(null);
+    if (currentStepIndex < tourSteps.length - 1) {
       setCurrentStepIndex(currentStepIndex + 1);
     } else {
       onClose();
@@ -116,30 +235,17 @@ const TourOverlay: React.FC<TourOverlayProps> = ({ isOpen, onClose }) => {
   };
 
   const handlePrev = () => {
+    setHighlightBox(null);
     if (currentStepIndex > 0) {
       setCurrentStepIndex(currentStepIndex - 1);
     }
   };
 
-  const overlayPath = useMemo(() => {
-    const { width, height } = windowSize;
-    if (!highlightBox || !isOpen) {
-      return `M0,0 H${width} V${height} H0 Z`;
-    }
-    const padding = 8;
-    const x = highlightBox.left - padding;
-    const y = highlightBox.top - padding;
-    const w = highlightBox.width + padding * 2;
-    const h = highlightBox.height + padding * 2;
-    
-    return `M0,0 H${width} V${height} H0 Z M${x},${y} h${w} v${h} h-${w} Z`;
-  }, [highlightBox, windowSize, isOpen]);
-
   const tooltipPosition = useMemo(() => {
-    if (!highlightBox) return { display: 'none' };
+    if (!highlightBox || !currentStep) return { display: 'none' };
     
     const placement = currentStep.placement || 'bottom';
-    const offset = 12;
+    const offset = 16 + 8; // 16px offset + 8px padding
     let top = 0, left = 0, transform = '';
 
     switch (placement) {
@@ -168,6 +274,7 @@ const TourOverlay: React.FC<TourOverlayProps> = ({ isOpen, onClose }) => {
   }, [highlightBox, currentStep]);
   
   const Arrow = () => {
+    if (!currentStep) return null;
     const placement = currentStep.placement || 'bottom';
     const size = 8;
     let path = '', style: React.CSSProperties = {};
@@ -203,52 +310,100 @@ const TourOverlay: React.FC<TourOverlayProps> = ({ isOpen, onClose }) => {
     );
   };
 
+  const SVGMaskStyle = () => (
+    <style>{`
+        #tour-mask-rect {
+            transition: x 0.3s ease-in-out, y 0.3s ease-in-out, width 0.3s ease-in-out, height 0.3s ease-in-out;
+        }
+    `}</style>
+  );
+
+  if (!currentStep) return null;
+
   return (
     <div className={`fixed inset-0 z-[999] transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`} role="dialog" aria-modal="true">
-      <svg width="100%" height="100%" className="absolute inset-0">
-        <path
-          d={overlayPath}
-          fill="rgba(15, 23, 42, 0.7)"
-          fillRule="evenodd"
-          className="transition-all duration-300 ease-in-out"
-        />
-      </svg>
+        <SVGMaskStyle />
 
-      {highlightBox && isOpen && (
-        <div
-          className="absolute w-72 p-4 bg-slate-800 dark:bg-slate-900 text-white rounded-lg shadow-2xl animate-fade-in-scale"
-          style={tooltipPosition}
-        >
-          <style>{`
-            @keyframes fadeInScale {
-              from { opacity: 0; transform: ${tooltipPosition.transform} scale(0.9); }
-              to { opacity: 1; transform: ${tooltipPosition.transform} scale(1); }
-            }
-            .animate-fade-in-scale { animation: fadeInScale 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-          `}</style>
-          
-          <Arrow />
-          
-          <div className="flex justify-between items-start mb-2">
-            <h3 className="font-bold text-md text-brand-secondary">{currentStep.title}</h3>
-            <span className="text-xs text-slate-400">{currentStepIndex + 1} / {TOUR_STEPS.length}</span>
-          </div>
-          
-          <p className="text-sm text-slate-300 mb-4">{currentStep.content}</p>
+        {/* SVG mask definition for the cutout effect */}
+        <svg className="absolute w-0 h-0">
+            <defs>
+                <mask id="tour-mask">
+                    <rect x="0" y="0" width="100vw" height="100vh" fill="white" />
+                    {highlightBox && (
+                        <rect
+                            id="tour-mask-rect"
+                            x={highlightBox.left - 8}
+                            y={highlightBox.top - 8}
+                            width={highlightBox.width + 16}
+                            height={highlightBox.height + 16}
+                            rx="12"
+                            fill="black"
+                        />
+                    )}
+                </mask>
+            </defs>
+        </svg>
+        
+        {/* The translucent, blurred, and clickable overlay */}
+        <div 
+            className="absolute inset-0 bg-slate-900/70 backdrop-blur-sm"
+            style={{ 
+                mask: highlightBox ? 'url(#tour-mask)' : 'none', 
+                WebkitMask: highlightBox ? 'url(#tour-mask)' : 'none',
+            }}
+            onClick={onClose}
+        ></div>
 
-          <div className="flex justify-between items-center">
-             <button onClick={onClose} className="text-xs text-slate-400 hover:text-white">Skip</button>
-             <div>
-                {currentStepIndex > 0 && (
-                    <button onClick={handlePrev} className="px-3 py-1 text-sm rounded-md bg-slate-700 hover:bg-slate-600 mr-2">Prev</button>
-                )}
-                <button onClick={handleNext} className="px-4 py-1 text-sm font-semibold rounded-md bg-brand-secondary hover:bg-sky-600">
-                    {currentStepIndex === TOUR_STEPS.length - 1 ? 'Finish' : 'Next'}
-                </button>
-             </div>
-          </div>
-        </div>
-      )}
+        {/* The tooltip and highlight border */}
+        {highlightBox && isOpen && (
+            <>
+                <div
+                    className="absolute pointer-events-none rounded-xl ring-2 ring-brand-secondary transition-all duration-300 ease-in-out"
+                    style={{
+                        left: highlightBox.left - 8,
+                        top: highlightBox.top - 8,
+                        width: highlightBox.width + 16,
+                        height: highlightBox.height + 16,
+                    }}
+                />
+
+                <div
+                    className="absolute w-72 p-4 bg-slate-800 dark:bg-slate-900 text-white rounded-lg shadow-2xl animate-fade-in-scale"
+                    style={tooltipPosition}
+                >
+                    <style>{`
+                        @keyframes fadeInScale {
+                            from { opacity: 0; transform: ${tooltipPosition.transform} scale(0.9); }
+                            to { opacity: 1; transform: ${tooltipPosition.transform} scale(1); }
+                        }
+                        .animate-fade-in-scale { animation: fadeInScale 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+                    `}</style>
+                    
+                    <Arrow />
+                    
+                    <div className="flex justify-between items-start mb-2">
+                        <h3 className="font-bold text-md text-brand-secondary">{currentStep.title}</h3>
+                        <span className="text-xs text-slate-400">{currentStepIndex + 1} / {tourSteps.length}</span>
+                    </div>
+                    
+                    <p className="text-sm text-slate-300 mb-4">
+                        <HighlightedContent text={currentStep.content} />
+                    </p>
+
+                    <div className="flex justify-between items-center">
+                        <button onClick={onClose} className="text-xs text-slate-400 hover:text-white">Skip</button>
+                        <div>
+                            {currentStepIndex > 0 && (
+                                <button onClick={handlePrev} className="px-3 py-1 text-sm rounded-md bg-slate-700 hover:bg-slate-600 mr-2">Prev</button>
+                            )}
+                            <button onClick={handleNext} className="px-4 py-1 text-sm font-semibold rounded-md bg-brand-secondary hover:bg-sky-600">
+                                {currentStepIndex === tourSteps.length - 1 ? 'Finish' : 'Next'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </>
+        )}
     </div>
   );
 };

@@ -31,6 +31,7 @@ const App: React.FC = () => {
     setSchemaVisualizationData(null);
     setReport(null);
     setIsChatOpen(false);
+    setIsTourOpen(false); // Ensure tour is closed before analysis starts
 
     try {
       // Step 1: Pre-analysis to map global rules to specific tables for accuracy.
@@ -81,6 +82,7 @@ const App: React.FC = () => {
             <div className="flex items-center gap-4">
               {issues && issues.length > 0 && (
                 <button
+                  id="tour-step-ask-ai"
                   onClick={() => setIsChatOpen(true)}
                   className="hidden sm:inline-flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-white bg-brand-accent rounded-lg shadow-sm hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-brand-accent focus:ring-offset-2 dark:focus:ring-offset-slate-900 transition-all"
                   aria-label="Start chat with AI assistant"
@@ -91,9 +93,10 @@ const App: React.FC = () => {
               )}
               <button
                 onClick={() => setIsTourOpen(true)}
-                className="text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition-colors"
+                className="text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 aria-label="Open help guide"
                 title="Help"
+                disabled={isLoading}
               >
                 <HelpCircleIcon className="h-6 w-6" />
               </button>
@@ -187,6 +190,10 @@ const App: React.FC = () => {
           <TourOverlay 
               isOpen={isTourOpen}
               onClose={() => setIsTourOpen(false)}
+              issues={issues}
+              schemaVisualizationData={schemaVisualizationData}
+              ruleEffectiveness={ruleEffectiveness}
+              ruleConflicts={ruleConflicts}
           />
       </Suspense>
     </div>

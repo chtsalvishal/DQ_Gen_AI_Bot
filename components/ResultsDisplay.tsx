@@ -601,12 +601,12 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ isLoading, error, issue
         
         return (
             <div className="w-full">
-                 <div className="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                 <div id="tour-step-analysis-header" className="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                     <div>
                         <h2 className="text-2xl font-bold text-slate-800 dark:text-white">Analysis Report</h2>
                         <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">{issues.length} total issues found across {Object.keys(issuesByTable).length} tables.</p>
                     </div>
-                    <div className="flex items-center gap-2 flex-wrap">
+                    <div id="tour-step-analysis-export-buttons" className="flex items-center gap-2 flex-wrap">
                          <button 
                             onClick={() => generatePdfReport(issues)} 
                             disabled={!issues || issues.length === 0}
@@ -629,7 +629,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ isLoading, error, issue
                 </div>
 
                 <div className="flex border border-slate-200 dark:border-slate-800 rounded-lg bg-white dark:bg-slate-900 shadow-lg">
-                    <aside className="flex-shrink-0" style={{ width: `${sidebarWidth}px` }}>
+                    <aside id="tour-step-analysis-sidebar" className="flex-shrink-0" style={{ width: `${sidebarWidth}px` }}>
                        <div className="h-full overflow-y-auto p-4">
                         <AnalysisSidebar
                             issues={issues}
@@ -649,13 +649,15 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ isLoading, error, issue
                       title="Resize sidebar"
                     />
 
-                    <main className="flex-grow p-6 min-w-0 bg-slate-50 dark:bg-slate-900/50 rounded-r-lg">
+                    <main id="tour-step-analysis-main-content" className="flex-grow p-6 min-w-0 bg-slate-50 dark:bg-slate-900/50 rounded-r-lg">
                         <div className="space-y-8">
-                           <AIReportSection
-                                report={report}
-                                isLoading={isReportLoading}
-                                onGenerate={onGenerateReport}
-                            />
+                           <div id="tour-step-analysis-ai-report">
+                                <AIReportSection
+                                    report={report}
+                                    isLoading={isReportLoading}
+                                    onGenerate={onGenerateReport}
+                                />
+                           </div>
                            {renderMainContent()}
                         </div>
                     </main>

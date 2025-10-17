@@ -44,7 +44,7 @@ const BusinessRulesAnalysis: React.FC<BusinessRulesAnalysisProps> = ({ violation
 
     return (
         <div>
-            <h3 className="text-xl font-bold text-slate-800 dark:text-white mb-4">Business Rule Analysis</h3>
+            <h3 id="tour-step-biz-rules" className="text-xl font-bold text-slate-800 dark:text-white mb-4">Business Rule Analysis</h3>
             <div className="bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-lg shadow-sm">
                 <div className="p-4 border-b border-slate-200 dark:border-slate-700/50">
                     <div className="flex flex-wrap items-center gap-2">
