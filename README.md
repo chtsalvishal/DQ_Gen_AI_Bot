@@ -58,7 +58,7 @@ The Data Quality Bot is a versatile tool for anyone who relies on high-quality d
 
 This contains everything you need to run your app locally.
 
-View your app in AI Studio: https://ai.studio/apps/drive/1xyAamros_C8svURq2EOGfViMYlkMgmEk
+View your app in AI Studio: https://aistudio.google.com/u/0/apps/drive/1A6bfwj4TmrHsKShQcPgnb5YmYhI7Y926
 
 ## Run Locally
 
