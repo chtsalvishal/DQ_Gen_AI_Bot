@@ -4,6 +4,7 @@ import { TrashIcon, ChevronDownIcon, ChartBarIcon, CodeIcon, GavelIcon, FileText
 import HighlightedTextarea from './HighlightedTextarea';
 
 interface TableInputFormProps {
+  id?: string;
   table: TableInput;
   index: number;
   onChange: (id: string, updatedTable: Partial<TableInput>) => void;
@@ -106,7 +107,7 @@ const TabButton: React.FC<{
     </button>
 );
 
-const TableInputForm: React.FC<TableInputFormProps> = ({ table, index, onChange, onRemove }) => {
+const TableInputForm: React.FC<TableInputFormProps> = ({ id, table, index, onChange, onRemove }) => {
   const [isCollapsed, setIsCollapsed] = useState(index > 0);
   const [activeTab, setActiveTab] = useState<TabName>('stats');
 
@@ -123,7 +124,7 @@ const TableInputForm: React.FC<TableInputFormProps> = ({ table, index, onChange,
   };
 
   return (
-    <div className="bg-white dark:bg-slate-800/50 rounded-lg shadow-md border border-slate-200 dark:border-slate-700">
+    <div id={id} className="bg-white dark:bg-slate-800/50 rounded-lg shadow-md border border-slate-200 dark:border-slate-700">
       <div className="flex justify-between items-center p-3 border-b border-slate-200 dark:border-slate-700">
         <div className="flex items-center flex-grow min-w-0">
            <button

@@ -3,9 +3,10 @@ import { analyzeDataQuality, generateReportSummary, mapGlobalRulesToTables } fro
 import { DataQualityInputs, Issue, RuleConflict, RuleEffectiveness, SchemaVisualizationData } from './types';
 import InputForm from './components/InputForm';
 import ResultsDisplay from './components/ResultsDisplay';
-import { GithubIcon, BotIcon, ChatIcon, PanelLeftCloseIcon, PanelRightOpenIcon } from './components/icons';
+import { GithubIcon, BotIcon, ChatIcon, PanelLeftCloseIcon, PanelRightOpenIcon, HelpCircleIcon } from './components/icons';
 
 const ChatView = lazy(() => import('./components/ChatView'));
+const TourOverlay = lazy(() => import('./components/HelpModal'));
 
 const App: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -18,6 +19,7 @@ const App: React.FC = () => {
   const [isReportLoading, setIsReportLoading] = useState<boolean>(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isFormCollapsed, setIsFormCollapsed] = useState(false);
+  const [isTourOpen, setIsTourOpen] = useState(false);
 
   const handleAnalyze = async (inputs: DataQualityInputs) => {
     setIsFormCollapsed(true);
@@ -87,6 +89,14 @@ const App: React.FC = () => {
                   <span>Ask AI</span>
                 </button>
               )}
+              <button
+                onClick={() => setIsTourOpen(true)}
+                className="text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition-colors"
+                aria-label="Open help guide"
+                title="Help"
+              >
+                <HelpCircleIcon className="h-6 w-6" />
+              </button>
               <a
                 href="https://github.com/google/generative-ai-docs"
                 target="_blank"
@@ -173,6 +183,10 @@ const App: React.FC = () => {
               issues={issues || []} 
               isOpen={isChatOpen} 
               onClose={() => setIsChatOpen(false)} 
+          />
+          <TourOverlay 
+              isOpen={isTourOpen}
+              onClose={() => setIsTourOpen(false)}
           />
       </Suspense>
     </div>

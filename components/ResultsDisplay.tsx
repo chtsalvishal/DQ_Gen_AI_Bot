@@ -71,10 +71,10 @@ const SimpleMarkdownRenderer: React.FC<{ text: string }> = ({ text }) => {
             ];
             const className = styles[level - 1];
             const children = parseInlineMarkdown(content);
-            // FIX: Use React.createElement to correctly render a dynamic HTML tag. JSX with a capitalized variable
-            // like <Tag> is treated as a component, which was causing a type error because `Tag` is a string.
-            // The type cast was changed to `keyof React.ReactHTML` to resolve the "Cannot find namespace 'JSX'" error.
-            const Tag = `h${level}` as keyof React.ReactHTML;
+            // FIX: Corrected the type for the dynamic HTML tag. Using `React.ElementType` provides a
+            // type-safe alternative for string tags that is compatible with `React.createElement` and
+            // available in this environment.
+            const Tag = `h${level}` as React.ElementType;
             return React.createElement(Tag, { key: index, className: className }, children);
         }
 

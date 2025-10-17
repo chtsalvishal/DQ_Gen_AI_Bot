@@ -269,6 +269,7 @@ CREATE TABLE customer_orders (
           </p>
           <button
               type="button"
+              id="tour-step-1"
               onClick={loadSampleData}
               className="mt-4 w-full sm:w-auto cursor-pointer inline-flex justify-center items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-brand-accent hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-accent transition"
           >
@@ -286,7 +287,11 @@ CREATE TABLE customer_orders (
                 </p>
             </div>
             <div className="mt-auto pt-3">
-                <label htmlFor="sql-upload" className="w-full cursor-pointer inline-flex justify-center items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-brand-accent hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-accent transition">
+                <label 
+                    htmlFor="sql-upload" 
+                    id="tour-step-sql-upload" 
+                    className="w-full cursor-pointer inline-flex justify-center items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-brand-accent hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-accent transition"
+                >
                     <UploadIcon className="w-5 h-5 mr-2 -ml-1" />
                     Upload SQL File
                 </label>
@@ -308,7 +313,11 @@ CREATE TABLE customer_orders (
                 </p>
             </div>
             <div className="mt-auto pt-3">
-                <label htmlFor="stats-upload" className="w-full cursor-pointer inline-flex justify-center items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-brand-accent hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-accent transition">
+                <label 
+                    htmlFor="stats-upload" 
+                    id="tour-step-csv-upload" 
+                    className="w-full cursor-pointer inline-flex justify-center items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-brand-accent hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-accent transition"
+                >
                     <UploadIcon className="w-5 h-5 mr-2 -ml-1" />
                     Upload Statistics CSV
                 </label>
@@ -326,6 +335,7 @@ CREATE TABLE customer_orders (
       <div className="space-y-4">
         {inputs.tables.map((table, index) => (
           <TableInputForm 
+            id={index === 0 ? 'tour-step-2' : undefined}
             key={table.id}
             table={table}
             index={index}
@@ -337,6 +347,7 @@ CREATE TABLE customer_orders (
 
       <button
         type="button"
+        id="tour-step-3"
         onClick={addTable}
         className="w-full inline-flex justify-center items-center px-4 py-2 border border-dashed border-slate-400 dark:border-slate-600 text-sm font-medium rounded-md text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-accent transition"
       >
@@ -353,7 +364,7 @@ CREATE TABLE customer_orders (
             accentColorClass="border-indigo-300 dark:border-indigo-700 text-indigo-500"
         >
             <textarea
-                id="rules"
+                id="tour-step-4"
                 name="rules"
                 rows={3}
                 className="block w-full text-sm shadow-sm border-slate-300 rounded-md bg-white dark:bg-slate-900 dark:border-slate-600 dark:placeholder-slate-400 dark:text-white focus:ring-brand-accent focus:border-brand-accent transition"
@@ -382,6 +393,7 @@ CREATE TABLE customer_orders (
 
       <button
         type="submit"
+        id="tour-step-5"
         disabled={isLoading || inputs.tables.length === 0}
         className="w-full inline-flex justify-center items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-brand-primary hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-accent disabled:bg-slate-400 disabled:cursor-not-allowed dark:bg-brand-secondary dark:hover:bg-sky-600 dark:focus:ring-offset-slate-900 transition-all duration-300"
       >
